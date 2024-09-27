@@ -7,3 +7,6 @@ gosh.... okay so like, there are a lot of problems but I've written a lot of cod
 i need to specify other types of properties (in global consts probably), and include an 'unknown' or smth for application-specific properties. 
 
 figure out why there are empty properties between moves
+
+
+leaving in sgf-parse.js as sgf-parseDEPRECATED.js so i can look back and appreciate my progress
