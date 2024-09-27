@@ -1,23 +1,40 @@
-function matchingSqBracket(string, position=0) {
-    for (let i=position; i < string.length; i++) {
-        if (string[i] === '\\') {
-            i++;
-        }
-        else if (string[i] === ']') {
+/**
+ * Returns position of next valid ']' after a given position.
+ * @param {string} sgf 
+ * @param {number} position 
+ * @returns {number}
+ */
+function matchingSqBracket(sgf, position=1) {
+    for (let i=position; i < sgf.length; i++) {
+        if (sgf[i-1] === '\\') {
+            continue;
+        } else if (sgf[i] === ']') {
             return i;
         }
     }
     return -1;
 }
 
+/**
+ * Returns an array of token objects.
+ * @param {string} sgf 
+ * @returns {{
+ * tokenType: (
+ * 'openGameTree'|'closeGameTree'|'newNode'|'propValue'|'propIdent');
+ * value?: string;
+ * depth?: number;
+ * }[]}
+ */
 function tokenize(sgf) {
     let tokens = [];
     let depth = 0;
-    for (i=0; i < sgf.length; i++) {
+    let j = -1;
+    for (let i = 0; i < sgf.length; i++) {
         let token;
         let char = sgf[i];
-        console.log(i,char);
-        if (char === '(') {
+        if (j > i) {
+            continue;
+        } else if (char === '(') {
             token = {
                 tokenType: 'openGameTree',
                 depth: depth
@@ -39,16 +56,15 @@ function tokenize(sgf) {
                 tokenType: 'propValue',
                 value: sgf.slice(i+1,j)
             }
-            i = j;
+            j++;
         } else if (/[A-Z]/.test(sgf[i])) {
             j = sgf.indexOf('[',i);
             token = {
                 tokenType: 'propIdent',
                 value: sgf.slice(i,j)
             }
-            i = j-1;
         } else {
-            console.log(`Char '${sgf[i]}' is not a valid SGF character`);
+            console.log(`'${sgf[i]}' not a valid SGF character`);
             continue;
         }
         tokens.push(token);
@@ -56,6 +72,12 @@ function tokenize(sgf) {
     return tokens;
 }
 
+/**
+ * Returns position of next token that is not of tokenType 'propValue'
+ * @param {Array} tokens 
+ * @param {number} position 
+ * @returns {number}
+ */
 function nextNonPropValToken(tokens, position) {
     for (let i=position; i < tokens.length; i++) {
         if (tokens[i].tokenType !== 'propValue') {
@@ -65,35 +87,55 @@ function nextNonPropValToken(tokens, position) {
     return -1;
 }
 
+/**
+ * Returns array of tokens, with tokenType 'propIdent' 
+ * and 'propValue' tokens grouped into 'property' tokens.
+ * @param {Array} tokens 
+ * @returns {{
+ * tokenType: ('openGameTree'|'closeGameTree'|'newNode'|'property');
+ * value?: string;
+ * depth?: number; 
+ * identifier?: string
+ * values?: []
+ * }[]}
+ */
 function groupPropertyParts(tokens) {
     let groupedTokens = [];
-    for (let i=0; i < tokens.length; i++) {
-        console.log('token:',tokens[i]);
-        if (tokens[i].tokenType !== 'propIdent') {
+    let j = -1;
+    for (let i =0 ; i < tokens.length; i++) {
+        if (j > i) {
+            continue;
+        } else if (tokens[i].tokenType !== 'propIdent') {
             groupedTokens.push(tokens[i]);
             continue;
         } else {
-            let j = nextNonPropValToken(tokens,i+1);
+            j = nextNonPropValToken(tokens,i+1);
             let property = {
                 tokenType: 'property',
                 identifier: tokens[i].value,
                 values: Array.from(tokens.slice(i+1,j), (x) => x.value)
             }
-            i=j-1;
             groupedTokens.push(property);
         }
     }
     return groupedTokens;
 }
 
+/**
+ * Parses an SGF string to the fullest extent that the existing functions can.
+ * @param {string} sgf 
+ * @returns 
+ */
 function parseSGF(sgf) {
     let tokens = groupPropertyParts(tokenize(sgf));
     return tokens;
 }
 
+/**
+ * Test function
+ */
 function tokenTest() {
-    let sgfInput = document.querySelector(
-        'textarea').value;
+    let sgfInput = document.querySelector('textarea').value;
     let goGameObject = parseSGF(sgfInput);
     console.log(goGameObject);
 }
