@@ -68,6 +68,8 @@ const properties = { //propertyIdentifier: description,type,value
     WT:['whiteTeam','game-info','simpletext'],
 }
 
+let gameProperties = properties;
+
 const gameSpecificProperties = [
     null, //0
     {
@@ -87,7 +89,6 @@ const gameSpecificProperties = [
     null,
     {} //11 Hex
 ]
-
 const propertyST = [ //default = 0
     ['children',true],
     ['siblings',true],

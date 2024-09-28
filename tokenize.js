@@ -35,11 +35,11 @@ function tokenize(sgf) {
         if (j > i) {
             continue;
         } else if (char === '(') {
+            depth++;
             token = {
                 tokenType: 'openGameTree',
                 depth: depth
             }
-            depth++;
         } else if (char === ')') {
             depth--;
             token = {
@@ -87,6 +87,19 @@ function nextNonPropValToken(tokens, position) {
     return -1;
 }
 
+
+function parseProperty(propIdent, propValues) {
+    if (propValues.length === 1) {
+        propValues = propValues[0]
+    }
+    let property = {
+        tokenType: 'property',
+        identifier: propIdent,
+        value: propValues
+    }
+    return property;
+}
+
 /**
  * Returns array of tokens, with tokenType 'propIdent' 
  * and 'propValue' tokens grouped into 'property' tokens.
@@ -96,29 +109,44 @@ function nextNonPropValToken(tokens, position) {
  * value?: string;
  * depth?: number; 
  * identifier?: string
- * values?: []
+ * values?: string[]
  * }[]}
  */
-function groupPropertyParts(tokens) {
-    let groupedTokens = [];
+function parseTokens(tokens) {
+    let gameTrees = [];
+    let parsedTokens = [];
     let j = -1;
-    for (let i =0 ; i < tokens.length; i++) {
-        if (j > i) {
-            continue;
-        } else if (tokens[i].tokenType !== 'propIdent') {
-            groupedTokens.push(tokens[i]);
-            continue;
-        } else {
-            j = nextNonPropValToken(tokens,i+1);
-            let property = {
-                tokenType: 'property',
-                identifier: tokens[i].value,
-                values: Array.from(tokens.slice(i+1,j), (x) => x.value)
-            }
-            groupedTokens.push(property);
+    let gameTreeDepth = -1;
+    let nodeDepth = -1;
+    for (let i = 0; i < tokens.length; i++) {
+        switch (tokens[i].tokenType) {
+            case 'openGameTree':
+                gameTreeDepth++;
+                nodeDepth = -1;
+                gameTrees.push([]);
+                break;
+            case 'closeGameTree':
+                let gameTree = gameTrees.pop();
+                gameTreeDepth--;
+                if (gameTrees.length) {
+                    gameTrees[gameTreeDepth].push(gameTree);
+                } else {
+                    parsedTokens.push(gameTree);
+                }
+                break;
+            case 'newNode':
+                nodeDepth++;
+                gameTrees[gameTreeDepth].push([]);
+                break;
+            case 'propIdent':
+                j = nextNonPropValToken(tokens,i+1);
+                let vals = Array.from(tokens.slice(i+1,j), (x) => x.value);
+                let property = parseProperty(tokens[i].value, vals);
+                gameTrees[gameTreeDepth][nodeDepth].push(property);
+                break;
         }
     }
-    return groupedTokens;
+    return parsedTokens;
 }
 
 /**
@@ -127,8 +155,9 @@ function groupPropertyParts(tokens) {
  * @returns 
  */
 function parseSGF(sgf) {
-    let tokens = groupPropertyParts(tokenize(sgf));
-    return tokens;
+    let tokens = tokenize(sgf);
+    let gameObject = (parseTokens(tokens));
+    return gameObject;
 }
 
 /**
@@ -137,5 +166,7 @@ function parseSGF(sgf) {
 function tokenTest() {
     let sgfInput = document.querySelector('textarea').value;
     let goGameObject = parseSGF(sgfInput);
-    console.log(goGameObject);
+    for (object of goGameObject[0]) {
+        console.log(object);
+    }
 }
