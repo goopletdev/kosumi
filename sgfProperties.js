@@ -68,8 +68,6 @@ const properties = { //propertyIdentifier: description,type,value
     WT:['whiteTeam','game-info','simpletext'],
 }
 
-let gameProperties = properties;
-
 const gameSpecificProperties = [
     null, //0
     {
@@ -138,3 +136,5 @@ const propertyGM = [ //default = 1 'Go'
     'Gipf', 
     'Kropki'
 ]
+
+let gameProperties = {...properties, ...gameSpecificProperties[1]};

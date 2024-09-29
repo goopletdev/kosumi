@@ -93,10 +93,19 @@ function parseProperty(propIdent, propValues) {
         propValues = propValues[0]
     }
     let property = {
-        tokenType: 'property',
         identifier: propIdent,
         value: propValues
     }
+    if (gameProperties.hasOwnProperty(propIdent)) {
+        let [propDesc, propType, propValType] = gameProperties[propIdent];
+        property.description = propDesc;
+        property.type = propType;
+        property.valType = propValType;
+    }
+    if (property.propIdent === 'GM' && property.value !== 1) {
+        console.log('')
+    }
+
     return property;
 }
 
@@ -114,7 +123,7 @@ function parseProperty(propIdent, propValues) {
  */
 function parseTokens(tokens) {
     let gameTrees = [];
-    let parsedTokens = [];
+    let collection = [];
     let j = -1;
     let gameTreeDepth = -1;
     let nodeDepth = -1;
@@ -131,7 +140,7 @@ function parseTokens(tokens) {
                 if (gameTrees.length) {
                     gameTrees[gameTreeDepth].push(gameTree);
                 } else {
-                    parsedTokens.push(gameTree);
+                    collection.push(gameTree);
                 }
                 break;
             case 'newNode':
@@ -146,7 +155,7 @@ function parseTokens(tokens) {
                 break;
         }
     }
-    return parsedTokens;
+    return collection;
 }
 
 /**
