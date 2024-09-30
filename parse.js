@@ -94,6 +94,8 @@ function nextNonPropValToken(tokens, position) {
 
 /**
  * Returns a property object; segment of a node
+ * This function in particular is bothering me.
+ * Find way to simplify it? 
  * @param {string} propIdent 
  * @param {string} propValues 
  * @returns {{
@@ -212,7 +214,7 @@ function parseTokens(tokens) {
  */
 function parseSGF(sgf) {
     let tokens = tokenize(sgf);
-    let collection = (parseTokens(tokens));
+    let collection = parseTokens(tokens);
     return collection;
 }
 
