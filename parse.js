@@ -144,8 +144,6 @@ function handleProperty(propIdent, propValues) {
 function parseTokens(tokens) {
     let collection = [];
     let gameTrees = [];
-    let rootProps = [];
-    let gameInfo = [];
     let j = -1;
     let gameTreeDepth = -1;
     let nodeDepth = -1;
