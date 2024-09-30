@@ -5,8 +5,13 @@
  * @returns {number}
  */
 function matchingSqBracket(sgf, position=1) {
+    let escaped = false;
     for (let i=position; i < sgf.length; i++) {
-        if (sgf[i-1] === '\\') {
+        if (escaped) {
+            escaped = false;
+            continue;
+        } else if (sgf[i] === '\\') {
+            escaped = true;
             continue;
         } else if (sgf[i] === ']') {
             return i;
@@ -27,7 +32,7 @@ function matchingSqBracket(sgf, position=1) {
  */
 function tokenize(sgf) {
     let tokens = [];
-    let depth = 0;
+    //let depth = 0;
     let j = -1;
     for (let i = 0; i < sgf.length; i++) {
         let token;
@@ -35,16 +40,16 @@ function tokenize(sgf) {
         if (j > i) {
             continue;
         } else if (char === '(') {
-            depth++;
+            //depth++;
             token = {
                 tokenType: 'openGameTree',
-                depth: depth
+                //depth: depth
             }
         } else if (char === ')') {
-            depth--;
+            //depth--;
             token = {
                 tokenType: 'closeGameTree',
-                depth: depth
+                //depth: depth
             }
         } else if (char === ';') {
             token = {
@@ -96,14 +101,18 @@ function parseProperty(propIdent, propValues) {
         identifier: propIdent,
         value: propValues
     }
-    if (gameProperties.hasOwnProperty(propIdent)) {
-        let [propDesc, propType, propValType] = gameProperties[propIdent];
+    if (gameProps.hasOwnProperty(propIdent)) {
+        let [propDesc, propType, propValType] = gameProps[propIdent];
         property.description = propDesc;
         property.type = propType;
         property.valType = propValType;
+    } else {
+        property.type = 'UNKNOWN';
+        return property;
     }
     if (property.propIdent === 'GM' && property.value !== 1) {
-        console.log('')
+        console.log('') // learn about error handling; this is not a valid
+        //GO sgf
     }
 
     return property;
@@ -121,9 +130,13 @@ function parseProperty(propIdent, propValues) {
  * values?: string[]
  * }[]}
  */
+
 function parseTokens(tokens) {
-    let gameTrees = [];
     let collection = [];
+    let gameTrees = [];
+    let rootProps = [];
+    let gameInfo = [];
+    let errorProps = [];
     let j = -1;
     let gameTreeDepth = -1;
     let nodeDepth = -1;
@@ -136,6 +149,14 @@ function parseTokens(tokens) {
                 break;
             case 'closeGameTree':
                 let gameTree = gameTrees.pop();
+                if (gameInfo.length) {
+                    gameTree.unshift(gameInfo.slice(0));
+                    gameInfo = [];
+                }
+                if (rootProps.length) {
+                    gameTree.unshift(rootProps.slice(0));
+                    rootProps = [];
+                }
                 gameTreeDepth--;
                 if (gameTrees.length) {
                     gameTrees[gameTreeDepth].push(gameTree);
@@ -151,7 +172,19 @@ function parseTokens(tokens) {
                 j = nextNonPropValToken(tokens,i+1);
                 let vals = Array.from(tokens.slice(i+1,j), (x) => x.value);
                 let property = parseProperty(tokens[i].value, vals);
-                gameTrees[gameTreeDepth][nodeDepth].push(property);
+                if (property.type === 'root' && gameTreeDepth === 0) {
+                    rootProps.push(property);
+                } else if (property.type === 'root') {
+                    property.position = [gameTreeDepth,nodeDepth];
+                    errorProps.push(property); 
+                } else if (property.type === 'game-info' && nodeDepth === 0) {
+                    gameInfo.push(property);
+                } else if (property.type === 'game-info') {
+                    property.position = [gameTreeDepth,nodeDepth];
+                    errorProps.push(property);
+                } else {
+                    gameTrees[gameTreeDepth][nodeDepth].push(property);
+                }
                 break;
         }
     }

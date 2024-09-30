@@ -39,11 +39,11 @@ const properties = { //propertyIdentifier: description,type,value
     VW:['view','- (inherit)','elist of point'], //new since ff3
 
     AP:['application','root',"composed simpletext ':' number"], //new since ff3
-    CA:['charset','root','simpletext'], //new since ff3
-    FF:['fileFormat','root','number (range: 1-4)'],
-    GM:['game','root','number (range: 1-5,7-17)'],
-    ST:['style','root','number (range: 0-3)'], //new since ff3
-    SZ:['size','root',"(number | composed number ':' number)"],  //changed from ff3
+    CA:['charset','root','simpletext'], //new since ff3 		Default value is 'ISO-8859-1' aka 'Latin1'.
+    FF:['fileFormat','root','number (range: 1-4)'], // DEFAULT: 1
+    GM:['game','root','number (range: 1-5,7-17)'], //DEFAULT: 1;
+    ST:['style','root','number (range: 0-3)'], //new since ff3 DEFAULT: 0;
+    SZ:['size','root',"(number | composed number ':' number)"],  //changed from ff3 DEFAULT: for go 19; for chess 8
 
     AN:['annotation','game-info','simpletext'],
     BR:['blackRank','game-info','simpletext'],
@@ -137,4 +137,4 @@ const propertyGM = [ //default = 1 'Go'
     'Kropki'
 ]
 
-let gameProperties = {...properties, ...gameSpecificProperties[1]};
+let gameProps = {...properties, ...gameSpecificProperties[1]};
