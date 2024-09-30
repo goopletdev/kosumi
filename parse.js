@@ -223,8 +223,10 @@ function parseSGF(sgf) {
  */
 function tokenTest() {
     let sgfInput = document.querySelector('textarea').value;
+    let outputDiv = document.getElementById('output')
     let goGameObjects = parseSGF(sgfInput);
     for (object of goGameObjects) {
         console.log(object);
+        outputDiv.innerText = JSON.stringify(object,null,2);
     };
 }
