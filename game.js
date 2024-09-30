@@ -1,3 +1,5 @@
+//still figuring out what to do with this
+
 class Game {
     constructor(app='[Kosumi:1.0]',cs='[UTF-8]') {
         this.meta = {

@@ -92,8 +92,20 @@ function nextNonPropValToken(tokens, position) {
     return -1;
 }
 
-
-function parseProperty(propIdent, propValues) {
+/**
+ * Returns a property object; segment of a node
+ * @param {string} propIdent 
+ * @param {string} propValues 
+ * @returns {{
+ * identifier: string;
+ * value: string;
+ * type: string;
+ * description?: string;
+ * valType?: string;
+ * }}
+ */
+function handleProperty(propIdent, propValues) {
+    //laundry!!!!! first thing!!
     if (propValues.length === 1) {
         propValues = propValues[0]
     }
@@ -119,71 +131,75 @@ function parseProperty(propIdent, propValues) {
 }
 
 /**
- * Returns array of tokens, with tokenType 'propIdent' 
- * and 'propValue' tokens grouped into 'property' tokens.
+ * Returns array of Game objects 
  * @param {Array} tokens 
  * @returns {{
- * tokenType: ('openGameTree'|'closeGameTree'|'newNode'|'property');
- * value?: string;
- * depth?: number; 
- * identifier?: string
- * values?: string[]
+ * root: {Array};
+ * info: {Array};
+ * moves: {Array}; 
+ * children: {Array};
+ * errors: {Array}
  * }[]}
  */
-
 function parseTokens(tokens) {
     let collection = [];
     let gameTrees = [];
     let rootProps = [];
     let gameInfo = [];
-    let errorProps = [];
     let j = -1;
     let gameTreeDepth = -1;
     let nodeDepth = -1;
     for (let i = 0; i < tokens.length; i++) {
         switch (tokens[i].tokenType) {
+
             case 'openGameTree':
                 gameTreeDepth++;
                 nodeDepth = -1;
-                gameTrees.push([]);
+                gameTrees.push({
+                    moves: [],
+                    children: [],
+                    info: [],
+                    root: [],
+                    errors: []
+                });
                 break;
+
             case 'closeGameTree':
                 let gameTree = gameTrees.pop();
-                if (gameInfo.length) {
-                    gameTree.unshift(gameInfo.slice(0));
-                    gameInfo = [];
-                }
-                if (rootProps.length) {
-                    gameTree.unshift(rootProps.slice(0));
-                    rootProps = [];
-                }
                 gameTreeDepth--;
                 if (gameTrees.length) {
-                    gameTrees[gameTreeDepth].push(gameTree);
+                    gameTrees[gameTreeDepth].children.push(gameTree);
                 } else {
                     collection.push(gameTree);
                 }
                 break;
+
             case 'newNode':
                 nodeDepth++;
-                gameTrees[gameTreeDepth].push([]);
+                gameTrees[gameTreeDepth].moves.push([]);
                 break;
+
             case 'propIdent':
                 j = nextNonPropValToken(tokens,i+1);
                 let vals = Array.from(tokens.slice(i+1,j), (x) => x.value);
-                let property = parseProperty(tokens[i].value, vals);
+                let property = handleProperty(tokens[i].value, vals);
+
                 if (property.type === 'root' && gameTreeDepth === 0) {
-                    rootProps.push(property);
+                    gameTrees[gameTreeDepth].root.push(property);
+
                 } else if (property.type === 'root') {
                     property.position = [gameTreeDepth,nodeDepth];
-                    errorProps.push(property); 
+                    gameTrees[gameTreeDepth].errors.push(property); 
+
                 } else if (property.type === 'game-info' && nodeDepth === 0) {
-                    gameInfo.push(property);
+                    gameTrees[gameTreeDepth].info.push(property);
+
                 } else if (property.type === 'game-info') {
                     property.position = [gameTreeDepth,nodeDepth];
-                    errorProps.push(property);
+                    gameTrees[gameTreeDepth].errors.push(property);
+
                 } else {
-                    gameTrees[gameTreeDepth][nodeDepth].push(property);
+                    gameTrees[gameTreeDepth].moves[nodeDepth].push(property);
                 }
                 break;
         }
@@ -194,12 +210,12 @@ function parseTokens(tokens) {
 /**
  * Parses an SGF string to the fullest extent that the existing functions can.
  * @param {string} sgf 
- * @returns 
+ * @returns {{}[]}
  */
 function parseSGF(sgf) {
     let tokens = tokenize(sgf);
-    let gameObject = (parseTokens(tokens));
-    return gameObject;
+    let collection = (parseTokens(tokens));
+    return collection;
 }
 
 /**
@@ -207,8 +223,8 @@ function parseSGF(sgf) {
  */
 function tokenTest() {
     let sgfInput = document.querySelector('textarea').value;
-    let goGameObject = parseSGF(sgfInput);
-    for (object of goGameObject[0]) {
+    let goGameObjects = parseSGF(sgfInput);
+    for (object of goGameObjects) {
         console.log(object);
-    }
+    };
 }
