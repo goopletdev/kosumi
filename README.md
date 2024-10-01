@@ -9,12 +9,12 @@ I'd like to create a Game class to store parsed SGF files, but I'm still figurin
 - Implement game logic >.>
 - Clean up... everything............ the code is so messsyyyyyy
 
-I started over from scratch a few days ago, but I'm leaving in the original sgf-parse.js as sgf-parseDEPRECATED.js so i can look back and appreciate my progress :D 
+I started over from scratch after I learned about tokenization, so here is the even *more* chaotic version from before that: https://github.com/gooplet0075/kosumi/tree/9cc3cd05c987b76244b256c4e68bb1ade2a187d2 
 
 ## Credits:
 the lovely, helpful, experienced, encouraging, friendly folks in the OGS forums for answering my endless questions about SGF and ebb'neffing 
 
-Discord friends for answering my similarly endless JavaScript questions, especially  Prxz the Patient 
+Discord friends for answering my similarly endless JavaScript questions, especially  purxiz the Patient 
 
 ## Bonus: 
 Here are some pictures of my cats Denna and Kvothe
