@@ -7,12 +7,10 @@ I'd like to create a Game class to store parsed SGF files, but I'm still figurin
 - Learn about error handling
 - Implement classes - a general Game class, or a different class for each game supported by SGF? 
 - Implement game logic >.>
-- Clean up... everything............ the code is so messsyyyyyy
-
-I started over from scratch after I learned about tokenization, so here is the even *more* chaotic version from before that: https://github.com/gooplet0075/kosumi/tree/9cc3cd05c987b76244b256c4e68bb1ade2a187d2 
+- Try and use fewer loops in parse.js! 
 
 ## Credits:
-the lovely, helpful, experienced, encouraging, friendly folks in the OGS forums for answering my endless questions about SGF and ebb'neffing 
+the lovely, helpful, experienced, encouraging, friendly folks in the OGS forums for answering my endless questions about SGF and ebb'neffing
 
 Discord friends for answering my similarly endless JavaScript questions, especially  purxiz the Patient 
 

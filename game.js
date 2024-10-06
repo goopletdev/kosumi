@@ -2,7 +2,7 @@
 
 class Game {
     constructor(app='[Kosumi:1.0]',cs='[UTF-8]') {
-        this.meta = {
+        this.root = {
             AP: app,
             CA: cs,
             FF: 4,
@@ -11,5 +11,6 @@ class Game {
             SZ: 19
         }
         this.err = []
+        this.moves = null
     }
 }
