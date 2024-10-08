@@ -1,12 +1,11 @@
 /**
  * @private
  * @param {string} sgf SGF string to search through
- * @param {number} position Position in string to begin search
- * @returns {number} Position of next valid ']' after given position
+ * @returns {number} Position of next valid ']'
  */
-function matchingSqBracket(sgf, position=1) {
+function matchingSqBracket(sgf) {
     let escaped = false;
-    for (let i=position; i < sgf.length; i++) {
+    for (let i=0; i < sgf.length; i++) {
         if (escaped) {
             escaped = false;
         } else if (sgf[i] === '\\') {
@@ -23,7 +22,7 @@ function matchingSqBracket(sgf, position=1) {
  * @param {string} sgf SGF string to parse
  * @returns {{
  * tokenType: (
- * 'openGameTree'|'closeGameTree'|'newNode'|'propValue'|'propIdent');
+ * '('|')'|';'|'propValue'|'propIdent');
  * value?: string;
  * depth?: number;
  * }[]} array of token objects
@@ -32,37 +31,23 @@ function tokenize(sgf) {
     let tokens = [];
     let j = -1;
     for (let i = 0; i < sgf.length; i++) {
-        let token;
+        let token = {};
         let char = sgf[i];
         if (j > i) {
             continue;
-        } else if (char === '(') {
-            token = {
-                tokenType: 'openGameTree',
-            }
-        } else if (char === ')') {
-            token = {
-                tokenType: 'closeGameTree',
-            }
-        } else if (char === ';') {
-            token = {
-                tokenType: 'newNode',
-            }
+        } else if ('();'.includes(char)) {
+            token.tokenType = char;
         } else if (char === '[') {
-            j = matchingSqBracket(sgf,i);
-            token = {
-                tokenType: 'propValue',
-                value: sgf.slice(i+1,j)
-            }
+            j = matchingSqBracket(sgf.slice(i)) + i;
+            token.tokenType = 'propValue';
+            token.value = sgf.slice(i + 1, j)
             j++;
         } else if (/[A-Z]/.test(sgf[i])) {
             j = sgf.indexOf('[',i);
-            token = {
-                tokenType: 'propIdent',
-                value: sgf.slice(i,j)
-            }
+            token.tokenType = 'propIdent';
+            token.value = sgf.slice(i,j);
         } else {
-            console.log(`'${sgf[i]}' not a valid SGF character`);
+            console.log(`'${sgf[i]}' not valid SGF char`);
             continue;
         }
         tokens.push(token);
@@ -73,12 +58,11 @@ function tokenize(sgf) {
 /**
  * @private
  * @param {Array} tokens Array of tokens to search
- * @returns {number} Position of token that isn't part of last node
+ * @returns {number} Position of next post-node token
  */
 function endNode(tokens) {
-    let unallowedTypes = ['openGameTree','closeGameTree','newNode']
-    for (let i = 0; i < tokens.length; i++) {
-        if (unallowedTypes.includes(tokens[i].tokenType)) {
+    for (let i = 1; i < tokens.length; i++) {
+        if ('();'.includes(tokens[i].tokenType)) {
             return i;
         }
     }
@@ -87,7 +71,7 @@ function endNode(tokens) {
 
 /**
  * @private
- * @param {Array} propToks Array of property tokens of one node
+ * @param {Array} propToks Array of a node's prop tokens
  * @returns {{}} Object containing a node's properties
  */
 function handleProps(propToks) {
@@ -97,7 +81,8 @@ function handleProps(propToks) {
         if (prop.tokenType === 'propIdent') {
             keyValPairs.push([prop.value]);
         } else {
-            keyValPairs[keyValPairs.length-1].push(prop.value);
+            let pos = keyValPairs.length - 1;
+            keyValPairs[pos].push(prop.value);
         }
     }
     for (let pair of keyValPairs) {
@@ -118,43 +103,43 @@ function handleProps(propToks) {
 function ensquishenTokens(tokens) {
     let squishedTokens = [];
     for (let i=0; i<tokens.length;i++) {
-        if (i > 500) break;
         let token = tokens[i]
         switch (token.tokenType) {
 
-            case 'openGameTree':
+            case '(':
                 squishedTokens.push(token);
                 break;
 
-            case 'closeGameTree':
+            case ')':
                 squishedTokens.push(token);
                 break;
 
-            case 'newNode':
-                let j = endNode(tokens.slice(i+1)) + i + 1;
+            case ';':
+                let j = endNode(tokens.slice(i)) + i;
                 let props = tokens.slice(i, j);
                 token.props = handleProps(props.slice(1));
                 squishedTokens.push(token);
                 break;
         }
+        console.log(token);
     }
     return squishedTokens;
 }
 
 /**
  * @private
- * @param {Array} toks Slice of tokens after openGameTree 
- * @returns {number} Position of matching closeGameTree token
+ * @param {Array} toks Slice of toks starting w/ '('
+ * @returns {number} Position of matching ')' token
  */
 function getTreeEnd(toks) {
     let j = -1;
-    for (let i = 0; i < toks.length; i++) {
+    for (let i = 1; i < toks.length; i++) {
         let token = toks[i];
-        if (token.tokenType === 'openGameTree') {
+        if (token.tokenType === '(') {
             j++;
-        } else if (token.tokenType === 'closeGameTree' && j < 0) {
+        } else if (token.tokenType === ')' && j < 0) {
             return i;
-        } else if (token.tokenType === 'closeGameTree') {
+        } else if (token.tokenType === ')') {
             j--;
         }
     }
@@ -163,15 +148,17 @@ function getTreeEnd(toks) {
 
 /**
  * @private
- * @param {Array} tokens Tokens incl. open/closeGameTree, newNode
+ * @param {Array} tokens Tokens incl. '(', ')', ';'
  * @returns {{}} Node tree of all moves and variations
  */
 function makeTree(tokens) {
+    console.log(tokens[0]);
+    console.log(tokens);
     switch (tokens[0].tokenType) {
-        case 'openGameTree':
+        case '(':
             let trees = [];
             while (tokens.length) {
-                let treeEnd = getTreeEnd(tokens.slice(1)) + 1;
+                let treeEnd = getTreeEnd(tokens);
                 let subTree = tokens.slice(1,treeEnd);
                 let subNode = makeTree(subTree);
                 trees.push(subNode);
@@ -179,7 +166,7 @@ function makeTree(tokens) {
             }
             return trees;
 
-        case 'newNode':
+        case ';':
             let node= {}
             if (tokens[0].hasOwnProperty('props')) {
                 node.props = tokens[0].props;
@@ -191,12 +178,21 @@ function makeTree(tokens) {
                 } else {
                     node.children = [childs];
                 }
-            } else {
-                delete node.children;
             }
             return node;
     }
     return -1;
+}
+
+/**
+ * @param {string} sgf SGF string
+ * @returns {} Game node tree
+ */
+function parseSGF(sgf) {
+    let tokens = tokenize(sgf);
+    let squishedTokens = ensquishenTokens(tokens);
+    let tree = makeTree(squishedTokens);
+    return tree;
 }
 
 /**
@@ -205,9 +201,7 @@ function makeTree(tokens) {
 function testFunctionII() {
     let sgfInput = document.querySelector('textarea').value;
     let outputDiv = document.getElementById('output');
-    let tokens = tokenize(sgfInput);
-    let squishedTokens = ensquishenTokens(tokens);
-    let tree = makeTree(squishedTokens);
+    let tree = parseSGF(sgfInput);
     let printTree = JSON.stringify(tree,null,1);
     console.log(printTree);
     for (object of tree) {
