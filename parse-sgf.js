@@ -71,21 +71,20 @@ function endNode(tokens) {
 
 /**
  * @private
- * @param {Array} propToks Array of a node's prop tokens
+ * @param {Array} propTokens Array of a node's prop tokens
  * @returns {{}} Object containing a node's properties
  */
-function handleProps(propToks) {
+function handleProps(propTokens) {
     let properties = {}
-    let keyValPairs = [];
-    for (let prop of propToks) {
+    let entries = [];
+    for (let prop of propTokens) {
         if (prop.tokenType === 'propIdent') {
-            keyValPairs.push([prop.value]);
+            entries.push([prop.value]);
         } else {
-            let pos = keyValPairs.length - 1;
-            keyValPairs[pos].push(prop.value);
+            entries[entries.length-1].push(prop.value);
         }
     }
-    for (let pair of keyValPairs) {
+    for (let pair of entries) {
         let values = pair.slice(1);
         if (values.length === 1) {
             values = values[0];
@@ -152,8 +151,6 @@ function getTreeEnd(toks) {
  * @returns {{}} Node tree of all moves and variations
  */
 function makeTree(tokens) {
-    console.log(tokens[0]);
-    console.log(tokens);
     switch (tokens[0].tokenType) {
         case '(':
             let trees = [];
@@ -188,26 +185,8 @@ function makeTree(tokens) {
  * @param {string} sgf SGF string
  * @returns {} Game node tree
  */
-function parseSGF(sgf) {
-    let tokens = tokenize(sgf);
-    let squishedTokens = ensquishenTokens(tokens);
-    let tree = makeTree(squishedTokens);
-    return tree;
+function ParseSGF(sgf) {
+    return makeTree(ensquishenTokens(tokenize(sgf)));
 }
 
-/**
- * test function
- */
-function testFunctionII() {
-    let sgfInput = document.querySelector('textarea').value;
-    let outputDiv = document.getElementById('output');
-    let tree = parseSGF(sgfInput);
-    let printTree = JSON.stringify(tree,null,1);
-    console.log(printTree);
-    for (object of tree) {
-        console.log(object);
-        let pTree = JSON.stringify(object,null,1);
-        console.log(pTree);
-        outputDiv.innerText = outputDiv.innerText + pTree;
-    }
-}
+export default ParseSGF;
