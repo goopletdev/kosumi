@@ -5,30 +5,6 @@
 
 /**
  * @private
- * @param {string} sgf SGF string to search through
- * @returns {number} Position of next valid ']'
- */
-function matchingSqBracket(sgf) {
-    let escaped = false;
-    let contents = '';
-    for (let i=0; i < sgf.length; i++) {
-        if (escaped) {
-            escaped = false;
-            contents += sgf[i];
-        } else if (sgf[i] === '\\') {
-            escaped = true;
-        } else if (sgf[i] === ']') {
-            console.log('contents',contents);
-            return i;
-        } else if (i > 0) {
-            contents += sgf[i];
-        }
-    }
-    return -1;
-}
-
-/**
- * @private
  * @param {string} sgf SGF string to parse
  * @returns {{
  * tokenType: (
@@ -39,27 +15,70 @@ function matchingSqBracket(sgf) {
  */
 async function tokenize(sgf) {
     let tokens = [];
-    let j = -1;
+
+    let inPropIdent = false;
+    let propIdContent = '';
+
+    let bracketPos;
+    let inBrackets = false;
+    let escaped = false;
+    let bracketContents = '';
+
     for (let i = 0; i < sgf.length; i++) {
-        let token = {};
-        if (j > i) {
-            continue;
-        } else if ('();'.includes(sgf[i])) {
-            token.tokenType = sgf[i];
+
+        // handle square bracket contents (property value)
+        if (inBrackets && escaped) {
+            escaped = false;
+            bracketContents += sgf[i];
+        } else if (inBrackets && sgf[i] === '\\') {
+            escaped = true;
+        } else if (inBrackets && sgf[i] === ']') {
+            inBrackets = false;
+            console.log(bracketContents.slice(0));
+            tokens.push({
+                tokenType: 'propValue',
+                value: bracketContents.slice(0)
+            })
+            bracketContents = '';
+        } else if (inBrackets && i < sgf.length - 1) {
+            bracketContents += sgf[i];
+        } else if (inBrackets) {
+            throw new Error(
+                `missing ']' after [ at ${bracketPos}`
+            )
         } else if (sgf[i] === '[') {
-            j = matchingSqBracket(sgf.slice(i)) + i;
-            token.tokenType = 'propValue';
-            token.value = sgf.slice(i + 1, j)
-            j++;
+            bracketPos = i;
+            inBrackets = true;
+
+        // handle property identifier
         } else if (/[A-Z]/.test(sgf[i])) {
-            j = sgf.indexOf('[',i);
-            token.tokenType = 'propIdent';
-            token.value = sgf.slice(i,j);
+            propIdContent += sgf[i];
+            inPropIdent = true;
+            if (!/[A-Z]/.test(sgf[i+1])) {
+                if (sgf[i+1] === '[') {
+                    inPropIdent = false;
+                }
+                tokens.push({
+                    tokenType: 'propIdent',
+                    value: propIdContent.slice(0)
+                })
+                propIdContent = '';
+            }
+        } else if (inPropIdent) {
+            throw new Error(
+                `expecting propVal after propIdent '${
+                    tokens[tokens.length-1].value
+                }'`
+            )
+
+        // non-bracket terminal symbols
+        } else if ('();'.includes(sgf[i])) {
+            tokens.push({
+                tokenType: sgf[i]
+            })
         } else {
             console.log(`'${sgf[i]}' not valid SGF char`);
-            continue;
         }
-        tokens.push(token);
     }
     return tokens;
 }
@@ -200,18 +219,15 @@ async function makeTree(toks) {
 
 /**
  * @param {string} sgf SGF string
- * @returns {} Game node tree
+ * @returns {{
+ * props?: {};
+ * children?: {}[]
+ * }} Game node tree
  */
 async function ParseSGF(sgf) {
-    let tree;
-    tree = tokenize(sgf)
+    let tree = tokenize(sgf)
     .then((result) => parseTokens(result))
-    .then((result) => makeTree(result))
-    .catch((e) => {
-        console.error(e.name);
-        console.error(e.message);
-        tree = [];
-    });
+    .then((result) => makeTree(result));
     return tree;
 }
 
