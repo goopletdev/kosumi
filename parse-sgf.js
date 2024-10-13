@@ -34,7 +34,6 @@ async function tokenize(sgf) {
             escaped = true;
         } else if (inBrackets && sgf[i] === ']') {
             inBrackets = false;
-            console.log(bracketContents.slice(0));
             tokens.push({
                 type: 'propVal',
                 value: bracketContents.slice(0)
@@ -138,7 +137,6 @@ async function parseTokens(tokens) {
             }
 
         }
-        console.log(tok);
     }
     return parsedToks;
 }
@@ -204,11 +202,6 @@ async function makeTree(toks, parent = -1, move = 0) {
                 }
             }
             return node;
-        }
-
-        switch (toks[0].type) {
-            case ';':
-
         }
     } else {
         throw new Error(
