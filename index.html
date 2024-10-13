@@ -4,12 +4,25 @@
         <title>SGF Parser</title>
         <script src="sgfProperties.js"></script>
         <script src="test.js" type="module"></script>
+        <style>
+            body {
+                font-family: monospace;
+            }
+        </style>
     </head>
     <body>
         <h1>SGF Parser</h1>
+        <h2>SGF:</h2>
         <textarea id='input' cols="40" rows="10"></textarea>
-        <button onclick='testFunctionII()' id='submit-button'>Submit</button>
-        <h1>JavaScript Object:</h1>
+        <div>
+            <fieldset>
+                <legend>Settings</legend>
+                <input type="checkbox" id="headerBreaks"> <label for="headerBreaks">newlines in header</label>
+                <input type="checkbox" id="nodeBreaks"> <label for="nodeBreaks">newline for each node</label>
+            </fieldset>
+            <button onclick='testFunctionII()' id='submit-button'>Reformat</button>
+        </div>
+        <h2>New SGF:</h2>
         <div><span id='output'></span></div>
     </body>
 </html>
