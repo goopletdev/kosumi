@@ -11,7 +11,7 @@
  * @param {boolean} nodeBreaks Whitespace after nodes
  * @returns {string} SGF string
  */
-async function MakeSGF(node, headerBreaks=true, nodeBreaks=false) {
+async function MakeSGF(node, headerBreaks=true, nodeBreaks=true) {
     let sgf = ';';
     if (node.hasOwnProperty('props')) {
         for (let key of Object.keys(node.props)) {
@@ -38,7 +38,7 @@ async function MakeSGF(node, headerBreaks=true, nodeBreaks=false) {
         }
         for (let i = 0; i < node.children.length; i++) {
 
-            sgf = sgf + newline + await MakeSGF(
+            sgf += newline + await MakeSGF(
                 node.children[i], headerBreaks, nodeBreaks
             );
         }
