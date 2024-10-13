@@ -1,5 +1,6 @@
 //still figuring out what to do with this
 import ParseSGF from './parse-sgf.js';
+import MakeSGF from './make-sgf.js';
 
 class Goban {
     /**

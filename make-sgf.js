@@ -1,4 +1,17 @@
-async function MakeSGF(node, headerBreaks=false, nodeBreaks=false) {
+/**
+ * 
+ * @param {{
+ * id: number;
+ * moveNumber: number;
+ * parent?: number;
+ * props?: {};
+ * children?: {}[]
+ * }} node Root node from game tree
+ * @param {boolean} headerBreaks Whitespace in first node
+ * @param {boolean} nodeBreaks Whitespace after nodes
+ * @returns {string} SGF string
+ */
+async function MakeSGF(node, headerBreaks=true, nodeBreaks=false) {
     let sgf = ';';
     if (node.hasOwnProperty('props')) {
         for (let key of Object.keys(node.props)) {
@@ -36,6 +49,19 @@ async function MakeSGF(node, headerBreaks=false, nodeBreaks=false) {
     return sgf;
 }
 
+/**
+ * 
+ * @param {{
+ * id: number;
+ * moveNumber: number;
+ * parent?: number;
+ * props?: {};
+ * children?: {}[]
+ * }[]} node Collection of game tree root nodes
+ * @param {boolean} headerBreaks Whitespace in first node
+ * @param {boolean} nodeBreaks Whitespace after nodes
+ * @returns {string} SGF string
+ */
 async function makeCollection(nodes) {
     let collection = [];
     for (i = 0; i < nodes.length; i++) {

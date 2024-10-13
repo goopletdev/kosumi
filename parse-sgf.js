@@ -215,6 +215,9 @@ async function makeTree(toks, parent = -1, move = 0) {
  * SGF collection as an array
  * @param {string} sgf SGF string
  * @returns {{
+ * id: number;
+ * moveNumber: number;
+ * parent?: number;
  * props?: {};
  * children?: {}[]
  * }[]} Game node tree
