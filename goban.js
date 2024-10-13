@@ -31,6 +31,7 @@ class Goban {
 
     async parse(sgf, gameIndex=0) {
         this.tree = ParseSGF(sgf)[gameIndex];
+        this.sourceSGF = sgf;
     }
-
 }
+
