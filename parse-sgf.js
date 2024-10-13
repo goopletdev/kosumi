@@ -7,8 +7,8 @@
  * @private
  * @param {string} sgf SGF string to parse
  * @returns {{
- * tokenType: (
- * '('|')'|';'|'propValue'|'propIdent');
+ * type: (
+ * '('|')'|';'|'propVal'|'propId');
  * value?: string;
  * depth?: number;
  * }[]} array of token objects
@@ -16,7 +16,7 @@
 async function tokenize(sgf) {
     let tokens = [];
 
-    let inPropIdent = false;
+    let inpropId = false;
     let propIdContent = '';
 
     let bracketPos;
@@ -36,7 +36,7 @@ async function tokenize(sgf) {
             inBrackets = false;
             console.log(bracketContents.slice(0));
             tokens.push({
-                tokenType: 'propValue',
+                type: 'propVal',
                 value: bracketContents.slice(0)
             })
             bracketContents = '';
@@ -53,20 +53,20 @@ async function tokenize(sgf) {
         // handle property identifier
         } else if (/[A-Z]/.test(sgf[i])) {
             propIdContent += sgf[i];
-            inPropIdent = true;
+            inpropId = true;
             if (!/[A-Z]/.test(sgf[i+1])) {
                 if (sgf[i+1] === '[') {
-                    inPropIdent = false;
+                    inpropId = false;
                 }
                 tokens.push({
-                    tokenType: 'propIdent',
+                    type: 'propId',
                     value: propIdContent.slice(0)
                 })
                 propIdContent = '';
             }
-        } else if (inPropIdent) {
+        } else if (inpropId) {
             throw new Error(
-                `expecting propVal after propIdent '${
+                `expecting propVal after propId '${
                     tokens[tokens.length-1].value
                 }'`
             )
@@ -74,7 +74,7 @@ async function tokenize(sgf) {
         // non-bracket terminal symbols
         } else if ('();'.includes(sgf[i])) {
             tokens.push({
-                tokenType: sgf[i]
+                type: sgf[i]
             })
         } else {
             console.log(`'${sgf[i]}' not valid SGF char`);
@@ -85,72 +85,62 @@ async function tokenize(sgf) {
 
 /**
  * @private
- * @param {Array} tokens Array of tokens to search
- * @returns {number} Position of next post-node token
- */
-function endNode(tokens) {
-    for (let i = 1; i < tokens.length; i++) {
-        if ('();'.includes(tokens[i].tokenType)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-/**
- * @private
- * @param {Array} propTokens Array of a node's prop tokens
- * @returns {{}} Object containing a node's properties
- */
-function handleProps(propTokens) {
-    let properties = {}
-    let entries = [];
-    for (let prop of propTokens) {
-        if (prop.tokenType === 'propIdent') {
-            entries.push([prop.value]);
-        } else {
-            entries[entries.length-1].push(prop.value);
-        }
-    }
-    for (let pair of entries) {
-        let values = pair.slice(1);
-        if (values.length === 1) {
-            values = values[0];
-        }
-        properties[pair[0]] = values;
-    }
-    return properties;
-}
-
-/**
- * @private
  * @param {Array} tokens Tokenized SGF
  * @returns {Array} Condensed token list
  */
 async function parseTokens(tokens) {
-    let squishedTokens = [];
+
+    let parsedToks = [];
+    let inNode = false;
+    let propertyId = '';
+    let id = 0;
+
     for (let i=0; i<tokens.length;i++) {
-        let token = tokens[i]
-        switch (token.tokenType) {
 
-            case '(':
-                squishedTokens.push(token);
-                break;
+        let tok = tokens[i]
 
-            case ')':
-                squishedTokens.push(token);
-                break;
+        // open/close game tree tokens
+        if ('()'.includes(tok.type)) {
+            parsedToks.push(tok);
 
-            case ';':
-                let j = endNode(tokens.slice(i)) + i;
-                let props = tokens.slice(i, j);
-                token.props = handleProps(props.slice(1));
-                squishedTokens.push(token);
-                break;
+        // new node token
+        } else if (tok.type === ';') {
+            if (tokens[i+1].type === 'propId') {
+                inNode = true;
+            } else {
+                console.log('empty node');
+            }
+            tok.id = id;
+            id ++;
+            parsedToks.push(tok);
+
+        // handle node properties
+        } else if (inNode) {
+            let node = parsedToks[parsedToks.length-1];
+            if (!node.hasOwnProperty('props')){
+                node.props = {};
+            }
+            if (tok.type === 'propId') {
+                propertyId = tok.value;
+                node.props[propertyId] = [];
+                if (tokens[i+1].type !== 'propVal') {
+                    throw new Error(
+                        `expected propVal after ${
+                            propertyId
+                        }`
+                    )
+                }
+            } else { // token.type === propVal
+                node.props[propertyId].push(tok.value);
+                if ('();'.includes(tokens[i+1].type)) {
+                    inNode = false;
+                }
+            }
+
         }
-        console.log(token);
+        console.log(tok);
     }
-    return squishedTokens;
+    return parsedToks;
 }
 
 /**
@@ -162,11 +152,11 @@ function getTreeEnd(toks) {
     let j = -1;
     for (let i = 1; i < toks.length; i++) {
         let token = toks[i];
-        if (token.tokenType === '(') {
+        if (token.type === '(') {
             j++;
-        } else if (token.tokenType === ')' && j < 0) {
+        } else if (token.type === ')' && j < 0) {
             return i;
-        } else if (token.tokenType === ')') {
+        } else if (token.type === ')') {
             j--;
         }
     }
@@ -178,37 +168,47 @@ function getTreeEnd(toks) {
  * @param {Array} toks Tokens of type '(', ')', ';'
  * @returns {{}} Node tree of all moves and variations
  */
-async function makeTree(toks) {
+async function makeTree(toks, parent = -1, move = 0) {
     if (toks[0]) {
+        if (toks[0].type === '(') {
+            let trees = [];
+            while (toks.length) {
+                let treeEnd = getTreeEnd(toks);
+                let subTree = toks.slice(1,treeEnd);
+                let subNode = await makeTree(
+                    subTree, parent, move
+                );
+                trees.push(subNode);
+                toks = toks.slice(treeEnd+1);
+            }
+            return trees;
+        } else if (toks[0].type === ';') {
+            let node = {
+                id: toks[0].id,
+                moveNumber: move
+            }
+            if (parent > -1) {
+                node.parent = parent;
+            }
+            if (toks[0].hasOwnProperty('props')) {
+                node.props = toks[0].props;
+            }
+            if (toks.length > 1) {
+                let childs = await makeTree(
+                    toks.slice(1),node.id,move+1
+                );
+                if (Array.isArray(childs)) {
+                    node.children = childs;
+                } else {
+                    node.children = [childs];
+                }
+            }
+            return node;
+        }
 
-        switch (toks[0].tokenType) {
-            case '(':
-                let trees = [];
-                while (toks.length) {
-                    let treeEnd = getTreeEnd(toks);
-                    let subTree = toks.slice(1,treeEnd);
-                    let subNode = await makeTree(subTree);
-                    trees.push(subNode);
-                    toks = toks.slice(treeEnd+1);
-                }
-                console.log(trees);
-                return trees;
-    
+        switch (toks[0].type) {
             case ';':
-                let node= {}
-                if (toks[0].hasOwnProperty('props')) {
-                    node.props = toks[0].props;
-                }
-                if (toks.length > 1) {
-                    let childs;
-                    childs = await makeTree(toks.slice(1));
-                    if (Array.isArray(childs)) {
-                        node.children = childs;
-                    } else {
-                        node.children = [childs];
-                    }
-                }
-                return node;
+
         }
     } else {
         throw new Error(
@@ -218,11 +218,13 @@ async function makeTree(toks) {
 }
 
 /**
+ * Returns collection of Game objects from an
+ * SGF collection as an array
  * @param {string} sgf SGF string
  * @returns {{
  * props?: {};
  * children?: {}[]
- * }} Game node tree
+ * }[]} Game node tree
  */
 async function ParseSGF(sgf) {
     let tree = tokenize(sgf)
