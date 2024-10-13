@@ -4,8 +4,18 @@ Parses SGF into an array of javascript objects. It's a work in progress as I lea
 I'd like to create a Game class to store parsed SGF files, but I'm still figuring out how classes work in Javascript. Right now, the functions in parse.js can handle any Go SGF I've thrown at them!!
 
 ## To-do list:
-- Learn about error handling
-- Implement classes - a general Game class, or a different class for each game supported by SGF? 
+- Implement Goban class.
+    - Class functions:
+        - `getNodesAtMove(moveNumber)` => returns array
+        - `getNodesByCoord(coordinate)` => returns array
+        - `getNodeById(nodeId)` => returns node
+        - `getStates()` => sets .state for each node
+        - `getVariation(nodeId)` => returns array of moves up to node
+        - `makeMainBranch(nodeId)` => self-explanatory
+        - `getSiblings(nodeId)` => returns array of sibling nodes
+    - can nodes have functions?
+        - `node.newCoord(coordinate)` => changes the coordinate in the node
+        - `node.insert(node)` => parent becomes grandparent node, inserted node becomes parent
 - Implement game logic >.>
 - Try and use fewer loops in parse.js! 
 
