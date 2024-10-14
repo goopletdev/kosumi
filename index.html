@@ -4,11 +4,7 @@
         <title>SGF Parser</title>
         <script src="sgfProperties.js"></script>
         <script src="test.js" type="module"></script>
-        <style>
-            body {
-                font-family: monospace;
-            }
-        </style>
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
         <h1>SGF Parser</h1>
@@ -23,6 +19,7 @@
             <button onclick='testFunctionII()' id='submit-button'>Reformat</button>
         </div>
         <h2>New SGF:</h2>
+        <textarea id='output' cols="40" rows="10"></textarea>
         <div><span id='output'></span></div>
     </body>
 </html>

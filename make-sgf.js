@@ -33,7 +33,7 @@ async function MakeSGF(node, headerBreaks=true, nodeBreaks=true) {
     }
     if (node.hasOwnProperty('children')) {
         let newline = '';
-        if (nodeBreaks) {
+        if (nodeBreaks && node.id > 0) {
             newline = '\n'
         }
         for (let i = 0; i < node.children.length; i++) {

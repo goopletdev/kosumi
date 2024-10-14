@@ -1,6 +1,7 @@
 //still figuring out what to do with this
 import ParseSGF from './parse-sgf.js';
 import MakeSGF from './make-sgf.js';
+import {formatProps} from './sgf-utils.js'
 
 class Goban {
     /**
@@ -34,5 +35,14 @@ class Goban {
         this.tree = ParseSGF(sgf)[gameIndex];
         this.sourceSGF = sgf;
     }
+
+    async formatTree() {
+        this.tree = formatProps(this.tree);
+    }
+
+    async getSGF(headerNL=true,nodeNL=true) {
+        this.sgf = MakeSGF(this.tree,headerNL,nodeNL);
+    }
 }
 
+export default Goban;
