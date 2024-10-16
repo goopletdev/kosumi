@@ -13,7 +13,7 @@
  * depth?: number;
  * }[]} array of token objects
  */
-async function tokenize(sgf) {
+function tokenize(sgf,callback) {
     let tokens = [];
 
     let inpropId = false;
@@ -79,7 +79,7 @@ async function tokenize(sgf) {
             console.log(`'${sgf[i]}' not valid SGF char`);
         }
     }
-    return tokens;
+    callback(tokens);
 }
 
 /**
@@ -87,7 +87,7 @@ async function tokenize(sgf) {
  * @param {Array} tokens Tokenized SGF
  * @returns {Array} Condensed token list
  */
-async function parseTokens(tokens) {
+function parseTokens(tokens,callback) {
 
     let parsedToks = [];
     let inNode = false;
@@ -138,7 +138,7 @@ async function parseTokens(tokens) {
 
         }
     }
-    return parsedToks;
+    callback(parsedToks);
 }
 
 /**
@@ -166,14 +166,14 @@ function getTreeEnd(toks) {
  * @param {Array} toks Tokens of type '(', ')', ';'
  * @returns {{}} Node tree of all moves and variations
  */
-async function makeTree(toks, parent = -1, move = 0) {
+function makeTree(toks, parent = -1, move = 0) {
     if (toks[0]) {
         if (toks[0].type === '(') {
             let trees = [];
             while (toks.length) {
                 let treeEnd = getTreeEnd(toks);
                 let subTree = toks.slice(1,treeEnd);
-                let subNode = await makeTree(
+                let subNode = makeTree(
                     subTree, parent, move
                 );
                 trees.push(subNode);
@@ -192,7 +192,7 @@ async function makeTree(toks, parent = -1, move = 0) {
                 node.props = toks[0].props;
             }
             if (toks.length > 1) {
-                let childs = await makeTree(
+                let childs = makeTree(
                     toks.slice(1),node.id,move+1
                 );
                 if (Array.isArray(childs)) {
@@ -222,10 +222,13 @@ async function makeTree(toks, parent = -1, move = 0) {
  * children?: {}[]
  * }[]} Game node tree
  */
-async function ParseSGF(sgf) {
-    let tree = tokenize(sgf)
-    .then((result) => parseTokens(result))
-    .then((result) => makeTree(result));
+function ParseSGF(sgf) {
+    let tree;
+    tokenize(sgf, (result) => {
+        parseTokens(result, (result) => {
+            tree = makeTree(result);
+        });
+    });
     return tree;
 }
 

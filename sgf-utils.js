@@ -11,7 +11,20 @@ const zipable = [
     'TR',
     'VW'
 ]
+const root = [
+    'AP',
+    'CA',
+    'FF',
+    'GM',
+    'ST',
+    'SZ'
+]
 
+/**
+ * 
+ * @param {string} coord Alpha characters
+ * @returns {Array} Numeric coordinates
+ */
 function numericCoord(coord) {
     let numCoord = [];
     for (let i = 0; i < coord.length; i++) {
@@ -20,6 +33,11 @@ function numericCoord(coord) {
     return numCoord;
 }
 
+/**
+ * 
+ * @param {string} zipped Compressed coordinates
+ * @returns {Array} Uncompressed coordinates
+ */
 function unzipCoords(zipped) {
     let coords = [];
     let unzipped = [];
@@ -43,10 +61,15 @@ function unzipCoords(zipped) {
     return unzipped;
 }
 
-async function unzipProps(props) {
+/**
+ * 
+ * @param {{}} props props from game tree node
+ * @returns Uncompressed props
+ */
+function unzipProps(props) {
     for (let key of Object.keys(props)) {
-        let newValue = [];
         if (zipable.includes(key)) {
+            let newValue = [];
             for (let i=0; i < props[key].length; i++) {
                 if (props[key][i].includes(':')) {
                     let unz = unzipCoords(props[key][i]);
@@ -63,17 +86,38 @@ async function unzipProps(props) {
     return props;
 }
 
-async function formatProps(node) {
+function getRoot(props) {
+    let rootProps = [];
+    for (let key of Object.keys(props)) {
+        if (root.includes(key)) {
+            rootProps.push(key);
+        }
+    return rootProps;
+    }
+}
+
+/**
+ * 
+ * @param {{}} node Game tree node
+ * @returns Formatted game tree node
+ */
+function formatProps(node) {
+    if (node.id === 0) {
+        node.props.AP = ['Kosumi:1.0'];
+    } else if (node.hasOwnProperty('props')) {
+        for (let prop of getRoot(node.props)) {
+            console.log(`Error: root ${prop} at node ${node.id}`)
+        }
+    }
     if (node.hasOwnProperty('props')) {
-        node.props = await unzipProps(node.props);
+        node.props = unzipProps(node.props);
     }
     if (node.hasOwnProperty('children')) {
-        for (i=0; i < node.children.length; i++) {
-            await formatProps(node.children[i]);
+        for (let i=0; i < node.children.length; i++) {
+            formatProps(node.children[i]);
         }
     }
     return node;
 }
 
-
-export {numericCoord,unzipCoords,formatProps}
+export {numericCoord,unzipCoords,formatProps,root,sgfCoord}

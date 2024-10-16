@@ -11,7 +11,7 @@
  * @param {boolean} nodeBreaks Whitespace after nodes
  * @returns {string} SGF string
  */
-async function MakeSGF(node, headerBreaks=true, nodeBreaks=true) {
+function MakeSGF(node, headerBreaks=true, nodeBreaks=true) {
     let sgf = ';';
     if (node.hasOwnProperty('props')) {
         for (let key of Object.keys(node.props)) {
@@ -37,8 +37,7 @@ async function MakeSGF(node, headerBreaks=true, nodeBreaks=true) {
             newline = '\n'
         }
         for (let i = 0; i < node.children.length; i++) {
-
-            sgf += newline + await MakeSGF(
+            sgf += newline + MakeSGF(
                 node.children[i], headerBreaks, nodeBreaks
             );
         }
@@ -62,10 +61,10 @@ async function MakeSGF(node, headerBreaks=true, nodeBreaks=true) {
  * @param {boolean} nodeBreaks Whitespace after nodes
  * @returns {string} SGF string
  */
-async function makeCollection(nodes) {
+function makeCollection(nodes) {
     let collection = [];
     for (i = 0; i < nodes.length; i++) {
-        collection.push(await MakeSGF(nodes[i]));
+        collection.push(MakeSGF(nodes[i]));
     }
     return collection.join('\n');
 }

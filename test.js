@@ -1,45 +1,41 @@
 import ParseSGF from './parse-sgf.js';
 import MakeSGF from './make-sgf.js';
 import {formatProps} from './sgf-utils.js'
-import Goban from './goban.js'
+import {initBoard,matrix,prettify,getState,treeStates,EMPTY} from './game-logic.js'
 
+let node;
 /**
  * test function
  */
-async function testFunctionII() {
+function testFunctionII() {
     let sgf = document.querySelector('textarea').value;
     let output = document.getElementById('output');
+    let goban = document.getElementById('state');
     let headBreak = document.getElementById('headerBreaks').checked;
     let nodeBreak = document.getElementById('nodeBreaks').checked;
 
-    console.log(sgf);
-    let gameTree = await ParseSGF(sgf);
-    console.log(JSON.stringify(gameTree,null,2));
-    gameTree = await formatProps(gameTree[0]);
-    console.log(JSON.stringify(gameTree,null,2));
+    let gameTree = formatProps(ParseSGF(sgf)[0]);
 
-    let newSGF = await MakeSGF(gameTree,headBreak,nodeBreak);
-    console.log(newSGF);
+    initBoard(gameTree);
+    let firstState = getState(EMPTY,gameTree.props);
+    goban.innerText = prettify(firstState);
+
+    let newSGF = MakeSGF(gameTree,headBreak,nodeBreak);
     output.value = newSGF;
 
+    //gameTree = treeStates(gameTree, EMPTY);
+    node = gameTree;
+    node.state = firstState;
+}
 
-
-    /*let game = new Goban;
-    game.parse(sgf)
-    .then(() => {
-        console.log(JSON.stringify(game.tree,null,2));
-        game.formatTree();
-    })
-    .then(() => {
-        game.getSGF(headBreak,nodeBreak);
-        console.log(JSON.stringify(game.tree));
-        console.log(game.sourceSGF);
-    })
-    .then(() => {
-        console.log(game.sgf);
-        output.value = game.sgf;
-    });*/
+function stepForeward() {
+    let goban = document.getElementById('state');
+    let newState = getState(node.state, node.children[0].props);
+    node = node.children[0];
+    node.state = newState;
+    goban.innerText = prettify(newState);
 
 }
 
+window.stepForeward = stepForeward;
 window.testFunctionII = testFunctionII;
