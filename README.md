@@ -4,6 +4,9 @@ Parses SGF into an array of javascript objects. It's a work in progress as I lea
 I'd like to create a Game class to store parsed SGF files, but I'm still figuring out how classes work in Javascript. Right now, the functions in parse.js can handle any Go SGF I've thrown at them!!
 
 ## To-do list:
+- BIGBUG: allow 'tt' for passes
+- smoler bug: allow for parsing of collections
+- figure out how to better group sgf utility funcs and object utility funcs
 - Allow compressing coords when generating SGF
 - Syntax highlighting
 - Basically rewrite everything in `game-logic.js` so it's not pure spaghetti, and add JSdoc while at it
