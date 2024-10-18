@@ -1,7 +1,7 @@
 import ParseSGF from './parse-sgf.js';
 import MakeSGF from './make-sgf.js';
-import {formatProps,getNodeById} from './sgf-utils.js'
-import {initBoard,prettify,getState} from './game-logic.js'
+import {formatProps,getNodeById,getLastMainNode} from './sgf-utils.js'
+import {initBoard,prettify,getState,initStates} from './game-logic.js'
 
 let node;
 let gameTree;
@@ -11,25 +11,27 @@ let newSGF;
 /**
  * test function
  */
+
 function testFunctionII() {
     let editor = document.querySelector('textarea');
     oldSGF = editor.value;
     let goban = document.getElementById('state');
     let headBreak = document.getElementById('headerBreaks').checked;
     let nodeBreak = document.getElementById('nodeBreaks').checked;
+    let gameInfo = document.getElementById('game-data');
 
 
     gameTree = formatProps(ParseSGF(oldSGF)[0]);
 
     const EMPTY = initBoard(gameTree);
-    let firstState = getState(EMPTY,gameTree.props);
-    goban.innerText = prettify(firstState);
+    gameTree = initStates(EMPTY,gameTree);
+    node = gameTree;
+    goban.innerText = prettify(node.state);
 
     newSGF = MakeSGF(gameTree,headBreak,nodeBreak);
     editor.value = newSGF;
 
-    node = gameTree;
-    node.state = firstState;
+    gameInfo.value = `(node ${node.id}) Move ${node.moveNumber}:\n${JSON.stringify(node.props)}`
 
     let toggleButton = document.getElementById('toggle-button');
 
@@ -65,6 +67,8 @@ function stepForeward() {
         node.state = newState;
         goban.innerText = prettify(newState);
     }
+    let gameInfo = document.getElementById('game-data');
+    gameInfo.value = `(node ${node.id}) Move ${node.moveNumber}:\n${JSON.stringify(node.props)}`
 }
 
 function stepBackward() {
@@ -73,8 +77,29 @@ function stepBackward() {
         node = getNodeById(gameTree,node.parent);
         goban.innerText = prettify(node.state);
     }
+    let gameInfo = document.getElementById('game-data');
+    gameInfo.value = `(node ${node.id}) Move ${node.moveNumber}:\n${JSON.stringify(node.props)}`
 }
 
+function skipToStart() {
+    let goban = document.getElementById('state');
+    node = gameTree;
+    goban.innerText = prettify(node.state);
+    let gameInfo = document.getElementById('game-data');
+    gameInfo.value = `(node ${node.id}) Move ${node.moveNumber}:\n${JSON.stringify(node.props)}`
+}
+
+function skipToEnd() {
+    let goban = document.getElementById('state');
+    node = getLastMainNode(node);
+    console.log(node);
+    goban.innerText = prettify(node.state);
+    let gameInfo = document.getElementById('game-data');
+    gameInfo.value = `(node ${node.id}) Move ${node.moveNumber}:\n${JSON.stringify(node.props)}`
+}
+
+window.skipToEnd = skipToEnd;
+window.skipToStart = skipToStart;
 window.stepBackward = stepBackward;
 window.stepForeward = stepForeward;
 window.testFunctionII = testFunctionII;
