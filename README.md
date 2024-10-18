@@ -7,6 +7,7 @@ I'd like to create a Game class to store parsed SGF files, but I'm still figurin
 - BIGBUG: allow 'tt' for passes
 - smoler bug: allow for parsing of collections
 - figure out how to better group sgf utility funcs and object utility funcs
+- new AP sgf prop: put it in proper place. also, group root SGF props
 - Allow compressing coords when generating SGF
 - Syntax highlighting
 - Basically rewrite everything in `game-logic.js` so it's not pure spaghetti, and add JSdoc while at it
