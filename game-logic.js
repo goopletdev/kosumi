@@ -6,22 +6,17 @@
 
 import {sgfCoord,numericCoord} from './sgf-utils.js';
 
-let X;
-let Y;
-let EMPTY;
-let STARS;
-
-function getLiberties(state, chain) {
-    console.log('in getLiberties()');
-    let boardState = matrix(state);
+function getLiberties(matrix, chain) {
     let liberties = [];
     for (let link of chain) {
-        let x = link[0];
-        let y = link[1];
-        for (let point of adjacentCoords(boardState,link)) {
-            if (!arrayHasCoord(liberties,point) && boardState[point[1]][point[0]] === '.') {
+        for (let point of neighbors(matrix,link)) {
+            console.log('potential liberty:',point);
+            if (!arrayHasCoord(liberties,point) 
+                && getValue(matrix,point) === '.') {
                 liberties.push(point);
-            }
+            } else if (!arrayHasCoord(liberties,point)) {
+                console.log(getValue(matrix,point), 'at',point,'not "."')
+            } else (console.log(point,'already in liberty list'));
         }
     }
     return liberties;
@@ -36,16 +31,14 @@ function setValue(matrix,coord,value) {
     return matrix;
 }
 
-function adjacentCoords(matrix,coord) {
+function neighbors(matrix,coord) {
     let [x,y] = coord;
     let adjacent = [];
-    for (let tryIntersection of [[x,y+1],[x,y-1],[x+1,y],[x-1,y]]) {
-        let [xx,yy] = tryIntersection;
-        console.log('xx,yy',xx,yy)
+    for (let candidate of [[x,y+1],[x,y-1],[x+1,y],[x-1,y]]) {
+        let [xx,yy] = candidate;
         if (matrix[yy]!== undefined) {
-            console.log('matrix[yy]',matrix[yy]);
             if (matrix[yy][xx] !== undefined) {
-                adjacent.push(tryIntersection);
+                adjacent.push(candidate);
             }
         }
     }
@@ -54,7 +47,7 @@ function adjacentCoords(matrix,coord) {
 
 function adjacentLinks(matrix,coord) {
     let chainColor = getValue(matrix,coord);
-    let adjacent = adjacentCoords(matrix,coord);
+    let adjacent = neighbors(matrix,coord);
     let links = [];
     for (let c of adjacent) {
         if (getValue(matrix,c) === chainColor) {
@@ -66,117 +59,86 @@ function adjacentLinks(matrix,coord) {
 
 function arrayHasCoord(chain,coord) {
     for (let link of chain) {
-        if (JSON.stringify(link) === JSON.stringify(coord)) {
+        if (link[0] === coord[0] && link[1] === coord[1]) {
             return true;
         }
     }
     return false;
 }
 
-function getChain(state,coord,chain=[]) {
-    console.log('state',state)
-    let goban = matrix(state);
+function getChain(goban,coord,chain=[]) {
     if (!arrayHasCoord(chain,coord)) {
         chain.push(coord);
     }
     for (let link of adjacentLinks(goban,coord)) {
         if (!arrayHasCoord(chain,link)) {
-            chain = getChain(state,link,chain);
+            chain = getChain(goban,link,chain);
         }
     }
     return chain;
 }
 
+function coordInChains(chains,coord) {
+    for (let chain of chains) {
+        if (arrayHasCoord(chain,coord)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function setNew(state,move) {
+    let lower = getValue(state,move).toLowerCase();
+    state = setValue(state,move,lower);
+    return state;
+}
+
 function calculateBoard(state,moves) {
-    console.log('in calculateBoard()');
-    let newState = matrix(state);
-    let friendly = moves[0];
-    let enemy = 'BW'.at('BW'.indexOf(friendly)-1);
-    let checkFriendlyPoints = moves.slice(1);
-    let checkEnemyPoints = [];
+    let newState = clone(state);
+    console.log('new move:',moves[0],moves.slice(1));
+    let checkpoints = moves.slice(1);
     for (let move of moves.slice(1)) {
-        let x = move[0];
-        let y = move[1];
-        newState[y][x] = moves[0];
+        newState[move[1]][move[0]] = moves[0];
+        setValue(newState,move,moves[0])
 
-        for (let point of [[x,y+1],[x,y-1],[x+1,y],[x-1,y]]) {
-            if (point[0] > -1 && point[0] < X) {
-                if (point[1] > -1 && point[1] < Y) {
-                    if (newState[point[1]][point[0]] === friendly) {
-                        checkFriendlyPoints.push(point);
-                    } else if (newState[point[1]][point[0]] === enemy) {
-                        checkEnemyPoints.push(point);
-                    }
-                }
+        for (let point of neighbors(newState,move)) {
+            let value = getValue(newState,point);
+            if (value === moves[0]) {
+                checkpoints.push(point);
+            } else if (value !== '.') {
+                checkpoints.unshift(point);
             }
         }
     }
 
-    let friendlyChains = [];
-    let enemyChains = [];
-    for (let i = 0; i < checkFriendlyPoints.length; i++) {
-        let x = checkFriendlyPoints[i][0];
-        let y = checkFriendlyPoints[i][1];
-        let accountedFor = false;
-        for (let chain of friendlyChains) {
-            if (arrayHasCoord(chain,[x,y])) {
-                accountedFor = true;
+    let chains = [];
+    for (let point of checkpoints) {
+        if (!coordInChains(chains,point)) {
+            chains.push(getChain(newState,point));
+        }
+        console.log('checking',point);
+    }
+    console.log(chains.length,'chains:',chains);
+
+    for (let chain of chains) {
+        let liberties = getLiberties(newState,chain);
+        console.log(chain.length,'chain:',chain,'\n',liberties.length,"liberties:",liberties)
+        if (liberties.length < 1) {
+            console.log('removing:',chain);
+            for (let point of chain) {
+                newState[point[1]][point[0]] = '.';
             }
         }
-        if (!accountedFor) {
-            let chain = getChain(uglify(newState),[x,y]);
-            friendlyChains.push(chain);
-        }
     }
-    for (let i=0; i < checkEnemyPoints.length; i++) {
-        let x = checkEnemyPoints[i][0];
-        let y = checkEnemyPoints[i][1];
-        let accountedFor = false;
-        for (let chain of enemyChains) {
-            if (chain.includes([x,y])) {
-                accountedFor = true;
-            }
-        }
-        if (!accountedFor) {
-            let chain = getChain(uglify(newState),[x,y]);
-            enemyChains.push(chain);
-        }
+    for (let move of moves.slice(1)) {
+        console.log('move:',move)
+        newState = setNew(newState,move);
     }
-    let removeChains = [];
-    for (let i=0; i < enemyChains.length; i++) {
-        let liberties = getLiberties(uglify(newState),enemyChains[i]);
-        if (liberties.length < 1) {
-            removeChains.push(enemyChains[i]);
-        }
-    }
-    for (let i=0; i < removeChains.length; i++) {
-        for (let point of removeChains[i]) {
-            let x = point[0];
-            let y = point[1];
-            newState[y][x] = '.';
-        }
-    }
-    console.log(removeChains);
-    removeChains = [];
-    for (let i=0; i < friendlyChains.length; i++) {
-        let liberties = getLiberties(uglify(newState),friendlyChains[i]);
-        if (liberties.length < 1) {
-            removeChains.push(friendlyChains[i]);
-        }
-    }
-    for (let i=0; i < removeChains.length; i++) {
-        for (let point of removeChains[i]) {
-            let x = point[0];
-            let y = point[1];
-            newState[y][x] = '.';
-        }
-    }
-    console.log(removeChains);
-    return uglify(newState);
+    return newState;
 }
 
 function getState(lastState,props) {
-    let newState = matrix(lastState);
+    let newState = clone(lastState);
     for (let key of Object.keys(props)) {
         if (['AB','AE','AW'].includes(key)) {
             let point = key[1];
@@ -192,99 +154,85 @@ function getState(lastState,props) {
             for (let move of props[key]) {
                 moves.push(numericCoord(move));
             }
-            newState = matrix(calculateBoard(lastState,moves));
+            newState = calculateBoard(lastState,moves);
         }
     }
-    return uglify(newState);
+    return newState;
 }
 
-function treeStates(node, lastState) {
-    if (node.hasOwnProperty('props')) {
-        node.state = getState(lastState,node.props);
-    } else {
-        node.state = lastState;
-    }
-    if (node.hasOwnProperty('children')) {
-        for (let i=0; i < node.children.length; i++) {
-            node.children[i] = treeStates(node.children[i],node.state);
-        }
-    }
-    return node;
-}
-
-function uglify(matrix) {
-    let ugly = '';
-    for (let i = 0; i < matrix.length; i++) {
-        ugly += matrix[i].join('')
-    }
-    return ugly;
-}
-
-function prettify(state) {
-    let currentState = matrix(state);
-    let pretty = '';
+function prettify(goban) {
+    console.log(goban);
+    let state = clone(goban,true);
+    let Y = state.length;
+    let X = state[0].length;
+    let stars = [];
+    if (Y === 19 && X === 19) {
+        stars = [3,9,15];
+    } 
+    let pretty = '//' + Array.from(sgfCoord.slice(0,X)).join(' ') + '\\\\\n';
     let b = 'X'; //●
     let w = 'O'; //○
-    let lastB = '𝚾'
-    let lastW = '𝚯'
-    // 𝙓X𝙊O𝚾𝚯
+    let lastB = 'X̂'
+    let lastW = 'ʘ'
 
-    for (let i = 0; i < currentState.length; i++) {
+    for (let y = 0; y < state.length; y++) {
         let emptyFirst = '┠';
         let emptyMid = '─';
         let emptyPoint = '┼'
         let emptyLast = '┨';
-        if (i === 0) {
+        if (y === 0) {
             emptyFirst = '┏';
             emptyMid = '━';
             emptyPoint = '┯';
             emptyLast = '┓';
-        } else if (i === currentState.length-1) {
+        } else if (y === state.length-1) {
             emptyFirst = '┗';
             emptyMid = '━';
             emptyPoint = '┷';
             emptyLast = '┛';
         }
-        if (STARS.includes(i)) {
-            for (let j of STARS) {
-                if (currentState[i][j] === '.') {
-                    currentState[i][j] = '╋'//╋╬
+        if (stars.includes(y)) {
+            for (let j of stars) {
+                if (state[y][j] === '.') {
+                    state[y][j] = '╋'//╋╬
                 } 
             }
         }
-        if (currentState[i][0] === '.') {
-            currentState[i][0] = emptyFirst;
+        if (state[y][0] === '.') {
+            state[y][0] = emptyFirst;
         }
-        if (currentState[i][X-1] === '.') {
-            currentState[i][X-1] = emptyLast;
+        if (state[y][X-1] === '.') {
+            state[y][X-1] = emptyLast;
         }
-        let row = currentState[i]
+        let row = state[y]
         .join(emptyMid).replaceAll('.',emptyPoint)
         .replaceAll('B',b).replaceAll('W',w)
         .replaceAll('b',lastB).replaceAll('w',lastW);
-        pretty += `${sgfCoord[i]} ${row}\n`;
+        pretty += `${sgfCoord[y]} ${row} ${sgfCoord[y]}\n`;
     }
     let toPlay = '▪▫';
     if (pretty.includes(lastW)) {
         toPlay = '▫▪'
     }
-    pretty += toPlay + Array.from(sgfCoord.slice(0,X)).join(' ');
+    pretty += toPlay + Array.from(sgfCoord.slice(0,X)).join(' ') + '//';
     return pretty;
 }
 
-function matrix(board) {
+function clone(board,keepCase=false) {
     let goban = [];
-    for (let y = 0; y < (board.length/X); y++) {
-        let row = [];
-        for (let x = 0; x < X; x++) {
-            row.push(board[(y*X)+x])
-        }
-        goban.push(row);
+    for (let row of board) {
+        if (!keepCase) {
+            goban.push(Array.from(
+                row.slice(0),(x) => x.toUpperCase()
+            ));
+        } else goban.push(row.slice(0));
     }
     return goban;
 }
 
 function initBoard(rootNode) {
+    let EMPTY = [];
+    let X,Y;
     if (rootNode.id === 0) {
         if (!rootNode.hasOwnProperty('props')) {
             rootNode.props.SZ = ['19'];
@@ -300,15 +248,13 @@ function initBoard(rootNode) {
             X = parseInt(rootNode.props.SZ[0]);
             Y = X;
         }
-        EMPTY = new Array((X*Y) + 1).join('.');
+        for (let i=0; i < Y; i++) {
+            EMPTY.push(Array.from(new Array(X + 1).join('.')));
+        }
     } else {
         throw new Error('initBoard() requires root node');
     }
-    if (X === 19 && Y === 19) {
-        STARS = [3,9,15];
-    } else {
-        STARS = [];
-    }
+    return EMPTY;
 }
 
-export {initBoard,matrix,prettify,getState,uglify,treeStates,EMPTY}
+export {initBoard,clone,prettify,getState}
