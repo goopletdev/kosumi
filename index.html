@@ -15,28 +15,26 @@
         <div class="app">
             <div class="text-editor">
 
-                <textarea id='input'></textarea>
+                <textarea id='sgf-input'></textarea>
 
                 <fieldset>
                     <legend>Settings</legend>
                     <input type="checkbox" id="headerBreaks" checked> <label for="headerBreaks">Header whitespace</label><br>
                     <input type="checkbox" id="nodeBreaks" checked> <label for="nodeBreaks">newline after each node</label><br>
                 </fieldset>
-                <button onclick='testFunctionII()' id='submit-button'>Reformat</button>
+                <div id='sgf-buttons' class="buttons">
+                    <button onclick='testFunctionII()' id='submit-button'>Reformat</button>
+                </div>
             </div>
             <div class="display">
-                
                 <div id="viewer">
                     <div id="state"></div>
                     <div id="navigate">
                         <button onclick='stepBackward()' id="back-button"><</button>
                         <button onclick="stepForeward()" id="foreward-button">></button>
                     </div>
+                    <textarea id="game-data" placeholder="Game info..."></textarea>
                 </div>
-            </div>
-            <div class="text-output">
-                <h2>New SGF:</h2>
-                <textarea id='output'></textarea>
             </div>
         </div>
         
