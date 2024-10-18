@@ -5,27 +5,56 @@ import {initBoard,prettify,getState} from './game-logic.js'
 
 let node;
 let gameTree;
+
+let oldSGF;
+let newSGF;
 /**
  * test function
  */
 function testFunctionII() {
-    let sgf = document.querySelector('textarea').value;
-    let output = document.getElementById('output');
+    let editor = document.querySelector('textarea');
+    oldSGF = editor.value;
     let goban = document.getElementById('state');
     let headBreak = document.getElementById('headerBreaks').checked;
     let nodeBreak = document.getElementById('nodeBreaks').checked;
 
-    gameTree = formatProps(ParseSGF(sgf)[0]);
+
+    gameTree = formatProps(ParseSGF(oldSGF)[0]);
 
     const EMPTY = initBoard(gameTree);
     let firstState = getState(EMPTY,gameTree.props);
     goban.innerText = prettify(firstState);
 
-    let newSGF = MakeSGF(gameTree,headBreak,nodeBreak);
-    output.value = newSGF;
+    newSGF = MakeSGF(gameTree,headBreak,nodeBreak);
+    editor.value = newSGF;
 
     node = gameTree;
     node.state = firstState;
+
+    let toggleButton = document.getElementById('toggle-button');
+
+    if (!toggleButton) {
+        toggleButton = document.createElement('button');
+        toggleButton.id = 'toggle-button';
+        toggleButton.onclick = toggleSGF;
+        let buttonRow = document.getElementById('sgf-buttons');
+        buttonRow.appendChild(toggleButton);
+    }
+    toggleButton.innerText = 'show old';
+
+
+}
+
+function toggleSGF() {
+    let editor = document.querySelector('textarea');
+    let toggleButton = document.getElementById('toggle-button');
+    if (toggleButton.innerText === 'show old') {
+        toggleButton.innerText = 'show new';
+        editor.value = oldSGF;
+    } else {
+        toggleButton.innerText = 'show old';
+        editor.value = newSGF;
+    }
 }
 
 function stepForeward() {
