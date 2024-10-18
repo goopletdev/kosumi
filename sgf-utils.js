@@ -120,4 +120,21 @@ function formatProps(node) {
     return node;
 }
 
-export {numericCoord,unzipCoords,formatProps,root,sgfCoord}
+function getNodeById(tree, id) {
+    if (tree.id === id) {
+        return tree;
+    } else {
+        if (!tree.hasOwnProperty('children')) {
+            return -1;
+        } else {
+            for (let child of tree.children) {
+                let node = getNodeById(child,id);
+                if (node !== -1) {
+                    return node;
+                }
+            }
+            return -1;
+        }
+    }
+}
+export {numericCoord,unzipCoords,formatProps,getNodeById,root,sgfCoord}
