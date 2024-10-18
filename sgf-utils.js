@@ -137,4 +137,12 @@ function getNodeById(tree, id) {
         }
     }
 }
-export {numericCoord,unzipCoords,formatProps,getNodeById,root,sgfCoord}
+
+function getLastMainNode(tree) {
+    if (tree.hasOwnProperty('children')) {
+        return getLastMainNode(tree.children[0]);
+    } else {
+        return tree;
+    }
+}
+export {numericCoord,unzipCoords,formatProps,getNodeById,getLastMainNode,root,sgfCoord}

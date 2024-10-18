@@ -30,6 +30,7 @@ body {
 
 .display {
     font-size:16px;
+    height:100%;
 }
 
 #state {
@@ -58,4 +59,10 @@ textarea {
 
 fieldset {
     text-align:left;
+}
+
+.navigation {
+    height: fit-content;
+    width: fit-content;
+    font-size: large;
 }
