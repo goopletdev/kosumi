@@ -31,6 +31,8 @@ the lovely, helpful, experienced, encouraging, friendly folks in the OGS forums 
 
 Discord friends for answering my similarly endless JavaScript questions, especially  purxiz the Patient 
 
+This project is currently using SVG files from font-awesome.
+
 ## Bonus: 
 Here are some pictures of my cats Denna and Kvothe
 
