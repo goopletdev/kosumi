@@ -5,19 +5,31 @@ body {
 
 .app {
     background-color: rgb(127, 255, 212);
-    width: 90%;
+    padding:2%;
+    text-align:center;
+    width: 85%;
     height: 80vh;
-    margin-left:auto;
-    margin-right:auto;
-    border-width: 2px;
-    border-color:rgb(47, 99, 82)
+    margin-left:5%;
+    margin-right:5%;
+    border-width: 5px;
+    border-color:rgb(47, 99, 82);
+    display: inline-block;
 }
 
-.text-editor, .display, .text-output {
-    height:100%;
-    width:30%;
+.text-editor, .display {
+    min-width:fit-content;
+    width:45%;
     display: inline-block;
-    margin: 2px;
+    margin: 2%;
+    vertical-align:middle;
+}
+
+.text-editor {
+    height:100%;
+}
+
+.display {
+    font-size:16px;
 }
 
 #state {
@@ -25,13 +37,25 @@ body {
     margin-left:auto;
     margin-right:auto;
     text-align:center;
-    overflow-x:visible;
+    overflow-x:hidden;
     width:fit-content;
     padding: 1ch;
 }
 
 textarea {
+    background-color: rgb(106, 211, 176);
+}
+
+#sgf-input {
     height: 80%;
     width: 100%;
-    background-color: rgb(106, 211, 176)
+}
+
+#game-data {
+    width: 90%;
+    height:20%;
+}
+
+fieldset {
+    text-align:left;
 }
