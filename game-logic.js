@@ -10,13 +10,10 @@ function getLiberties(matrix, chain) {
     let liberties = [];
     for (let link of chain) {
         for (let point of neighbors(matrix,link)) {
-            console.log('potential liberty:',point);
             if (!arrayHasCoord(liberties,point) 
                 && getValue(matrix,point) === '.') {
                 liberties.push(point);
-            } else if (!arrayHasCoord(liberties,point)) {
-                console.log(getValue(matrix,point), 'at',point,'not "."')
-            } else (console.log(point,'already in liberty list'));
+            }
         }
     }
     return liberties;
@@ -95,7 +92,6 @@ function setNew(state,move) {
 
 function calculateBoard(state,moves) {
     let newState = clone(state);
-    console.log('new move:',moves[0],moves.slice(1));
     let checkpoints = moves.slice(1);
     for (let move of moves.slice(1)) {
         newState[move[1]][move[0]] = moves[0];
@@ -116,22 +112,17 @@ function calculateBoard(state,moves) {
         if (!coordInChains(chains,point)) {
             chains.push(getChain(newState,point));
         }
-        console.log('checking',point);
     }
-    console.log(chains.length,'chains:',chains);
 
     for (let chain of chains) {
         let liberties = getLiberties(newState,chain);
-        console.log(chain.length,'chain:',chain,'\n',liberties.length,"liberties:",liberties)
         if (liberties.length < 1) {
-            console.log('removing:',chain);
             for (let point of chain) {
                 newState[point[1]][point[0]] = '.';
             }
         }
     }
     for (let move of moves.slice(1)) {
-        console.log('move:',move)
         newState = setNew(newState,move);
     }
     return newState;
@@ -160,8 +151,17 @@ function getState(lastState,props) {
     return newState;
 }
 
+function initStates(lastState, gameTree) {
+    gameTree.state = getState(lastState,gameTree.props);
+    if (gameTree.hasOwnProperty('children')) {
+        for (let child of gameTree.children) {
+            child = initStates(gameTree.state,child);
+        }
+    }
+    return gameTree;
+}
+
 function prettify(goban) {
-    console.log(goban);
     let state = clone(goban,true);
     let Y = state.length;
     let X = state[0].length;
@@ -257,4 +257,4 @@ function initBoard(rootNode) {
     return EMPTY;
 }
 
-export {initBoard,clone,prettify,getState}
+export {initBoard,clone,prettify,getState,initStates}
