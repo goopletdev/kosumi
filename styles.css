@@ -1,3 +1,37 @@
 body {
     font-family: monospace;
+    background-color: rgb(68, 131, 110);
+}
+
+.app {
+    background-color: rgb(127, 255, 212);
+    width: 90%;
+    height: 80vh;
+    margin-left:auto;
+    margin-right:auto;
+    border-width: 2px;
+    border-color:rgb(47, 99, 82)
+}
+
+.text-editor, .display, .text-output {
+    height:100%;
+    width:30%;
+    display: inline-block;
+    margin: 2px;
+}
+
+#state {
+    background-color: rgb(207, 192, 127);
+    margin-left:auto;
+    margin-right:auto;
+    text-align:center;
+    overflow-x:visible;
+    width:fit-content;
+    padding: 1ch;
+}
+
+textarea {
+    height: 80%;
+    width: 100%;
+    background-color: rgb(106, 211, 176)
 }
