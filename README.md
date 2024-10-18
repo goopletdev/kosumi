@@ -6,6 +6,7 @@ I'd like to create a Game class to store parsed SGF files, but I'm still figurin
 ## To-do list:
 - BIGBUG: allow 'tt' for passes
 - smoler bug: allow for parsing of collections
+- navigation: allow for variations
 - figure out how to better group sgf utility funcs and object utility funcs
 - new AP sgf prop: put it in proper place. also, group root SGF props
 - Allow compressing coords when generating SGF
