@@ -2,33 +2,44 @@
 <html>
     <head>
         <title>SGF Parser</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="sgfProperties.js"></script>
         <script src="test.js" type="module"></script>
         <link rel="stylesheet" href="styles.css">
     </head>
+
     <body>
         <h1>SGF Parser</h1>
-        <div style="display:table">
-            <h2 style="display:table-row">SGF:</h2>
-            <div style="display:table-row">
-                <textarea id='input' style="display: table-cell;width:100%"rows="10"></textarea>
-                <fieldset style="display:table-cell">
+
+        <div class="app">
+            <div class="text-editor">
+
+                <textarea id='input'></textarea>
+
+                <fieldset>
                     <legend>Settings</legend>
                     <input type="checkbox" id="headerBreaks" checked> <label for="headerBreaks">Header whitespace</label><br>
                     <input type="checkbox" id="nodeBreaks" checked> <label for="nodeBreaks">newline after each node</label><br>
                 </fieldset>
-                <button onclick='testFunctionII()' id='submit-button' style="display:table-cell">Reformat</button>
-                <div id="viewer" style="display:table-row">
+                <button onclick='testFunctionII()' id='submit-button'>Reformat</button>
+            </div>
+            <div class="display">
+                
+                <div id="viewer">
                     <div id="state"></div>
                     <div id="navigate">
+                        <button onclick='stepBackward()' id="back-button"><</button>
                         <button onclick="stepForeward()" id="foreward-button">></button>
                     </div>
                 </div>
             </div>
-            <h2 style="display:table-row">New SGF:</h2>
-            <div style="display:table-row">
-                <textarea id='output' style='display:table-cell;width:100%'rows="10"></textarea>
+            <div class="text-output">
+                <h2>New SGF:</h2>
+                <textarea id='output'></textarea>
             </div>
         </div>
+        
+          
     </body>
 </html>
