@@ -7,6 +7,7 @@
         <script src="sgfProperties.js"></script>
         <script src="test.js" type="module"></script>
         <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 
     <body>
@@ -27,14 +28,14 @@
                 </div>
             </div>
             <div class="display">
-                <div id="viewer">
-                    <div id="state"></div>
-                    <div id="navigate">
-                        <button onclick='stepBackward()' id="back-button"><</button>
-                        <button onclick="stepForeward()" id="foreward-button">></button>
-                    </div>
-                    <textarea id="game-data" placeholder="Game info..."></textarea>
+                <div id="state"></div>
+                <div id="navigate">
+                    <button class='navigation' onclick="skipToStart()" id="skip-back-button"><i class="fa fa-fast-backward"></i></button>
+                    <button class='navigation' onclick='stepBackward()' id="back-button"><i class="fa fa-step-backward"></i></button>
+                    <button class='navigation' onclick="stepForeward()" id="foreward-button"><i class="fa fa-step-forward"></i></button>
+                    <button class='navigation' onclick="skipToEnd()" id="skip-button"><i class="fa fa-fast-forward"></i></button>
                 </div>
+                <textarea id="game-data" placeholder="Game info..."></textarea>
             </div>
         </div>
         
