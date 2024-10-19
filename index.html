@@ -8,15 +8,19 @@
         <script src="test.js" type="module"></script>
         <link rel="stylesheet" href="styles.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="syntax.css">
     </head>
 
     <body>
         <h1>SGF Parser</h1>
 
         <div class="app">
-            <div class="text-editor">
-
-                <textarea id='sgf-input'></textarea>
+            <div class="text-tools">
+                <div class="texteditor">
+                    <textarea placeholder='paste SGF...' oninput="update(this.value); syncScroll(this)" onscroll="syncScroll(this)" id='editing' spellcheck="false"></textarea>
+                    <pre aria-hidden="true"><code class="syntax-sgf" id="highlighting">
+                    </code></pre>
+                </div>
 
                 <fieldset>
                     <legend>Settings</legend>
@@ -38,7 +42,5 @@
                 <textarea id="game-data" placeholder="Game info..."></textarea>
             </div>
         </div>
-        
-          
     </body>
 </html>

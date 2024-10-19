@@ -1,19 +1,20 @@
 import ParseSGF from './parse-sgf.js';
 import MakeSGF from './make-sgf.js';
-import {formatProps,getNodeById,getLastMainNode} from './sgf-utils.js'
-import {initBoard,prettify,getState,initStates} from './game-logic.js'
+import {formatProps,getNodeById,getLastMainNode} from './sgf-utils.js';
+import {initBoard,prettify,getState,initStates} from './game-logic.js';
+import HighlightSGF from './sgf-syntax.js';
 
 let node;
 let gameTree;
 
 let oldSGF;
 let newSGF;
+
 /**
  * test function
  */
-
 function testFunctionII() {
-    let editor = document.querySelector('textarea');
+    let editor = document.getElementById('editing');
     oldSGF = editor.value;
     let goban = document.getElementById('state');
     let headBreak = document.getElementById('headerBreaks').checked;
@@ -30,6 +31,7 @@ function testFunctionII() {
 
     newSGF = MakeSGF(gameTree,headBreak,nodeBreak);
     editor.value = newSGF;
+    update(editor.value);
 
     gameInfo.value = `(node ${node.id}) Move ${node.moveNumber}:\n${JSON.stringify(node.props)}`
 
@@ -47,6 +49,12 @@ function testFunctionII() {
 
 }
 
+function syncScroll(element) {
+    let highlighter = document.getElementById('highlighting');
+    highlighter.scrollLeft = element.scrollLeft;
+    highlighter.scrollTop = element.scrollTop;
+}
+
 function toggleSGF() {
     let editor = document.querySelector('textarea');
     let toggleButton = document.getElementById('toggle-button');
@@ -57,6 +65,7 @@ function toggleSGF() {
         toggleButton.innerText = 'show old';
         editor.value = newSGF;
     }
+    update(editor.value);
 }
 
 function stepForeward() {
@@ -98,6 +107,17 @@ function skipToEnd() {
     gameInfo.value = `(node ${node.id}) Move ${node.moveNumber}:\n${JSON.stringify(node.props)}`
 }
 
+function update(text) {
+    let codeWindow = document.querySelector('code');
+    let highlighted = HighlightSGF(text.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;"));
+    if (text[text.length-1] === '\n') {
+        highlighted += ' ';
+    }
+    codeWindow.innerHTML = highlighted;
+}
+
+window.syncScroll = syncScroll;
+window.update = update;
 window.skipToEnd = skipToEnd;
 window.skipToStart = skipToStart;
 window.stepBackward = stepBackward;

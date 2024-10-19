@@ -1,0 +1,25 @@
+.token.openParenthesis,
+.token.closeParenthesis {
+    color: rgb(163, 0, 153);
+}
+
+.token.semicolon {
+    color: rgb(128, 0, 214);
+}
+
+.token.propId {
+    color: rgb(63, 127, 222);
+}
+
+.token.bracket {
+    color: rgb(0, 71, 0);
+}
+
+.token.propVal {
+    color: rgb(0, 132, 51);
+}
+
+.token.error {
+    color: red;
+}
+/*token.whitespace*/
