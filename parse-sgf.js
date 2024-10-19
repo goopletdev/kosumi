@@ -85,7 +85,13 @@ function tokenize(sgf,callback) {
 /**
  * @private
  * @param {Array} tokens Tokenized SGF
- * @returns {Array} Condensed token list
+ * @returns {{
+ * type: (
+ * '('|')'|';');
+ * id?: number;
+ * value?: string;
+ * props?: {};
+ * }[]} Condensed token list
  */
 function parseTokens(tokens,callback) {
 
@@ -232,4 +238,4 @@ function ParseSGF(sgf) {
     return tree;
 }
 
-export default ParseSGF;
+export {ParseSGF as default, tokenize, parseTokens};
