@@ -7,6 +7,7 @@ I'd like to create a Game class to store parsed SGF files, but I'm still figurin
 - BIGBUG: allow 'tt' for passes
 - smoler bug: allow for parsing of collections
 - navigation: allow for variations
+- ascii: allow for boards w/ 2x2 or 3x3 intersections for more detail?
 - figure out how to better group sgf utility funcs and object utility funcs
 - new AP sgf prop: put it in proper place. also, group root SGF props
 - Allow compressing coords when generating SGF
@@ -33,6 +34,8 @@ the lovely, helpful, experienced, encouraging, friendly folks in the OGS forums 
 Discord friends for answering my similarly endless JavaScript questions, especially  purxiz the Patient 
 
 This project is currently using SVG files from font-awesome.
+
+Learned to implement syntax highlighting using a [trick from css-tricks.com](https://css-tricks.com/creating-an-editable-textarea-that-supports-syntax-highlighted-code/)
 
 ## Bonus: 
 Here are some pictures of my cats Denna and Kvothe
