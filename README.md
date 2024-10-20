@@ -35,7 +35,7 @@ Discord friends for answering my similarly endless JavaScript questions, especia
 
 This project is currently using SVG files from font-awesome.
 
-Learned to implement syntax highlighting using a [trick from css-tricks.com](https://css-tricks.com/creating-an-editable-textarea-that-supports-syntax-highlighted-code/)
+Learned to superimpose color-formatted text with a textarea using a [trick from css-tricks.com](https://css-tricks.com/creating-an-editable-textarea-that-supports-syntax-highlighted-code/)
 
 ## Bonus: 
 Here are some pictures of my cats Denna and Kvothe

@@ -14,6 +14,9 @@ body {
     border-width: 5px;
     border-color:rgb(47, 99, 82);
     display: inline-block;
+    vertical-align: middle;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
 }
 
 .text-tools, .display {
@@ -45,49 +48,14 @@ body {
 
 #game-data {
     background-color: rgb(106, 211, 176);
-}
-
-.texteditor {
-    position: relative;
-    height: 60%;
-    text-align:left;
-    margin: auto;
-}
-
-#editing, #highlighting {
-    padding: 10px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    font-size:small;
-    overflow: auto;
-}
-
-#editing {
-    z-index: 1;
-    background: transparent;
-    color: transparent;
-    caret-color:black;
-    white-space: nowrap;
-    resize:none;
-}
-
-#highlighting {
-    z-index: 0;
-    background-color:rgb(172, 237, 215);
-}
-
-#game-data {
     width: 90%;
     height:20%;
 }
 
 fieldset {
     text-align:left;
-    position: relative;
-    margin-top: 20px;
+    margin-top: 5vh;
+    vertical-align: bottom;
 }
 
 .navigation {

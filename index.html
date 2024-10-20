@@ -12,14 +12,15 @@
     </head>
 
     <body>
-        <h1>SGF Parser</h1>
-
         <div class="app">
             <div class="text-tools">
-                <div class="texteditor">
-                    <textarea placeholder='paste SGF...' oninput="update(this.value); syncScroll(this)" onscroll="syncScroll(this)" id='editing' spellcheck="false"></textarea>
-                    <pre aria-hidden="true"><code class="syntax-sgf" id="highlighting">
-                    </code></pre>
+                <div class="textInterface">
+                    <div class="line-numbers"></div>
+                    <div class="texteditor">
+                        <textarea placeholder='paste SGF...' oninput="update(this.value); syncScroll(this)" onscroll="syncScroll(this)" id='editing' spellcheck="false"></textarea>
+                        <pre aria-hidden="true"><code class="syntax-sgf" id="highlighting">
+                        </code></pre>
+                    </div>
                 </div>
 
                 <fieldset>
