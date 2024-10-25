@@ -1,46 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <title>SGF Parser</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="sgfProperties.js"></script>
-        <script src="test.js" type="module"></script>
         <link rel="stylesheet" href="styles.css">
+        <link rel='stylesheet' href='./textEditor/text-editor-styles.css'>
+        <link rel="stylesheet" href="./goban/goban-styles.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="syntax.css">
+        <script src="./textEditor/text-editor.js" type="module"></script>
+        <script src="./goban/goban.js" type="module"></script>
+        <script src="./main.js" type="module"></script>
     </head>
 
     <body>
-        <h1>SGF Parser</h1>
-
         <div class="app">
-            <div class="text-tools">
-                <div class="texteditor">
-                    <textarea placeholder='paste SGF...' oninput="update(this.value); syncScroll(this)" onscroll="syncScroll(this)" id='editing' spellcheck="false"></textarea>
-                    <pre aria-hidden="true"><code class="syntax-sgf" id="highlighting">
-                    </code></pre>
-                </div>
-
-                <fieldset>
-                    <legend>Settings</legend>
-                    <input type="checkbox" id="headerBreaks" checked> <label for="headerBreaks">Header whitespace</label><br>
-                    <input type="checkbox" id="nodeBreaks" checked> <label for="nodeBreaks">newline after each node</label><br>
-                </fieldset>
-                <div id='sgf-buttons' class="buttons">
-                    <button onclick='testFunctionII()' id='submit-button'>Reformat</button>
-                </div>
+            <div id="editorParent"></div>
+            <div id="settings">
+                <button id="parse">Parse SGF</button>
             </div>
-            <div class="display">
-                <div id="state"></div>
-                <div id="navigate">
-                    <button class='navigation' onclick="skipToStart()" id="skip-back-button"><i class="fa fa-fast-backward"></i></button>
-                    <button class='navigation' onclick='stepBackward()' id="back-button"><i class="fa fa-step-backward"></i></button>
-                    <button class='navigation' onclick="stepForeward()" id="foreward-button"><i class="fa fa-step-forward"></i></button>
-                    <button class='navigation' onclick="skipToEnd()" id="skip-button"><i class="fa fa-fast-forward"></i></button>
-                </div>
-                <textarea id="game-data" placeholder="Game info..."></textarea>
-            </div>
+            <div id="gobanParent"></div>
         </div>
     </body>
 </html>
