@@ -28,6 +28,7 @@ const toggleSGF = () => {
         toggleButton.innerText = 'show old SGF';
         texteditor.textarea.value = newSGF;
     }
+    texteditor.update();
 }
 
 const lezgooo = () => {
