@@ -4,7 +4,7 @@
 // spagghettishness of this code
 // i wanted to try smth and got carried away
 
-import {sgfCoord,numericCoord} from './sgf-utils.js';
+import {numericCoord} from './sgf-utils.js';
 
 function getLiberties(matrix, chain) {
     let liberties = [];
@@ -161,63 +161,6 @@ function initStates(lastState, gameTree) {
     return gameTree;
 }
 
-function prettify(goban) {
-    let state = clone(goban,true);
-    let Y = state.length;
-    let X = state[0].length;
-    let stars = [];
-    if (Y === 19 && X === 19) {
-        stars = [3,9,15];
-    } 
-    let pretty = '//' + Array.from(sgfCoord.slice(0,X)).join(' ') + '\\\\\n';
-    let b = 'X'; //●
-    let w = 'O'; //○
-    let lastB = 'X̂'
-    let lastW = 'ʘ'
-
-    for (let y = 0; y < state.length; y++) {
-        let emptyFirst = '┠';
-        let emptyMid = '─';
-        let emptyPoint = '┼'
-        let emptyLast = '┨';
-        if (y === 0) {
-            emptyFirst = '┏';
-            emptyMid = '━';
-            emptyPoint = '┯';
-            emptyLast = '┓';
-        } else if (y === state.length-1) {
-            emptyFirst = '┗';
-            emptyMid = '━';
-            emptyPoint = '┷';
-            emptyLast = '┛';
-        }
-        if (stars.includes(y)) {
-            for (let j of stars) {
-                if (state[y][j] === '.') {
-                    state[y][j] = '╋'//╋╬
-                } 
-            }
-        }
-        if (state[y][0] === '.') {
-            state[y][0] = emptyFirst;
-        }
-        if (state[y][X-1] === '.') {
-            state[y][X-1] = emptyLast;
-        }
-        let row = state[y]
-        .join(emptyMid).replaceAll('.',emptyPoint)
-        .replaceAll('B',b).replaceAll('W',w)
-        .replaceAll('b',lastB).replaceAll('w',lastW);
-        pretty += `${sgfCoord[y]} ${row} ${sgfCoord[y]}\n`;
-    }
-    let toPlay = '▪▫';
-    if (pretty.includes(lastW)) {
-        toPlay = '▫▪'
-    }
-    pretty += toPlay + Array.from(sgfCoord.slice(0,X)).join(' ') + '//';
-    return pretty;
-}
-
 function clone(board,keepCase=false) {
     let goban = [];
     for (let row of board) {
@@ -257,4 +200,4 @@ function initBoard(rootNode) {
     return EMPTY;
 }
 
-export {initBoard,clone,prettify,getState,initStates}
+export {initBoard,clone,getState,initStates}

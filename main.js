@@ -3,14 +3,13 @@ import KosumiGoban from './goban/goban.js';
 import ParseSGF from './sgfStuff/parse-sgf.js';
 import MakeSGF from './sgfStuff/make-sgf.js';
 import {formatProps,getNodeById,getLastMainNode} from './sgfStuff/sgf-utils.js';
-import {initBoard,prettify,initStates,getState} from './sgfStuff/game-logic.js';
+import {initBoard,initStates,getState} from './sgfStuff/game-logic.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
 const goban = new KosumiGoban(document.getElementById('gobanParent'));
 
 goban.activeNode;
 goban.gameTree;
-goban.prettify = prettify;
 goban.getNodeById = getNodeById;
 goban.getState = getState;
 goban.getLastMainNode = getLastMainNode;
@@ -44,7 +43,7 @@ const lezgooo = () => {
     goban.gameTree = initStates(EMPTY,goban.gameTree);
 
     goban.activeNode = goban.gameTree;
-    goban.boardState.innerText = prettify(goban.activeNode.state);
+    goban.boardState.innerText = KosumiGoban.prettify(goban.activeNode.state);
 
     newSGF = MakeSGF(goban.gameTree, headBreak, nodeBreak);
     texteditor.textarea.value = newSGF;
