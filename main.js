@@ -43,7 +43,7 @@ const lezgooo = () => {
     goban.gameTree = initStates(EMPTY,goban.gameTree);
 
     goban.activeNode = goban.gameTree;
-    goban.boardState.innerText = KosumiGoban.prettify(goban.activeNode.state);
+    goban.boardState.innerText = KosumiGoban.ascii(goban.activeNode.state);
 
     newSGF = MakeSGF(goban.gameTree, headBreak, nodeBreak);
     texteditor.textarea.value = newSGF;
