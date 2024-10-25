@@ -1,0 +1,171 @@
+/* non-negotiable KosumiTextEditor positioning CSS */
+
+.editorContainer {
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+.editorHeader {
+    width:100%;
+    position:sticky;
+    top:0;
+    height:fit-content;
+    min-height:1em;
+    text-align:center;
+}
+
+.editorWrapper {
+    display:flex;
+    border: none;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-size: 12px;
+    font-family: monospace;
+}
+
+.lineNumbers {
+    border: none;
+    text-align:right;
+    min-width:2ch;
+    width:fit-content;
+    overflow:hidden;
+    height:100%;
+    padding-right:1ch;
+    padding-left:1ch;
+}
+
+.lineNumber {
+    width: 100%;
+    border: none;
+    padding: 0;
+    margin: 0;
+    position:relative;
+}
+
+.editor {
+    position:relative;
+    display:flex;
+    padding:0;
+    margin:0;
+    text-align: left;
+    overflow:hidden;
+    overflow-wrap:anywhere;
+    width:100%;
+}
+
+.editorTextarea,
+.lines {
+    flex-grow:1;
+    font-size:inherit;
+    padding:0;
+    margin:0;
+    border:none;
+    text-wrap:wrap;
+    overflow-x:auto;
+    overflow-wrap:anywhere;
+    width:100%;
+    height:100%;
+    resize: none;
+}
+
+.editorTextarea {
+    z-index:2;
+    vertical-align:top;
+    background-color: transparent;
+    color: transparent;
+    caret-color:lightgray;
+    mix-blend-mode: lighten;
+}
+
+.editorTextarea::-webkit-scrollbar,
+.lines::-webkit-file-upload-button {
+    width:0;
+}
+
+.lines,
+.line-container {
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:0;
+    overflow:hidden;
+    height:100%;
+    width:100%;
+    margin-top:0;
+    margin-bottom:0;
+}
+
+.line {
+    position: relative;
+    width:100%;
+    padding:0;
+    margin:0;
+    text-wrap:inherit;
+    overflow:hidden;
+    overflow-wrap:inherit;
+}
+
+.editorFooter {
+    width:100%;
+    height:fit-content;
+    vertical-align: baseline;
+    text-align: right;
+    border-width:2px;
+    position:sticky;
+    bottom:0;
+}
+
+#caret {
+    margin-right: 1ch;
+}
+
+/* KosumiTextEditor color themes */
+
+.editorContainer {
+    background-color:rgb(48, 48, 48);
+    color:azure;
+}
+
+.editorHeader {
+    background-color:rgb(67, 67, 67);
+    color:lightgray;
+}
+
+.lineNumber {
+    color:rgb(93, 93, 93);
+}
+
+.editorTextarea {
+    caret-color:lightgray;
+    mix-blend-mode: lighten;
+}
+
+.editorTextarea::selection {
+    color: transparent;
+    background: rgba(36, 113, 255, 0.736);
+}
+
+.editorFooter {
+    background-color:rgb(127, 0, 159);
+    color:white;
+}
+
+.activeLineFirst {
+    box-shadow: inset 0px 0.1em rgba(255, 255, 255, 0.433);
+}
+
+.activeLineLast {
+    box-shadow: inset 0px -0.1em rgba(255, 255, 255, 0.433);
+}
+
+.activeLine  {
+    box-shadow: inset 0px 0.1em rgba(255, 255, 255, 0.433), inset 0px -0.1em rgba(255, 255, 255, 0.433);
+}
+
+.activeLineNumber {
+    color: white;
+}

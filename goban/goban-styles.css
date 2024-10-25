@@ -1,0 +1,36 @@
+.gobanContainer {
+    height:100%;
+    width:100%;
+    vertical-align:middle;
+    font-size:16px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.gobanBoardState {
+    background-color: rgb(207,192,127);
+    margin-left:auto;
+    margin-right:auto;
+    text-align:center;
+    width:fit-content;
+    padding:1ch;
+    text-wrap:nowrap;
+}
+
+.gobanNavigationPanel {
+    min-width:fit-content;
+}
+
+.gobanNavigationButton {
+    height: fit-content;
+    width: fit-content;
+    font-size:large;
+}
+
+.gobanInfo {
+    width:90%;
+    height:20%;
+    background-color:rgb(106,211,176);
+}

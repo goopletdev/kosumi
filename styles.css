@@ -1,65 +1,46 @@
 body {
     font-family: monospace;
-    background-color: rgb(68, 131, 110);
+    background-color: rgb(66, 131, 110);
+    overflow:hidden;
+    position:absolute;
+    height:100%;
+    width:100%;
+    display:flex;
+    margin:0;
 }
 
 .app {
-    background-color: rgb(127, 255, 212);
-    padding:2%;
+    background-color: rgb(125, 255, 212);
+    padding: 1em;
     text-align:center;
-    width: 85%;
-    height: 80vh;
-    margin-left:5%;
-    margin-right:5%;
-    border-width: 5px;
-    border-color:rgb(47, 99, 82);
-    display: inline-block;
+    width: 100%;
+    margin:3%;
+    border:solid;
+    border-width: 3px;
+    border-color:rgb(45, 99, 82);
+    display: flex;
     vertical-align: middle;
-    margin-top: 5vh;
-    margin-bottom: 5vh;
+    overflow:hidden;
 }
 
-.text-tools, .display {
-    min-width:fit-content;
-    width:45%;
-    display: inline-block;
-    margin: 2%;
-    vertical-align:middle;
+#editorParent,
+#gobanParent {
+    border:solid;
+    border-radius:7px;
+    border-width:1px;
+    border-color:rgb(45, 63, 51);
+    height: 100%;
+    width: 45%;
+    overflow: hidden;
 }
 
-.text-tools {
+#gobanParent {
+    background-color:rgb(57, 93, 74);
+}
+
+
+#settings {
     height:100%;
-}
-
-.display {
-    font-size:16px;
-    height:100%;
-}
-
-#state {
-    background-color: rgb(207, 192, 127);
-    margin-left:auto;
-    margin-right:auto;
-    text-align:center;
-    overflow-x:hidden;
-    width:fit-content;
-    padding: 1ch;
-}
-
-#game-data {
-    background-color: rgb(106, 211, 176);
-    width: 90%;
-    height:20%;
-}
-
-fieldset {
-    text-align:left;
-    margin-top: 5vh;
-    vertical-align: bottom;
-}
-
-.navigation {
-    height: fit-content;
-    width: fit-content;
-    font-size: large;
+    border:none;
+    width:10%;
 }
