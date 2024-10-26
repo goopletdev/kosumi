@@ -1,6 +1,6 @@
 const sgfCoordinates = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-let placeholder = `//a b c d e f g h i j k l m n o p q r s\\
+let placeholder = `//a b c d e f g h i j k l m n o p q r s\\\\
 a ┏━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┓ a
 b ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ b
 c ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ c
@@ -30,7 +30,7 @@ class KosumiGoban {
         this.container.classList.add('gobanContainer');
         this.parent.appendChild(this.container);
 
-        this.boardState = document.createElement('div');
+        this.boardState = document.createElement('pre');
         this.boardState.classList.add('gobanBoardState');
         this.boardState.innerText = placeholder;
         this.container.appendChild(this.boardState);
@@ -76,24 +76,33 @@ class KosumiGoban {
         this.info.classList.add('gobanInfo');
         this.container.appendChild(this.info);
 
+        this.displayStyle = 'html';
+
         this.activeNode;
         this.gameTree;
         this.getNodeById;
         this.getState;
-        this.getLastMainNode;
+        this.getLastMainNode; 
     }
 
     skipBackward() {
         this.activeNode = this.gameTree;
-        this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
+        if (this.displayStyle === 'html') {
+            this.boardState.innerHTML = KosumiGoban.asciiHTML(this.activeNode.state);
+        } else {
+            this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
+        }
         this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
     }
 
     stepBackward() {
         if (this.activeNode.hasOwnProperty('parent')) {
             this.activeNode = this.getNodeById(this.gameTree,this.activeNode.parent);
-            this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
-        }
+            if (this.displayStyle === 'html') {
+                this.boardState.innerHTML = KosumiGoban.asciiHTML(this.activeNode.state);
+            } else {
+                this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
+            }        }
         this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
     }
     
@@ -102,16 +111,21 @@ class KosumiGoban {
             let newState = this.getState(this.activeNode.state, this.activeNode.children[0].props);
             this.activeNode = this.activeNode.children[0];
             this.activeNode.state = newState;
-            this.boardState.innerText = KosumiGoban.ascii(newState);
-        }
+            if (this.displayStyle === 'html') {
+                this.boardState.innerHTML = KosumiGoban.asciiHTML(this.activeNode.state);
+            } else {
+                this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
+            }        }
         this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
     }
 
     skipForeward() {
         this.activeNode = this.getLastMainNode(this.activeNode);
-        console.log(this.activeNode);
-        this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
-        this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
+        if (this.displayStyle === 'html') {
+            this.boardState.innerHTML = KosumiGoban.asciiHTML(this.activeNode.state);
+        } else {
+            this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
+        }        this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
     }
         
     static ascii(goban) {
@@ -168,6 +182,75 @@ class KosumiGoban {
             toPlay = '▫▪'
         }
         pretty += toPlay + Array.from(sgfCoordinates.slice(0,X)).join(' ') + '//';
+        return pretty;
+    }
+
+    static asciiHTML(goban) {
+        let state = JSON.parse(JSON.stringify(goban));
+        let Y = state.length;
+        let X = state[0].length;
+        let stars = [];
+        if (Y === 19 && X === 19) {
+            stars = [3,9,15];
+        } 
+        let pretty = '<code class="gobanPointEmpty">  </code>' + Array.from(sgfCoordinates.slice(0,X)).join(' ') + '<code class="gobanPointEmpty">  </code>\n';
+        let b = '<code class="gobanPointBlack">@</code>'; 
+        let w = '<code class="gobanPointWhite">@</code>'; 
+        let lastB = '<code class="gobanPointBlack">#</code>'
+        let lastW = '<code class="gobanPointWhite">#</code>'
+
+        for (let y = 0; y < state.length; y++) {
+            let emptyFirst = '┠';
+            let emptyMid = '─';
+            let emptyPoint = '┼'
+            let emptyLast = '┨';
+            if (y === 0) {
+                emptyFirst = '┏';
+                emptyMid = '━';
+                emptyPoint = '┯';
+                emptyLast = '┓';
+            } else if (y === state.length-1) {
+                emptyFirst = '┗';
+                emptyMid = '━';
+                emptyPoint = '┷';
+                emptyLast = '┛';
+            }
+            if (stars.includes(y)) {
+                for (let j of stars) {
+                    if (state[y][j] === '.') {
+                        state[y][j] = '╋'//╋╬
+                    } 
+                }
+            }
+            if (state[y][0] === '.') {
+                state[y][0] = emptyFirst;
+            }
+            if (state[y][X-1] === '.') {
+                state[y][X-1] = emptyLast;
+            }
+            let row = state[y].map((coord) => {
+                switch (coord) {
+                    case 'B':
+                        return b;
+                    case 'W':
+                        return w;
+                    case 'b':
+                        return lastB;
+                    case 'w':
+                        return lastW;
+                    case '.':
+                        return emptyPoint;
+                    default:
+                        return coord;
+                }
+            }).join(emptyMid);
+            pretty += `${sgfCoordinates[y]} ${row} ${sgfCoordinates[y]}\n`;
+        }
+        let toPlay = '▪▫';
+        if (pretty.includes(lastW)) {
+            toPlay = '▫▪'
+        }
+        pretty += toPlay + Array.from(sgfCoordinates.slice(0,X)).join(' ') + '  ';
         return pretty;
     }
 

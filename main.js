@@ -17,7 +17,6 @@ goban.getLastMainNode = getLastMainNode;
 let oldSGF;
 let newSGF;
 
-
 const toggleSGF = () => {
     let toggleButton = document.getElementById('toggleButton');
     if (toggleButton.innerText === 'show old SGF') {
@@ -43,7 +42,12 @@ const lezgooo = () => {
     goban.gameTree = initStates(EMPTY,goban.gameTree);
 
     goban.activeNode = goban.gameTree;
-    goban.boardState.innerText = KosumiGoban.ascii(goban.activeNode.state);
+
+    if (goban.displayStyle === 'html') {
+        goban.boardState.innerHTML = KosumiGoban.asciiHTML(goban.activeNode.state);
+    } else {
+        goban.boardState.innerText = KosumiGoban.ascii(goban.activeNode.state);
+    }
 
     newSGF = MakeSGF(goban.gameTree, headBreak, nodeBreak);
     texteditor.textarea.value = newSGF;
