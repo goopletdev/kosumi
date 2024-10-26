@@ -10,13 +10,21 @@
 }
 
 .gobanBoardState {
-    background-color: rgb(202, 178, 117);
+    background-color: burlywood;
     margin-left:auto;
     margin-right:auto;
     text-align:center;
     width:fit-content;
     padding:1ch;
     text-wrap:nowrap;
+}
+
+.gobanCanvas {
+    /*background-color: rgb(202, 178, 117);
+    height: 20em;
+    width: 20em;*/
+    margin-left:auto;
+    margin-right:auto;
 }
 
 .gobanPointEmpty {

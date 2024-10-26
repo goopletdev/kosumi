@@ -1,39 +1,27 @@
 const sgfCoordinates = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-let placeholder = `//a b c d e f g h i j k l m n o p q r s\\\\
-a ┏━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┓ a
-b ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ b
-c ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ c
-d ┠─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┨ d
-e ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ e
-f ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ f
-g ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ g
-h ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ h
-i ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ i
-j ┠─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┨ j
-k ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ k
-l ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ l
-m ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ m
-n ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ n
-o ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ o
-p ┠─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┨ p
-q ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ q
-r ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ r
-s ┗━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┛ s
-▪▫a b c d e f g h i j k l m n o p q r s//`
-
 class KosumiGoban {
-    constructor(parent) {
+    constructor(parent, displayStyle = 'canvas') {
+        this.displayStyle = displayStyle;
         this.parent = parent;
 
         this.container = document.createElement('div');
         this.container.classList.add('gobanContainer');
         this.parent.appendChild(this.container);
 
-        this.boardState = document.createElement('pre');
-        this.boardState.classList.add('gobanBoardState');
-        this.boardState.innerText = placeholder;
-        this.container.appendChild(this.boardState);
+        if (this.displayStyle === 'canvas') {
+            this.boardState = document.createElement('canvas');
+            this.boardState.height = '400';
+            this.boardState.width = '400';
+            this.boardState.id = 'kosumiCanvas';
+            this.boardState.classList.add('gobanCanvas');
+            this.container.appendChild(this.boardState);
+        } else {
+            this.boardState = document.createElement('pre');
+            this.boardState.classList.add('gobanBoardState');
+            this.boardState.innerText = KosumiGoban.placeholder;
+            this.container.appendChild(this.boardState);
+        }
 
         this.navigation = document.createElement('div');
         this.navigation.classList.add('gobanNavigationPanel');
@@ -76,8 +64,6 @@ class KosumiGoban {
         this.info.classList.add('gobanInfo');
         this.container.appendChild(this.info);
 
-        this.displayStyle = 'html';
-
         this.activeNode;
         this.gameTree;
         this.getNodeById;
@@ -89,8 +75,10 @@ class KosumiGoban {
         this.activeNode = this.gameTree;
         if (this.displayStyle === 'html') {
             this.boardState.innerHTML = KosumiGoban.asciiHTML(this.activeNode.state);
-        } else {
+        } else if (this.displayStyle === 'ascii') {
             this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
+        } else if (this.displayStyle === 'canvas') {
+            KosumiGoban.paint(this.boardState,this.activeNode.state);
         }
         this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
     }
@@ -100,9 +88,12 @@ class KosumiGoban {
             this.activeNode = this.getNodeById(this.gameTree,this.activeNode.parent);
             if (this.displayStyle === 'html') {
                 this.boardState.innerHTML = KosumiGoban.asciiHTML(this.activeNode.state);
-            } else {
+            } else if (this.displayStyle === 'ascii') {
                 this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
-            }        }
+            } else if (this.displayStyle === 'canvas') {
+                KosumiGoban.paint(this.boardState,this.activeNode.state);
+            }  
+        }
         this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
     }
     
@@ -113,9 +104,12 @@ class KosumiGoban {
             this.activeNode.state = newState;
             if (this.displayStyle === 'html') {
                 this.boardState.innerHTML = KosumiGoban.asciiHTML(this.activeNode.state);
-            } else {
+            } else if (this.displayStyle === 'ascii') {
                 this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
-            }        }
+            } else if (this.displayStyle === 'canvas') {
+                KosumiGoban.paint(this.boardState,this.activeNode.state);
+            }    
+        }
         this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
     }
 
@@ -123,9 +117,12 @@ class KosumiGoban {
         this.activeNode = this.getLastMainNode(this.activeNode);
         if (this.displayStyle === 'html') {
             this.boardState.innerHTML = KosumiGoban.asciiHTML(this.activeNode.state);
-        } else {
+        } else if (this.displayStyle === 'ascii') {
             this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
-        }        this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
+        } else if (this.displayStyle === 'canvas') {
+            KosumiGoban.paint(this.boardState,this.activeNode.state);
+        } 
+        this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
     }
         
     static ascii(goban) {
@@ -253,6 +250,117 @@ class KosumiGoban {
         pretty += toPlay + Array.from(sgfCoordinates.slice(0,X)).join(' ') + '  ';
         return pretty;
     }
+
+    static paint(canvas, boardState) {
+        let width = boardState[0].length;
+        let height= boardState.length;
+
+        let widthUnit = Math.floor(canvas.width / (width + 2));
+        let heightUnit = Math.floor(canvas.height / (height + 2));
+        console.log(widthUnit,heightUnit, (canvas.width))
+        
+        console.log('paint on!');
+        if (canvas.getContext) {
+            const context = canvas.getContext('2d');
+
+            context.fillStyle = 'burlywood';
+            context.fillRect(0,0,canvas.width,canvas.height);
+
+            for (let y=0; y<height; y++) {
+                if (y===0 || y===height-1) {
+                    context.lineWidth = 2;
+                } else {
+                    context.lineWidth = 1;
+                }
+                context.strokeStyle = 'black';
+                context.beginPath()
+                context.moveTo(widthUnit*1.5,heightUnit * (y+1.5));
+                context.lineTo(widthUnit * (width+0.5),heightUnit * (y+1.5));
+                context.stroke();
+            }
+            for (let x=0; x<width; x++) {
+                if (x===0 || x===height-1) {
+                    context.lineWidth = 2;
+                } else {
+                    context.lineWidth = 1;
+                }
+                context.strokeStyle = 'black';
+                context.beginPath()
+                context.moveTo(widthUnit*(x+1.5),heightUnit*1.5);
+                context.lineTo(widthUnit*(x+1.5),heightUnit*(height+0.5));
+                context.stroke();
+            }
+            // star points 
+            if (height === 19 && width === 19) {
+                context.fillStyle = 'black';
+                let stars = [
+                    [3,3],
+                    [3,9],
+                    [3,15],
+                    [9,3],
+                    [9,9],
+                    [9,15],
+                    [15,3],
+                    [15,9],
+                    [15,15]
+                ];
+                for (let star of stars) {
+                    context.beginPath();
+                    context.arc(widthUnit*(star[0]+1.5),heightUnit*(star[1]+1.5),2.5,0,Math.PI*2);
+                    context.fill();
+                }
+            }
+            // stones
+            for (let y=0; y<height; y++) {
+                for (let x=0; x<width; x++) {
+                    let newMove = boardState[y][x];
+                    switch (newMove.toUpperCase()) {
+                        case 'W':
+                            context.fillStyle = 'white';
+                            context.strokeStyle = 'black';
+                            break;
+                        case 'B':
+                            context.fillStyle = 'black';
+                            context.strokeStyle = 'white';
+                            break;
+                        default:
+                            continue;
+                    }
+                    context.beginPath();
+                    context.arc(widthUnit*(x+1.5),heightUnit*(y+1.5),8,0,Math.PI*2);
+                    context.fill();
+                    if (newMove.toLowerCase() === newMove) {
+                        context.lineWidth = 1.5;
+                        context.beginPath();
+                        context.arc(widthUnit*(x+1.5),heightUnit*(y+1.5),5,0,Math.PI*2);
+                        context.stroke();
+                    }
+                }
+            }
+        }
+    }
+
+    static placeholder = `  a b c d e f g h i j k l m n o p q r s  
+    a ┏━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┓ a
+    b ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ b
+    c ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ c
+    d ┠─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┨ d
+    e ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ e
+    f ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ f
+    g ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ g
+    h ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ h
+    i ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ i
+    j ┠─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┨ j
+    k ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ k
+    l ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ l
+    m ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ m
+    n ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ n
+    o ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ o
+    p ┠─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┨ p
+    q ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ q
+    r ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ r
+    s ┗━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┛ s
+    ▪▫a b c d e f g h i j k l m n o p q r s  `
 
 }
 

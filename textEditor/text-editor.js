@@ -127,7 +127,7 @@ class TextEditor {
         let column = textToCursor[activeLineFirst-1].length+1;
         let activeLineLast = this.textarea.value.slice(0,endSelect).split('\n').length;
     
-        if (beginSelect === endSelect) {
+        if (activeLineFirst === activeLineLast) {
             this.lines.childNodes.forEach((element,i) => {
                 element.classList.remove('activeLineFirst');
                 element.classList.remove('activeLineLast');
