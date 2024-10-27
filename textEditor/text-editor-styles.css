@@ -1,5 +1,8 @@
 /* non-negotiable KosumiTextEditor positioning CSS */
-
+@font-face {
+    font-family: 'droid-sans';
+    src: url('../fonts/DroidSans/DroidSans.ttf');
+}
 .editorContainer {
     width:100%;
     height:100%;

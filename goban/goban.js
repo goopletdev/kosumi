@@ -310,6 +310,18 @@ class KosumiGoban {
                     context.fill();
                 }
             }
+            // coords
+            context.font = '14px monospace'
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            for (let i=0; i< width; i++) {
+                context.fillText(sgfCoordinates[i],widthUnit*(i+1.5),(heightUnit*.5));
+                context.fillText(sgfCoordinates[i],widthUnit*(i+1.5),heightUnit*(height+1.5))
+            }
+            for (let i=0; i< height; i++) {
+                context.fillText(sgfCoordinates[i],widthUnit*.5,heightUnit*(i+1.5));
+                context.fillText(sgfCoordinates[i],widthUnit*(height+1.5),heightUnit*(i+1.5));
+            }
             // stones
             for (let y=0; y<height; y++) {
                 for (let x=0; x<width; x++) {

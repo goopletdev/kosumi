@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'droid-sans';
+    src: url('../fonts/DroidSans/DroidSans.ttf');
+}
+
 .gobanContainer {
     height:100%;
     width:100%;

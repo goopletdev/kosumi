@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'droid-sans';
+    src: url('./fonts/DroidSans/DroidSans.ttf');
+}
+
 body {
     font-family: monospace;
     background-color: rgb(66, 131, 110);
