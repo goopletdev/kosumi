@@ -1,4 +1,5 @@
-const sgfCoordinates = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+import {sgfCoordinates} from '../sgfStuff/sgfProperties.js'
+//const sgfCoordinates = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 class KosumiGoban {
     constructor(parent, displayStyle = 'canvas') {
@@ -16,6 +17,13 @@ class KosumiGoban {
             this.boardState.id = 'kosumiCanvas';
             this.boardState.classList.add('gobanCanvas');
             this.container.appendChild(this.boardState);
+
+            if (this.boardState.getContext) {
+                const context = this.boardState.getContext('2d');
+    
+                context.fillStyle = 'burlywood';
+                context.fillRect(0,0,this.boardState.width,this.boardState.height);
+            }
         } else {
             this.boardState = document.createElement('pre');
             this.boardState.classList.add('gobanBoardState');
@@ -133,7 +141,7 @@ class KosumiGoban {
         if (Y === 19 && X === 19) {
             stars = [3,9,15];
         } 
-        let pretty = '//' + Array.from(sgfCoordinates.slice(0,X)).join(' ') + '\\\\\n';
+        let pretty = '  ' + Array.from(sgfCoordinates.slice(0,X)).join(' ') + '  \n';
         let b = 'X'; //●
         let w = 'O'; //○
         let lastB = 'X̂'
@@ -178,7 +186,7 @@ class KosumiGoban {
         if (pretty.includes(lastW)) {
             toPlay = '▫▪'
         }
-        pretty += toPlay + Array.from(sgfCoordinates.slice(0,X)).join(' ') + '//';
+        pretty += toPlay + Array.from(sgfCoordinates.slice(0,X)).join(' ') + '  ';
         return pretty;
     }
 

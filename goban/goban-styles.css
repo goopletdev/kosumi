@@ -50,16 +50,6 @@
     font-size: 16px;
 }
 
-.gobanNavigationPanel {
-    min-width:fit-content;
-}
-
-.gobanNavigationButton {
-    height: fit-content;
-    width: fit-content;
-    font-size:large;
-}
-
 .gobanInfo {
     width:90%;
     height:20%;
