@@ -4,9 +4,9 @@ class KosumiNavigation {
     constructor (parent) {
         this.parent = parent;
 
-        this.container = document.createElement('div');
-        this.container.classList.add('navigationPanelContainer');
-        this.parent.appendChild(this.container);
+        this.panel = document.createElement('div');
+        this.panel.classList.add('kosumiNavigationPanel');
+        this.parent.appendChild(this.panel);
 
         this.skipBackwardButton = document.createElement('button');
         this.stepBackwardButton = document.createElement('button');
@@ -16,12 +16,12 @@ class KosumiNavigation {
         this.stepBackwardButton.innerHTML = '<i class="fa fa-step-backward"></i>'
         this.stepForewardButton.innerHTML = '<i class="fa fa-step-forward"></i>'
         this.skipForewardButton.innerHTML = '<i class="fa fa-fast-forward"></i>'
-        this.skipBackwardButton.classList.add('gobanNavigationButton');
-        this.stepBackwardButton.classList.add('gobanNavigationButton');
-        this.stepForewardButton.classList.add('gobanNavigationButton');
-        this.skipForewardButton.classList.add('gobanNavigationButton');
+        this.skipBackwardButton.classList.add('kosumiNavigationButton');
+        this.stepBackwardButton.classList.add('kosumiNavigationButton');
+        this.stepForewardButton.classList.add('kosumiNavigationButton');
+        this.skipForewardButton.classList.add('kosumiNavigationButton');
 
-        this.navigation.append(
+        this.panel.append(
             this.skipBackwardButton,
             this.stepBackwardButton,
             this.stepForewardButton,

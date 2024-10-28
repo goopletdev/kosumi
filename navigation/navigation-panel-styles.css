@@ -1,0 +1,9 @@
+.kosumiNavigationPanel {
+    min-width:fit-content;
+}
+
+.kosumiNavigationButton {
+    height: fit-content;
+    width: fit-content;
+    font-size:large;
+}
