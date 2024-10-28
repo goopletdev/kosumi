@@ -9,15 +9,97 @@ const zipable = [
     'SL',
     'SQ',
     'TR',
-    'VW'
+    'VW',
 ]
 const root = [
-    'AP',
-    'CA',
     'FF',
     'GM',
+    'AP',
+    'CA',
     'ST',
-    'SZ'
+    'SZ',
+]
+
+const gameInfoProps = [
+    'AN', //  name of annotator
+    'BR', // Black rank
+    'BT', // Black team name (team matches)
+    'CP', // copyright info
+    'DT', // date when game was played
+    'EV', 
+    'GN',
+    'GC',
+    'ON',
+    'OT',
+    'PB',
+    'PC',
+    'PW',
+    'RE',
+    'RO',
+    'RU',
+    'SO',
+    'TM',
+    'US', //name of user who entered game
+    'WR', // white player rank
+    'WT', // white team name
+]
+
+const moveProps = [
+    'MN',
+    'B',
+    'W',
+    'KO',
+]
+
+
+const moveAnnotationProps = [
+    'BM',
+    'DO',
+    'IT',
+    'TE',
+]
+
+const timingProps = [
+    'BL',
+    'OB',
+    'WL',
+    'OW',
+]
+
+const setupProps = [
+    'AB',
+    'AE',
+    'AW',
+    'PL',
+]
+
+const nodeAnnotationProps = [
+    'C',
+    'DM',
+    'GB',
+    'GW',
+    'HO',
+    'N',
+    'UC',
+    'V',
+]
+
+const markupProps = [
+    'AR',
+    'CR',
+    'DD',
+    'LB',
+    'LN',
+    'MA',
+    'SL',
+    'SQ',
+    'TR',
+]
+
+const miscProps = [
+    'FG',
+    'PM',
+    'VW',
 ]
 
 /**

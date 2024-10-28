@@ -1,27 +1,3 @@
-const root = [
-    'AP',
-    'CA',
-    'FF',
-    'GM',
-    'ST',
-    'SZ'
-]
-
-const move = [
-    'B',
-    'BL',
-    'BM',
-    'DO',
-    'IT',
-    'KO',
-    'MN',
-    'OB',
-    'OW',
-    'TE',
-    'W',
-    'WL',
-]
-
 /**
  * @private
  * @param {string} sgf SGF string to parse
@@ -47,7 +23,7 @@ function tokenize(sgf,callback) {
             tokens.push({
                 type: 'propVal',
                 value: `\\${sgf[i]}`,
-                characteristic: 'escaped'
+                characteristic: 'escapedCharacter'
             })
         } else if (inBrackets && sgf[i] === '\\') {
             escaped = true;
@@ -59,15 +35,20 @@ function tokenize(sgf,callback) {
             })
         } else if (inBrackets && i < sgf.length - 1) {
             tokens.push({
-                type: 'propVal',
+                type: 'propertyValue',
                 value: `${sgf[i]}`,
-                characteristic: 'normal'
+                characteristic: 'normalCharacter'
+            })
+        } else if (inBrackets && sgf[i] === '\n') {
+            tokens.push({
+                type: 'newline',
+                value: sgf[i],
             })
         } else if (inBrackets) {
             tokens.push({
-                type: 'propVal',
+                type: 'propertyValue',
                 value: sgf[i],
-                characteristic: 'normal',
+                characteristic: 'normalCharacter',
                 error: 'missingClose'
             })
         } else if (sgf[i] === '[') {
@@ -79,7 +60,7 @@ function tokenize(sgf,callback) {
         // handle property identifier
         } else if (/[A-Z]/.test(sgf[i])) {
             tokens.push({
-                type: 'propId',
+                type: 'propertyIdentifier',
                 value: sgf[i]
             })
         // non-bracket terminal symbols
@@ -101,7 +82,12 @@ function tokenize(sgf,callback) {
                 value: sgf[i]
             })
         // whitespace
-        } else if (' \n'.includes(sgf[i])){
+        } else if (sgf[i] === '\n') {
+            tokens.push({
+                type: 'newline',
+                value: sgf[i]
+            })
+        } else if (' \t'.includes(sgf[i])){
             tokens.push({
                 type: 'whitespace',
                 value: sgf[i]
@@ -117,154 +103,37 @@ function tokenize(sgf,callback) {
     callback(tokens);
 }
 
-function getIdType(propId) {
-    let type = 'generic';
-    if (root.includes(propId)) {
-        type = 'root';
-    } else if (move.includes(propId)) {
-        type = 'move';
-    }
-    return type;
-}
-
-/**
- * @private
- * @param {{
- * type: (
- * 'openParenthesis'|'closeParenthesis'|'semicolon'|'propVal'|'propId'|'whitespace'|'error'|'openBracket' | 'closeBracket'
- * );
- * value: string;
- * characteristic?: string;
- * }[]} tokens 
- * @param {function name(params)} callback 
- */
-function parseTokens(tokens, callback) {
-    let parsedTokens = [];
-    let node = [];
-    let propId = '';
-    let propVal = [];
-
-    let inNode = false;
-
-    for (let i=0; i < tokens.length; i++) {
-        let token = tokens[i];
-        if (token.type === 'closeBracket') {
-            propVal.push(token);
-            node.push({
-                type: 'propVal',
-                value: propVal.slice(0)
-            });
-            propVal = [];
+function syntaxHTML(tokens) {
+    let html = [];
+    let line = '';
+    tokens.forEach((token,i) => {
+        if (token.type === "propertyValue") {
+            line += `<span class="token propertyValue ${token.characteristic}">${token.value}</span>`;
+        } else if (token.type === 'closeBracket') {
+            line += `<span class="token closeBracket">]</span>`;
+        } else if (token.type === 'newline') {
+            html.push(line);
+            line = '';
         } else if (token.type === 'openBracket') {
-            propVal.push(token);
-        } else if (token.type === 'propVal') {
-            propVal.push({
-                type: token.characteristic,
-                value: token.value
-            });
-        } else if (token.type === 'propId') {
-            propId += token.value;
-            if (tokens[i+1].type !== 'propId') {
-                let idType = getIdType(propId);
-                let propertyIdentifier = {
-                    type: 'propId',
-                    value: propId,
-                    propIdType: idType
-                }
-                node.push(propertyIdentifier);
-                propId = '';
-            }
-        } else if (token.type === 'semicolon') {
-            inNode = true;
-            if (node.length > 0) {
-                parsedTokens.push({
-                    type: 'node',
-                    value: node.slice(0)
-                });
-            }
-            node = [];
-            node.push(token);
-        } else if (token.type === 'openParenthesis') {
-            if (node.length > 0) {
-                parsedTokens.push({
-                    type: 'node',
-                    value: node.slice(0)
-                });
-                node = [];
-            }
-            inNode = false;
-            parsedTokens.push(token);
-        } else if (token.type === 'closeParenthesis') {
-            if (node.length > 0) {
-                parsedTokens.push({
-                    type: 'node',
-                    value: node.slice(0)
-                });
-                node = [];
-            }
-            inNode = false;
-            parsedTokens.push(token);
-        } else if (inNode) { //whitespace and error types
-            node.push(token);
+            line += `<span class="token openBracket">[</span>`;
+        } else if (token.type === 'propertyIdentifier') {
+            line += `<span class="token propertyIdentifier">${token.value}</span>`;
+        } else if (token.type === 'whitespace') {
+            line += `<span class="token whitespace">${token.value}</span>`;
+        } else if (token.type === 'error') {
+            line += `<span class="token error">${token.value}</span>`;
         } else {
-            parsedTokens.push(token);
+            line += `<span class="token ${token.type}">${token.value}</span>`;
         }
-    }
-    callback(parsedTokens);
-}
-
-function syntax(tokens) {
-    let html = '';
-    for (let token of tokens) {
-        if (['openParenthesis','closeParenthesis'].includes(token.type)) {
-            html += `<span class='token ${token.type}'>${token.value}</span>`;
-        } else if (token.type === 'node') {
-            let nodeHtml = `<span class='token node'>`;
-            for (let item of token.value) {
-                if (item.type === 'semicolon') {
-                    nodeHtml += `<span class='token semicolon'>;</span>`;
-                } else if (item.type === 'propId') {
-                    // add additional options for propId things;
-                    nodeHtml += `<span class='token propId ${item.propIdType}'>${item.value}</span>`;
-                } else if (item.type === 'propVal') {
-                    // merge prop val tokens under prop id tokens
-                    let propVal = `<span class='token propVal'>`;
-                    for (let object of item.value) {
-                        if (['openBracket','closeBracket'].includes(object.type)) {
-                            propVal += `<span class='token ${object.type}'>${object.value}</span>`;
-                        } else if (object.type === 'escaped') {
-                            propVal += `<span class='token escaped'>${object.value}</span>`;
-                        } else if (['normal','whitespace'].includes(object.type)) {
-                            propVal += object.value;
-                        } else {
-                            propVal += `<span class='token ${object.type}'>${object.value}</span>`
-                        }
-                    }
-                    propVal += `</span>`;
-                    nodeHtml += propVal;
-                } else if (['openBracket','closeBracket'].includes(item.type)) {
-                    nodeHtml += `<span class='token ${item.type}'>${item.value}</span>`;
-                } else if (item.type === 'whitespace') {
-                    nodeHtml += item.value;
-                } else {
-                    nodeHtml += `<span class='token ${item.type}'>${item.value}</span>`;
-                }
-            }
-            nodeHtml += `</span>`;
-            html += nodeHtml;
-        } else {
-            html += `<span class='token ${token.type}'>${token.value}</span>`;
-        }
-    }
+    })
+    html.push(line);
     return html;
 }
 
 function HighlightSGF(sgf) {
     let text;
     tokenize(sgf, (result) => {
-        parseTokens(result, (result) => {
-            text = syntax(result);
-        })
+        text = syntaxHTML(result);
     });
     return text;
 }

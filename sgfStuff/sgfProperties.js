@@ -138,3 +138,128 @@ const propertyGM = [ //default = 1 'Go'
 ]
 
 let gameProps = {...properties, ...gameSpecificProperties[1]};
+
+
+
+const rootProperties = [
+    'FF',
+    'GM',
+    'AP',
+    'CA',
+    'ST',
+    'SZ',
+]
+const gameInfoProperties = [
+    'AN', //  name of annotator
+    'BR', // Black rank
+    'BT', // Black team name (team matches)
+    'CP', // copyright info
+    'DT', // date when game was played
+    'EV', 
+    'GN',
+    'GC',
+    'ON',
+    'OT',
+    'PB',
+    'PC',
+    'PW',
+    'RE',
+    'RO',
+    'RU',
+    'SO',
+    'TM',
+    'US', //name of user who entered game
+    'WR', // white player rank
+    'WT', // white team name
+]
+const moveProperties = [
+    'MN',
+    'B',
+    'W',
+    'KO',
+]
+const moveAnnotationProperties = [
+    'BM',
+    'DO',
+    'IT',
+    'TE',
+]
+const timingProperties = [
+    'BL',
+    'OB',
+    'WL',
+    'OW',
+]
+const setupProperties = [
+    'AB',
+    'AE',
+    'AW',
+    'PL',
+]
+const nodeAnnotationProperties = [
+    'C',
+    'DM',
+    'GB',
+    'GW',
+    'HO',
+    'N',
+    'UC',
+    'V',
+]
+const markupProperties = [
+    'AR',
+    'CR',
+    'DD',
+    'LB',
+    'LN',
+    'MA',
+    'SL',
+    'SQ',
+    'TR',
+]
+const miscProperties = [
+    'FG',
+    'PM',
+    'VW',
+]
+
+// utility values
+const sgfCoordinates = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const sgfPropOrder = [
+    rootProperties,
+    gameInfoProperties,
+    moveProperties,
+    moveAnnotationProperties,
+    timingProperties,
+    setupProperties,
+    nodeAnnotationProperties,
+    markupProperties,
+    miscProperties
+]
+const zipableProps = [
+    'AB',
+    'AE',
+    'AW',
+    'CR',
+    'DD',
+    'MA',
+    'SL',
+    'SQ',
+    'TR',
+    'VW',
+]
+
+export {
+    rootProperties,
+    gameInfoProperties,
+    moveProperties,
+    moveAnnotationProperties,
+    timingProperties,
+    setupProperties,
+    nodeAnnotationProperties,
+    markupProperties,
+    miscProperties,
+    sgfCoordinates,
+    sgfPropOrder,
+    zipableProps,
+}

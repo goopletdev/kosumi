@@ -1,103 +1,31 @@
-.textInterface {
-    height:75%;
-    vertical-align: top;
-    margin-bottom: auto;
-    display:flex;
-}
-
-.line-numbers {
-    background-color:brown;
-    border-right: 2px;
-    border:2px;
-    height: 100%;
-    width: 4ch;
-    float:left;
-    position: relative;
-}
-
-.texteditor {
-    margin-left:4ch;
-    position: relative;
-    height: 100%;
-    margin: 0;
-}
-
-
-#editing, #highlighting {
-    padding: 10px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    font-size:small;
-    overflow: auto;
-    overflow-wrap: anywhere;
-    /*text-wrap:wrap;*/
-}
-
-#editing {
-    z-index: 1;
-    background: transparent;
-    color: transparent;
-    caret-color:black;
-    resize:none;
-    white-space: nowrap;
-}
-
-#highlighting {
-    z-index: 0;
-    background-color:rgb(199, 255, 218);
-}
-
-#editing::selection {
-    color: transparent;
-    background: rgba(36, 113, 255, 0.736)
-}
-
-#editing::-webkit-scrollbar,
-#highlighting::-webkit-scrollbar {
-    width:1em
-}
-
-
-
-
 .token.openParenthesis,
 .token.closeParenthesis {
-    color: rgb(0, 45, 128);
+    color: rgb(0, 89, 255);
 }
 
 .token.semicolon {
-    color: rgb(0, 55, 2);
+    color: rgb(234, 78, 255);
 }
 
-.token.propId.generic {
-    color: rgb(0, 102, 255);
-}
-
-.token.propId.root {
-    color: rgb(97, 82, 82)
-}
-
-.token.propId.move {
-    color: rgb(50, 0, 79)
+.token.propertyIdentifier {
+    color:aqua;
 }
 
 .token.openBracket,
 .token.closeBracket {
-    color: rgb(61, 0, 71);
+    color: rgb(0, 255, 81);
 }
 
-.token.propVal {
-    color: rgb(16, 109, 0);
+.token.propertyValue.normalCharacter {
+    color: rgb(26, 174, 0);
 }
 
-.token.escaped {
+.token.propertyValue.escapedCharacter {
     color: rgb(255, 166, 0);
 }
 
 .token.error {
-    background-color: rgba(255, 0, 0, 0.4);
+    color: black;
+    background-color: rgba(255, 34, 34, 0.774);
 }
 /*token.whitespace*/

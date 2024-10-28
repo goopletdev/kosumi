@@ -1,3 +1,5 @@
+import HighlightSGF from '../syntaxHighlighting/sgf-syntax.js';
+
 class TextEditor {
     constructor(parent) {
         this.parent = parent;
@@ -85,9 +87,10 @@ class TextEditor {
     }
 
     update() {
+        console.log('\n\nNEWUPDATE')
         let activeLine = this.textarea.value.slice(0,this.textarea.selectionStart).split('\n').length-1;
-        let lines = Array.from(this.textarea.value.split('\n'), line => line ||= ' ');
-    
+        //let lines = Array.from(this.textarea.value.split('\n'), line => line ||= ' ');
+        let lines = HighlightSGF(Array.from(this.textarea.value.split('\n'), line => line ||= ' ').join('\n'));
         while (this.lines.childNodes.length > lines.length) {
             this.lines.removeChild(this.lines.childNodes[activeLine]);
             this.lineNumbers.removeChild(this.lineNumbers.lastChild);
@@ -104,8 +107,8 @@ class TextEditor {
         }
     
         for (let i=0; i< lines.length; i++) {
-            if (this.lines.childNodes[i].innerText !== lines[i] + '\n') {
-                this.lines.childNodes[i].innerText = lines[i] + '\n';
+            if (this.lines.childNodes[i].innerHTML !== lines[i]) {
+                this.lines.childNodes[i].innerHTML = lines[i];
             }
             if (this.lineNumbers.childNodes[i].offsetHeight > this.lines.childNodes[i].offsetHeight) {
                 this.lineNumbers.childNodes[i].innerText = i+1;

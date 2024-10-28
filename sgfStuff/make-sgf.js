@@ -1,3 +1,5 @@
+import { sgfPropOrder, rootProperties } from "../sgfStuff/sgfProperties.js";
+const propOrder = sgfPropOrder.flat();
 /**
  * 
  * @param {{
@@ -14,10 +16,16 @@
 function MakeSGF(node, headerBreaks=true, nodeBreaks=true) {
     let sgf = ';';
     if (node.hasOwnProperty('props')) {
-        for (let key of Object.keys(node.props)) {
-            let sufx = '';
-            if (node.id === 0 && headerBreaks) {
-                sufx = '\n';
+        let orderedKeys = [];
+        for (let propIdent of propOrder) {
+            if (Object.keys(node.props).includes(propIdent)) {
+                orderedKeys.push(propIdent);
+            }
+        }
+        orderedKeys.forEach((key, i) => {
+            let suffix = '';
+            if (node.id === 0 && headerBreaks && !rootProperties.includes(orderedKeys[i+1])) {
+                suffix = '\n';
             }
             let values = [];
             for (let val of node.props[key]) {
@@ -26,10 +34,8 @@ function MakeSGF(node, headerBreaks=true, nodeBreaks=true) {
                     .replaceAll(']','\\]')
                 );
             }
-            sgf += `${key}[${
-                values.join('][')
-            }]${sufx}`;
-        }
+            sgf += `${key}[${values.join('][')}]${suffix}`;
+        })
     }
     if (node.hasOwnProperty('children')) {
         let newline = '';
