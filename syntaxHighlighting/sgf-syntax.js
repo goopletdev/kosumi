@@ -33,16 +33,16 @@ function tokenize(sgf,callback) {
                 type: 'closeBracket',
                 value: ']'
             })
+        } else if (inBrackets && sgf[i] === '\n') {
+            tokens.push({
+                type: 'newline',
+                value: sgf[i],
+            })
         } else if (inBrackets && i < sgf.length - 1) {
             tokens.push({
                 type: 'propertyValue',
                 value: `${sgf[i]}`,
                 characteristic: 'normalCharacter'
-            })
-        } else if (inBrackets && sgf[i] === '\n') {
-            tokens.push({
-                type: 'newline',
-                value: sgf[i],
             })
         } else if (inBrackets) {
             tokens.push({
