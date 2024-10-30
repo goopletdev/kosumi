@@ -5,6 +5,8 @@ Latest update:
 Rethought basically everything. Organized files into directories, separated the goban and text editor into their own respective objects. Still rethinking basic structural things; probably want to separate the navigation panel into its own object. Put eventListeners into their respective objects, and allow passing functions to the objects' respective eventListeners.
 
 ## To-do list:
+- smolbug: fix toggle display style button
+- improve syntax highlighting
 - flesh out nodeInfo class
 - BIGBUG: allow 'tt' for passes
 - smoler bug: allow for parsing of collections
