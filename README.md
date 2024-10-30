@@ -1,12 +1,14 @@
 # Kosumi[1.0]: a Go Library
-Parses SGF into an array of javascript objects. It's a work in progress as I learn the basics of JavaScript and programming in general. 
+Text-based SGF editor. It's a work in progress as I learn the basics of JavaScript and programming in general. 
 
-Latest update: 
-Rethought basically everything. Organized files into directories, separated the goban and text editor into their own respective objects. Still rethinking basic structural things; probably want to separate the navigation panel into its own object. Put eventListeners into their respective objects, and allow passing functions to the objects' respective eventListeners.
+## Features:
+- Syntax highlighting
+- Display and navigate through your game on an ASCII or graphical goban
+- Correct SGF style errors in SGF files from OGS, and maximize compatibility by unzipping compressed coordinates
 
 ## To-do list:
 - smolbug: fix toggle display style button
-- improve syntax highlighting
+- improve syntax highlighting (typing for propIdent/val pairs)
 - flesh out nodeInfo class
 - BIGBUG: allow 'tt' for passes
 - smoler bug: allow for parsing of collections
