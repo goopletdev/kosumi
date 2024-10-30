@@ -17,14 +17,23 @@ function MakeSGF(node, headerBreaks=true, nodeBreaks=true) {
     let sgf = ';';
     if (node.hasOwnProperty('props')) {
         let orderedKeys = [];
+        // order properties
         for (let propIdent of propOrder) {
             if (Object.keys(node.props).includes(propIdent)) {
                 orderedKeys.push(propIdent);
             }
         }
+        // append properties not in propOrder
+        for (let key of Object.keys(node.props)) {
+            if (!orderedKeys.includes(key)) {
+                orderedKeys.push(key);
+            }
+        }
         orderedKeys.forEach((key, i) => {
             let suffix = '';
-            if (node.id === 0 && headerBreaks && !rootProperties.includes(orderedKeys[i+1])) {
+            if (node.id === 0 && headerBreaks && (
+                !rootProperties.includes(orderedKeys[i+1]) || !rootProperties.includes(orderedKeys[i])
+            )) {
                 suffix = '\n';
             }
             let values = [];
