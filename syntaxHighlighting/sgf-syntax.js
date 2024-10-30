@@ -25,7 +25,9 @@ function tokenize(sgf,callback) {
                 value: `\\${sgf[i]}`,
                 characteristic: 'escapedCharacter'
             })
-        } else if (inBrackets && sgf[i] === '\\') {
+        } else if (inBrackets && sgf[i] === '\\' && sgf[i+1] !== '\n') {
+            // not sure about that last check for sgf[i+1]; should 
+            // get opinions
             escaped = true;
         } else if (inBrackets && sgf[i] === ']') {
             inBrackets = false;
