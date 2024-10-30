@@ -1,6 +1,6 @@
 @font-face {
-    font-family: 'droid-sans';
-    src: url('../fonts/DroidSans/DroidSans.ttf');
+    font-family: 'ubuntu-condensed';
+    src: url('../fonts/Ubuntu_Condensed/UbuntuCondensed-Regular.ttf');
 }
 
 .gobanContainer {
@@ -13,6 +13,8 @@
     align-items: center;
     justify-content: center;
     margin:10px auto;
+    border-radius: 6px;
+    overflow:hidden;
 }
 
 .gobanBoardState {

@@ -183,9 +183,12 @@ class KosumiGoban {
         if (canvasElement.getContext) { // can probably get rid of this line
             const context = canvasElement.getContext('2d');
 
-            context.fillStyle = 'burlywood';
+            //context.fillStyle = 'rgb(240, 177, 95)';
+            context.fillStyle = '#deb7ff';
             context.fillRect(0,0,canvasElement.width,canvasElement.height);
 
+            context.fillStyle = 'burlywood';
+            context.fillRect(unit,unit,canvasElement.width-(unit*2),canvasElement.height-(unit*2));
             for (let y=0; y<height; y++) {
                 if (y===0 || y===height-1) {
                     context.lineWidth = 2;
@@ -259,7 +262,7 @@ class KosumiGoban {
             
             // coords
             let fontSize = unit-5;
-            context.font = `${fontSize}px monospace`;
+            context.font = `${fontSize}px ubuntu-condensed`;
             context.textAlign = 'center';
             context.textBaseline = 'middle';
             for (let i=0; i< width; i++) {

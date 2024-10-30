@@ -66,6 +66,7 @@ const lezgooo = () => {
     if (!toggleButton) {
         toggleButton = document.createElement('button');
         toggleButton.id = 'toggleButton';
+        toggleButton.classList.add('settingsButton');
         toggleButton.addEventListener('click', toggleSGF);
         document.getElementById('settings').appendChild(toggleButton);
     }
