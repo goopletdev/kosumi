@@ -1,5 +1,6 @@
 import TextEditor from './textEditor/text-editor.js';
 import KosumiGoban from './goban/goban.js';
+import KosumiNavigation from './navigation/navigation-panel.js';
 import ParseSGF from './sgfStuff/parse-sgf.js';
 import MakeSGF from './sgfStuff/make-sgf.js';
 import {formatProps,getNodeById,getLastMainNode} from './sgfStuff/sgf-utils.js';
@@ -7,15 +8,19 @@ import {initBoard,initStates,getState} from './sgfStuff/game-logic.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
 const goban = new KosumiGoban(document.getElementById('gobanParent'));
-
+const navigationPanel = new KosumiNavigation(document.getElementById('gobanParent'));
 goban.activeNode;
 goban.gameTree;
 goban.getNodeById = getNodeById;
 goban.getState = getState;
 goban.getLastMainNode = getLastMainNode;
 
+
+navigationPanel.setGoban(goban);
+
 let oldSGF;
 let newSGF;
+let gameTree;
 
 const toggleSGF = () => {
     let toggleButton = document.getElementById('toggleButton');
@@ -36,26 +41,26 @@ const lezgooo = () => {
     let nodeBreak = true;
     goban.info;
 
-    goban.gameTree = formatProps(ParseSGF(oldSGF)[0]);
+    gameTree = formatProps(ParseSGF(oldSGF)[0]);
 
-    const EMPTY = initBoard(goban.gameTree);
-    goban.gameTree = initStates(EMPTY,goban.gameTree);
+    const EMPTY = initBoard(gameTree);
+    gameTree = initStates(EMPTY,gameTree);
 
-    goban.activeNode = goban.gameTree;
+    navigationPanel.activeNode = gameTree;
 
     if (goban.displayStyle === 'html') {
-        goban.boardState.innerHTML = KosumiGoban.asciiHTML(goban.activeNode.state);
+        goban.boardState.innerHTML = KosumiGoban.asciiHTML(navigationPanel.activeNode.state);
     } else if (goban.displayStyle === 'ascii') {
-        goban.boardState.innerText = KosumiGoban.ascii(goban.activeNode.state);
+        goban.boardState.innerText = KosumiGoban.ascii(navigationPanel.activeNode.state);
     } else if (goban.displayStyle === 'canvas') {
-        KosumiGoban.paint(goban.boardState,goban.activeNode.state);
+        KosumiGoban.paint(goban.boardState,navigationPanel.activeNode.state);
     }
 
-    newSGF = MakeSGF(goban.gameTree, headBreak, nodeBreak);
+    newSGF = MakeSGF(gameTree, headBreak, nodeBreak);
     texteditor.textarea.value = newSGF;
     texteditor.update();
 
-    goban.info.value = `(node ${goban.activeNode.id}) Move ${goban.activeNode.moveNumber}:\n${JSON.stringify(goban.activeNode.props)}`;
+    navigationPanel.info.value = `(node ${navigationPanel.activeNode.id}) Move ${navigationPanel.activeNode.moveNumber}:\n${JSON.stringify(navigationPanel.activeNode.props)}`;
 
     let toggleButton = document.getElementById('toggleButton');
     if (!toggleButton) {
@@ -78,6 +83,7 @@ const toggleDisplayStyle = () => {
         goban.boardState.width = '400';
         goban.boardState.id = 'kosumiCanvas';
         goban.boardState.classList.add('gobanCanvas');
+        goban.boardState.classList.remove('gobanBoardState');
         goban.container.insertBefore(goban.boardState,goban.container.firstChild);
         KosumiGoban.paint(goban.boardState,goban.activeNode.state);
         return;
@@ -88,6 +94,7 @@ const toggleDisplayStyle = () => {
     }
     goban.boardState = document.createElement('pre');
     goban.boardState.classList.add('gobanBoardState');
+    goban.boardState.classList.remove('kosumiCanvas');
     goban.boardState.innerText = KosumiGoban.placeholder;
     goban.container.insertBefore(goban.boardState,goban.container.firstChild);
 

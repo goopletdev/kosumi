@@ -5,7 +5,7 @@
 
 body {
     font-family: monospace;
-    background-color: rgb(66, 131, 110);
+    background-color: #634087;
     overflow:hidden;
     position:absolute;
     height:100%;
@@ -15,17 +15,18 @@ body {
 }
 
 .app {
-    background-color: rgb(125, 255, 212);
+    background-color: #deb7ff;
     padding: 1em;
     text-align:center;
     width: 100%;
     margin:3%;
     border:solid;
     border-width: 3px;
-    border-color:rgb(45, 99, 82);
+    border-color:#a86add;
     display: flex;
     vertical-align: middle;
     overflow:hidden;
+    border-radius: 9px;
 }
 
 #editorParent,
@@ -33,14 +34,14 @@ body {
     border:solid;
     border-radius:7px;
     border-width:1px;
-    border-color:rgb(45, 63, 51);
+    border-color: #c785ec;
     height: 100%;
     width: 45%;
     overflow: hidden;
 }
 
 #gobanParent {
-    background-color:rgb(57, 93, 74);
+    background-color:#8549a7;
 }
 
 

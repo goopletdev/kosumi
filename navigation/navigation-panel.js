@@ -1,5 +1,3 @@
-//not yet in use. remove these things from KosumiGoban first
-
 class KosumiNavigation {
     constructor (parent) {
         this.parent = parent;
@@ -20,6 +18,34 @@ class KosumiNavigation {
         this.stepBackwardButton.classList.add('kosumiNavigationButton');
         this.stepForewardButton.classList.add('kosumiNavigationButton');
         this.skipForewardButton.classList.add('kosumiNavigationButton');
+        let that = this;
+        this.skipBackwardButton.addEventListener('click',function() {
+            while(that.activeNode.hasOwnProperty('parent')) {
+                that.activeNode = that.activeNode.parent;
+            };
+            that.update();
+        });
+        this.stepBackwardButton.addEventListener('click',function() {
+            console.log(that);
+            console.log(that.activeNode);
+            if (that.activeNode.hasOwnProperty('parent')) {
+                console.log(that.activeNode.parent);
+                that.activeNode = that.activeNode.parent;
+                that.update();
+            }
+        });
+        this.stepForewardButton.addEventListener('click',function() {
+            if (that.activeNode.hasOwnProperty('children')) {
+                that.activeNode = that.activeNode.children[0];
+                that.update();
+            }
+        });
+        this.skipForewardButton.addEventListener('click',function() {
+            while (that.activeNode.hasOwnProperty('children')) {
+                that.activeNode = that.activeNode.children[0];
+                that.update();
+            }
+        })
 
         this.panel.append(
             this.skipBackwardButton,
@@ -27,5 +53,25 @@ class KosumiNavigation {
             this.stepForewardButton,
             this.skipForewardButton
         )
+
+        this.info = document.createElement('textarea');
+        this.info.classList.add('gobanInfo');
+        this.parent.appendChild(this.info);
+
+        this.activeNode;
     }
+
+    setGoban(kosumiGobanObject) {
+        this.goban = kosumiGobanObject; 
+    }
+
+    update() {
+        this.goban.update(this.activeNode.state);
+        this.info.value = `(node ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
+
+    }
+
+
 }
+
+export default KosumiNavigation;

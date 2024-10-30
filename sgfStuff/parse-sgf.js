@@ -169,37 +169,37 @@ function getTreeEnd(toks) {
 
 /**
  * @private
- * @param {Array} toks Tokens of type '(', ')', ';'
+ * @param {Array} tokens Tokens of type '(', ')', ';'
  * @returns {{}} Node tree of all moves and variations
  */
-function makeTree(toks, parent = -1, move = 0) {
-    if (toks[0]) {
-        if (toks[0].type === '(') {
+function makeTree(tokens, parent, move = 0) {
+    if (tokens[0]) {
+        if (tokens[0].type === '(') {
             let trees = [];
-            while (toks.length) {
-                let treeEnd = getTreeEnd(toks);
-                let subTree = toks.slice(1,treeEnd);
+            while (tokens.length) {
+                let treeEnd = getTreeEnd(tokens);
+                let subTree = tokens.slice(1,treeEnd);
                 let subNode = makeTree(
                     subTree, parent, move
                 );
                 trees.push(subNode);
-                toks = toks.slice(treeEnd+1);
+                tokens = tokens.slice(treeEnd+1);
             }
             return trees;
-        } else if (toks[0].type === ';') {
+        } else if (tokens[0].type === ';') {
             let node = {
-                id: toks[0].id,
+                id: tokens[0].id,
                 moveNumber: move
             }
-            if (parent > -1) {
+            if (parent) {
                 node.parent = parent;
             }
-            if (toks[0].hasOwnProperty('props')) {
-                node.props = toks[0].props;
+            if (tokens[0].hasOwnProperty('props')) {
+                node.props = tokens[0].props;
             }
-            if (toks.length > 1) {
+            if (tokens.length > 1) {
                 let childs = makeTree(
-                    toks.slice(1),node.id,move+1
+                    tokens.slice(1),node,move+1
                 );
                 if (Array.isArray(childs)) {
                     node.children = childs;
@@ -211,7 +211,7 @@ function makeTree(toks, parent = -1, move = 0) {
         }
     } else {
         throw new Error(
-            `'tokens[0]' in makeTree is ${toks[0]}`
+            `'tokens[0]' in makeTree is ${tokens[0]}`
         )
     }
 }

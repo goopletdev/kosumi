@@ -4,14 +4,15 @@
 }
 
 .gobanContainer {
-    height:100%;
-    width:100%;
+    height:fit-content;
+    width:fit-content;
     vertical-align:middle;
     font-size:16px;
     display:flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin:10px auto;
 }
 
 .gobanBoardState {
@@ -53,5 +54,5 @@
 .gobanInfo {
     width:90%;
     height:20%;
-    background-color:rgb(106,211,176);
+    background-color:rgb(200, 200, 200);
 }

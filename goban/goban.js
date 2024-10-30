@@ -30,109 +30,18 @@ class KosumiGoban {
             this.boardState.innerText = KosumiGoban.placeholder;
             this.container.appendChild(this.boardState);
         }
-
-        this.navigation = document.createElement('div');
-        this.navigation.classList.add('gobanNavigationPanel');
-        this.container.appendChild(this.navigation);
-
-        this.skipBackwardButton = document.createElement('button');
-        this.stepBackwardButton = document.createElement('button');
-        this.stepForewardButton = document.createElement('button');
-        this.skipForewardButton = document.createElement('button');
-        this.skipBackwardButton.innerHTML = '<i class="fa fa-fast-backward"></i>'
-        this.stepBackwardButton.innerHTML = '<i class="fa fa-step-backward"></i>'
-        this.stepForewardButton.innerHTML = '<i class="fa fa-step-forward"></i>'
-        this.skipForewardButton.innerHTML = '<i class="fa fa-fast-forward"></i>'
-        this.skipBackwardButton.classList.add('gobanNavigationButton');
-        this.stepBackwardButton.classList.add('gobanNavigationButton');
-        this.stepForewardButton.classList.add('gobanNavigationButton');
-        this.skipForewardButton.classList.add('gobanNavigationButton');
-        const object = this;
-        this.skipBackwardButton.addEventListener('click',function() {
-            object.skipBackward()
-        });
-        this.stepBackwardButton.addEventListener('click',function() {
-            object.stepBackward()
-        });
-        this.stepForewardButton.addEventListener('click',function() {
-            object.stepForeward()
-        });
-        this.skipForewardButton.addEventListener('click',function() {
-            object.skipForeward()
-        });
-
-        this.navigation.append(
-            this.skipBackwardButton,
-            this.stepBackwardButton,
-            this.stepForewardButton,
-            this.skipForewardButton
-        )
-
-        this.info = document.createElement('textarea');
-        this.info.classList.add('gobanInfo');
-        this.container.appendChild(this.info);
-
-        this.activeNode;
-        this.gameTree;
-        this.getNodeById;
-        this.getState;
-        this.getLastMainNode; 
     }
 
-    skipBackward() {
-        this.activeNode = this.gameTree;
+    update(state) {
         if (this.displayStyle === 'html') {
-            this.boardState.innerHTML = KosumiGoban.asciiHTML(this.activeNode.state);
+            this.boardState.innerHTML = KosumiGoban.asciiHTML(state);
         } else if (this.displayStyle === 'ascii') {
-            this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
+            this.boardState.innerText = KosumiGoban.ascii(state);
         } else if (this.displayStyle === 'canvas') {
-            KosumiGoban.paint(this.boardState,this.activeNode.state);
+            KosumiGoban.paint(this.boardState, state);
         }
-        this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
     }
-
-    stepBackward() {
-        if (this.activeNode.hasOwnProperty('parent')) {
-            this.activeNode = this.getNodeById(this.gameTree,this.activeNode.parent);
-            if (this.displayStyle === 'html') {
-                this.boardState.innerHTML = KosumiGoban.asciiHTML(this.activeNode.state);
-            } else if (this.displayStyle === 'ascii') {
-                this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
-            } else if (this.displayStyle === 'canvas') {
-                KosumiGoban.paint(this.boardState,this.activeNode.state);
-            }  
-        }
-        this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
-    }
-    
-    stepForeward() {
-        if (this.activeNode.hasOwnProperty('children')) {
-            let newState = this.getState(this.activeNode.state, this.activeNode.children[0].props);
-            this.activeNode = this.activeNode.children[0];
-            this.activeNode.state = newState;
-            if (this.displayStyle === 'html') {
-                this.boardState.innerHTML = KosumiGoban.asciiHTML(this.activeNode.state);
-            } else if (this.displayStyle === 'ascii') {
-                this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
-            } else if (this.displayStyle === 'canvas') {
-                KosumiGoban.paint(this.boardState,this.activeNode.state);
-            }    
-        }
-        this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
-    }
-
-    skipForeward() {
-        this.activeNode = this.getLastMainNode(this.activeNode);
-        if (this.displayStyle === 'html') {
-            this.boardState.innerHTML = KosumiGoban.asciiHTML(this.activeNode.state);
-        } else if (this.displayStyle === 'ascii') {
-            this.boardState.innerText = KosumiGoban.ascii(this.activeNode.state);
-        } else if (this.displayStyle === 'canvas') {
-            KosumiGoban.paint(this.boardState,this.activeNode.state);
-        } 
-        this.info.value = `(Node: ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
-    }
-        
+     
     static ascii(goban) {
         let state = JSON.parse(JSON.stringify(goban));
         let Y = state.length;
@@ -259,20 +168,21 @@ class KosumiGoban {
         return pretty;
     }
 
-    static paint(canvas, boardState) {
+    static paint(canvasElement, boardState) {
         let width = boardState[0].length;
         let height= boardState.length;
 
-        let widthUnit = Math.floor(canvas.width / (width + 2));
-        let heightUnit = Math.floor(canvas.height / (height + 2));
-        console.log(widthUnit,heightUnit, (canvas.width))
+        let widthUnit = Math.floor(canvasElement.width / (width + 2));
+        let heightUnit = Math.floor(canvasElement.height / (height + 2));
+        let unit = widthUnit > heightUnit ? heightUnit : widthUnit;
+        console.log(widthUnit,heightUnit, (canvasElement.width))
         
         console.log('paint on!');
-        if (canvas.getContext) {
-            const context = canvas.getContext('2d');
+        if (canvasElement.getContext) {
+            const context = canvasElement.getContext('2d');
 
             context.fillStyle = 'burlywood';
-            context.fillRect(0,0,canvas.width,canvas.height);
+            context.fillRect(0,0,canvasElement.width,canvasElement.height);
 
             for (let y=0; y<height; y++) {
                 if (y===0 || y===height-1) {
@@ -361,30 +271,27 @@ class KosumiGoban {
     }
 
     static placeholder = `  a b c d e f g h i j k l m n o p q r s  
-    a ┏━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┓ a
-    b ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ b
-    c ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ c
-    d ┠─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┨ d
-    e ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ e
-    f ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ f
-    g ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ g
-    h ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ h
-    i ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ i
-    j ┠─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┨ j
-    k ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ k
-    l ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ l
-    m ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ m
-    n ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ n
-    o ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ o
-    p ┠─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┨ p
-    q ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ q
-    r ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ r
-    s ┗━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┛ s
-    ▪▫a b c d e f g h i j k l m n o p q r s  `
+a ┏━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┯━┓ a
+b ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ b
+c ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ c
+d ┠─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┨ d
+e ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ e
+f ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ f
+g ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ g
+h ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ h
+i ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ i
+j ┠─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┨ j
+k ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ k
+l ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ l
+m ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ m
+n ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ n
+o ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ o
+p ┠─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┼─┼─┼─╋─┼─┼─┨ p
+q ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ q
+r ┠─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┨ r
+s ┗━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┷━┛ s
+▪▫a b c d e f g h i j k l m n o p q r s  `
 
 }
-
-//need to define getNodeById() and ascii(); and gameTree; get ride of getState() since this should only reference a fully-formed node tree
-
 
 export default KosumiGoban;
