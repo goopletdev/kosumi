@@ -7,6 +7,7 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 - Correct SGF style errors in SGF files from OGS, and maximize compatibility by unzipping compressed coordinates
 
 ## To-do list:
+- BIGBUG: canvas gets progressively smaller with different shaped boards, until refresh
 - smolbug: fix toggle display style button
 - improve syntax highlighting (typing for propIdent/val pairs)
 - flesh out nodeInfo class
