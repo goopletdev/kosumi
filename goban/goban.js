@@ -176,8 +176,11 @@ class KosumiGoban {
         let heightUnit = Math.floor(canvasElement.height / (height + 2));
         let unit = widthUnit > heightUnit ? heightUnit : widthUnit;
         console.log(widthUnit,heightUnit, unit, canvasElement.width)
+        // normalize the vertical and horizontal distance between intersections
+        canvasElement.width = (width+2) * unit;
+        canvasElement.height = (height+2) * unit;
         
-        if (canvasElement.getContext) {
+        if (canvasElement.getContext) { // can probably get rid of this line
             const context = canvasElement.getContext('2d');
 
             context.fillStyle = 'burlywood';
@@ -191,26 +194,29 @@ class KosumiGoban {
                 }
                 context.strokeStyle = 'black';
                 context.beginPath()
-                context.moveTo(widthUnit*1.5,heightUnit * (y+1.5));
-                context.lineTo(widthUnit * (width+0.5),heightUnit * (y+1.5));
+                context.moveTo(unit*1.5,unit * (y+1.5));
+                context.lineTo(unit * (width+0.5),unit * (y+1.5));
                 context.stroke();
             }
             for (let x=0; x<width; x++) {
-                if (x===0 || x===height-1) {
+                if (x===0 || x===width-1) {
                     context.lineWidth = 2;
                 } else {
                     context.lineWidth = 1;
                 }
                 context.strokeStyle = 'black';
                 context.beginPath()
-                context.moveTo(widthUnit*(x+1.5),heightUnit*1.5);
-                context.lineTo(widthUnit*(x+1.5),heightUnit*(height+0.5));
+                context.moveTo(unit*(x+1.5),unit*1.5);
+                context.lineTo(unit*(x+1.5),unit*(height+0.5));
                 context.stroke();
             }
+            // board markings 
+            context.fillStyle = 'black';
+
             // star points 
+            let stars = [];
             if (height === 19 && width === 19) {
-                context.fillStyle = 'black';
-                let stars = [
+                stars = [
                     [3,3],
                     [3,9],
                     [3,15],
@@ -219,25 +225,50 @@ class KosumiGoban {
                     [9,15],
                     [15,3],
                     [15,9],
-                    [15,15]
+                    [15,15],
                 ];
-                for (let star of stars) {
-                    context.beginPath();
-                    context.arc(widthUnit*(star[0]+1.5),heightUnit*(star[1]+1.5),2.5,0,Math.PI*2);
-                    context.fill();
-                }
+            } else if (height === 13 && width === 13) {
+                stars = [
+                    [3,3],
+                    [3,6],
+                    [3,9],
+                    [6,3],
+                    [6,6],
+                    [6,9],
+                    [9,3],
+                    [9,6],
+                    [9,9],
+                ];
+            } else if (height === 9 && width === 9) {
+                stars = [
+                    [2,2],
+                    [2,6],
+                    [4,4],
+                    [6,2],
+                    [6,6],
+                ]
+            } else if (height % 2 && width % 2) {
+                stars.push([Math.floor(width/2),Math.floor(height/2)]);
             }
+
+            for (let star of stars) {
+                context.beginPath();
+                context.arc(unit*(star[0]+1.5),unit*(star[1]+1.5),unit/7.6,0,Math.PI*2);
+                context.fill();
+            }
+            
             // coords
-            context.font = '14px monospace'
+            let fontSize = unit-5;
+            context.font = `${fontSize}px monospace`;
             context.textAlign = 'center';
             context.textBaseline = 'middle';
             for (let i=0; i< width; i++) {
-                context.fillText(sgfCoordinates[i],widthUnit*(i+1.5),(heightUnit*.5));
-                context.fillText(sgfCoordinates[i],widthUnit*(i+1.5),heightUnit*(height+1.5))
+                context.fillText(sgfCoordinates[i],unit*(i+1.5),(unit*.5));
+                context.fillText(sgfCoordinates[i],unit*(i+1.5),unit*(height+1.5))
             }
             for (let i=0; i< height; i++) {
-                context.fillText(sgfCoordinates[i],widthUnit*.5,heightUnit*(i+1.5));
-                context.fillText(sgfCoordinates[i],widthUnit*(height+1.5),heightUnit*(i+1.5));
+                context.fillText(sgfCoordinates[i],unit*.5,unit*(i+1.5));
+                context.fillText(sgfCoordinates[i],unit*(width+1.5),unit*(i+1.5));
             }
             // stones
             for (let y=0; y<height; y++) {
@@ -256,12 +287,14 @@ class KosumiGoban {
                             continue;
                     }
                     context.beginPath();
-                    context.arc(widthUnit*(x+1.5),heightUnit*(y+1.5),8,0,Math.PI*2);
+                    context.arc(unit*(x+1.5),unit*(y+1.5),(unit/2)-0.5,0,Math.PI*2);
                     context.fill();
+
+                    // last move marker
                     if (newMove.toLowerCase() === newMove) {
-                        context.lineWidth = 1.5;
+                        context.lineWidth = unit/12;
                         context.beginPath();
-                        context.arc(widthUnit*(x+1.5),heightUnit*(y+1.5),5,0,Math.PI*2);
+                        context.arc(unit*(x+1.5),unit*(y+1.5),unit/3.5,0,Math.PI*2);
                         context.stroke();
                     }
                 }
