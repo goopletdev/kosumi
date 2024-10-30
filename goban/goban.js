@@ -175,9 +175,8 @@ class KosumiGoban {
         let widthUnit = Math.floor(canvasElement.width / (width + 2));
         let heightUnit = Math.floor(canvasElement.height / (height + 2));
         let unit = widthUnit > heightUnit ? heightUnit : widthUnit;
-        console.log(widthUnit,heightUnit, (canvasElement.width))
+        console.log(widthUnit,heightUnit, unit, canvasElement.width)
         
-        console.log('paint on!');
         if (canvasElement.getContext) {
             const context = canvasElement.getContext('2d');
 
