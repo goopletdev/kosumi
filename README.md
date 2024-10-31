@@ -9,20 +9,19 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 ## To-do list:
 - map arrow keys to navigation panel buttons?
 - make line-highlighting instantaneous upon click/arrow
-- sgf property groupings: time + overtime, Black player + Black rank, same w/ white
-- BIGBUT: komi missing after making an SGF from a parsed GoQuest sgf??
-- BIGBUG: canvas gets progressively smaller with different shaped boards, until refresh
-- smolbug: fix toggle display style button
 - improve syntax highlighting (typing for propIdent/val pairs)
 - flesh out nodeInfo class
-- BIGBUG: allow 'tt' for passes
-- smoler bug: allow for parsing of collections
 - navigation: allow for variations
-- ascii: allow for boards w/ 2x2 or 3x3 intersections for more detail?
 - figure out how to better group sgf utility funcs and object utility funcs
 - Allow compressing coords when generating SGF
 - Basically rewrite everything in `game-logic.js` so it's not pure spaghetti, and add JSdoc while at it
 - Try and use fewer loops in parse.js! 
+
+## Known issues:
+- BIGBUG: canvas gets progressively smaller with different shaped boards, until refresh
+- smolbug: fix toggle display style button
+- BIGBUG: allow 'tt' for passes
+- smoler bug: allow for parsing of collections
 
 ## Credits:
 the lovely, helpful, experienced, encouraging, friendly folks in the OGS forums for answering my endless questions about SGF and ebb'neffing

@@ -150,27 +150,37 @@ const rootProperties = [
     'SZ',
 ]
 const gameInfoProperties = [
-    'AN', //  name of annotator
+    'GN', //name of the game (oft used within collection; could also be used as file-name)
+    'SO', // source (book, journal)
+    'US', //name of user who entered game
+    'AN', // name of annotator
+    'CP', // copyright info
+
+    'PB', // name of black player
     'BR', // Black rank
     'BT', // Black team name (team matches)
-    'CP', // copyright info
-    'DT', // date when game was played
-    'EV', 
-    'GN',
-    'GC',
-    'ON',
-    'OT',
-    'PB',
-    'PC',
-    'PW',
-    'RE',
-    'RO',
-    'RU',
-    'SO',
-    'TM',
-    'US', //name of user who entered game
+    'PW', // name of White player
     'WR', // white player rank
     'WT', // white team name
+
+    'EV', // name of event
+    'PC', // place where game as played
+    'DT', // date when game was played
+
+    'RE', // result
+    'RO', // round-number and type of round
+    'RU', // rules
+    'KM', // GOSPECIFIC defines komi
+
+    'TM', // time limits of game (in seconds)
+    'OT', // describes method of overtime
+
+    'GC', // extra info about game; background info, or game summary
+    'ON', // info about opening played
+
+
+    'HA', // GOSPECIFIC num handicap stones
+
 ]
 const moveProperties = [
     'MN',
