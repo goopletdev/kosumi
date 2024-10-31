@@ -1,5 +1,8 @@
 import { sgfPropOrder, rootProperties } from "../sgfStuff/sgfProperties.js";
 const propOrder = sgfPropOrder.flat();
+const blackInfo = ['PB','BR','BT'];
+const whiteInfo = ['PW','WR','WT'];
+const timeInfo = ['TM','OT'];
 /**
  * 
  * @param {{
@@ -33,7 +36,10 @@ function MakeSGF(node, headerBreaks=true, nodeBreaks=true) {
             let suffix = '';
             if (node.id === 0 && headerBreaks && (
                 !rootProperties.includes(orderedKeys[i+1]) || !rootProperties.includes(orderedKeys[i])
-            )) {
+            ) && !(blackInfo.includes(orderedKeys[i]) && blackInfo.includes(orderedKeys[i+1])) && !(
+                whiteInfo.includes(orderedKeys[i]) && whiteInfo.includes(orderedKeys[i+1])
+            ) && !(timeInfo.includes(orderedKeys[i]) && timeInfo.includes(orderedKeys[i+1]))) {
+                console.log(blackInfo,orderedKeys[i],orderedKeys[i+1])
                 suffix = '\n';
             }
             let values = [];
