@@ -75,5 +75,7 @@ document.addEventListener('mouseup', function () {
 })
 document.addEventListener('mousemove', function (mousePosition) {
     if (!mouseIsDown) return;
-    texteditor.parent.style.width = `${mousePosition.clientX - texteditor.parent.getBoundingClientRect().left}px`;    
+    let splitBarStyle = splitBar.getBoundingClientRect()
+    let splitBarWidth = splitBarStyle.right-splitBarStyle.left;
+    texteditor.parent.style.width = `${mousePosition.clientX - texteditor.parent.getBoundingClientRect().left - (splitBarWidth/2)}px`;    
 })
