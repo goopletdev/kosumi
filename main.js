@@ -3,18 +3,13 @@ import KosumiGoban from './goban/goban.js';
 import KosumiNavigation from './navigation/navigation-panel.js';
 import ParseSGF from './sgfStuff/parse-sgf.js';
 import MakeSGF from './sgfStuff/make-sgf.js';
-import {formatProps,getNodeById,getLastMainNode} from './sgfStuff/sgf-utils.js';
-import {initBoard,initStates,getState} from './sgfStuff/game-logic.js';
+import {formatProps} from './sgfStuff/sgf-utils.js';
+import {initBoard,initStates} from './sgfStuff/game-logic.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
 const goban = new KosumiGoban(document.getElementById('gobanParent'));
 const navigationPanel = new KosumiNavigation(document.getElementById('gobanParent'));
-goban.activeNode;
 goban.gameTree;
-goban.getNodeById = getNodeById;
-goban.getState = getState;
-goban.getLastMainNode = getLastMainNode;
-
 
 navigationPanel.setGoban(goban);
 
@@ -36,10 +31,6 @@ const toggleSGF = () => {
 
 const lezgooo = () => {
     oldSGF = texteditor.textarea.value;
-    goban.boardState;
-    let headBreak = true;
-    let nodeBreak = true;
-    goban.info;
 
     gameTree = formatProps(ParseSGF(oldSGF)[0]);
 
@@ -50,7 +41,7 @@ const lezgooo = () => {
 
     KosumiGoban.paint(goban.boardState,navigationPanel.activeNode.state);
 
-    newSGF = MakeSGF(gameTree, headBreak, nodeBreak);
+    newSGF = MakeSGF(gameTree);
     texteditor.textarea.value = newSGF;
     texteditor.update();
 
