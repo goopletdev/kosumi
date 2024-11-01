@@ -48,13 +48,7 @@ const lezgooo = () => {
 
     navigationPanel.activeNode = gameTree;
 
-    if (goban.displayStyle === 'html') {
-        goban.boardState.innerHTML = KosumiGoban.asciiHTML(navigationPanel.activeNode.state);
-    } else if (goban.displayStyle === 'ascii') {
-        goban.boardState.innerText = KosumiGoban.ascii(navigationPanel.activeNode.state);
-    } else if (goban.displayStyle === 'canvas') {
-        KosumiGoban.paint(goban.boardState,navigationPanel.activeNode.state);
-    }
+    KosumiGoban.paint(goban.boardState,navigationPanel.activeNode.state);
 
     newSGF = MakeSGF(gameTree, headBreak, nodeBreak);
     texteditor.textarea.value = newSGF;
@@ -66,45 +60,12 @@ const lezgooo = () => {
     if (!toggleButton) {
         toggleButton = document.createElement('button');
         toggleButton.id = 'toggleButton';
-        toggleButton.classList.add('settingsButton');
+        toggleButton.classList.add('editorButton');
         toggleButton.addEventListener('click', toggleSGF);
-        document.getElementById('settings').appendChild(toggleButton);
+        texteditor.toolbar.appendChild(toggleButton);
     }
     toggleButton.innerText = 'show old SGF';
 
 }
 
-const toggleDisplayStyle = () => {
-    goban.container.removeChild(goban.boardState);
-    if (goban.displayStyle === 'html') {
-        goban.displayStyle = 'canvas';
-
-        goban.boardState = document.createElement('canvas');
-        goban.boardState.height = '400';
-        goban.boardState.width = '400';
-        goban.boardState.id = 'kosumiCanvas';
-        goban.boardState.classList.add('gobanCanvas');
-        goban.boardState.classList.remove('gobanBoardState');
-        goban.container.insertBefore(goban.boardState,goban.container.firstChild);
-        KosumiGoban.paint(goban.boardState,goban.activeNode.state);
-        return;
-    } else if (goban.displayStyle === 'canvas') {
-        goban.displayStyle = 'ascii';
-    } else if (goban.displayStyle === 'ascii') {
-        goban.displayStyle = 'html';
-    }
-    goban.boardState = document.createElement('pre');
-    goban.boardState.classList.add('gobanBoardState');
-    goban.boardState.classList.remove('kosumiCanvas');
-    goban.boardState.innerText = KosumiGoban.placeholder;
-    goban.container.insertBefore(goban.boardState,goban.container.firstChild);
-
-    if (goban.displayStyle === 'html') {
-        goban.boardState.innerHTML = KosumiGoban.asciiHTML(goban.activeNode.state);
-    } else if (goban.displayStyle === 'ascii') {
-        goban.boardState.innerText = KosumiGoban.ascii(goban.activeNode.state);
-    }
-}
-
-document.getElementById('parse').addEventListener('click',lezgooo);
-document.getElementById('toggle-display').addEventListener('click',toggleDisplayStyle);
+document.getElementById('format').addEventListener('click',lezgooo);
