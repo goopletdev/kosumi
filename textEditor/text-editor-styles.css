@@ -113,15 +113,33 @@
 .editorFooter {
     width:100%;
     height:fit-content;
-    vertical-align: baseline;
+    vertical-align:middle;
+    display:flex;
+    flex-direction: row;
     text-align: right;
     border-width:2px;
     position:sticky;
     bottom:0;
 }
 
+.editorToolbar {
+    text-align:left;
+    width:50%;
+}
+
+.editorButton {
+    font-family: inherit;
+    background-color: inherit;
+    color:inherit;
+    border-color:black;
+    border-radius:3px;
+    border-width:1px;
+}
+
 #caret {
+    text-align:right;
     margin-right: 1ch;
+    width:50%;
 }
 
 /* KosumiTextEditor color themes */

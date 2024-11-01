@@ -46,6 +46,17 @@ class TextEditor {
         this.footer.style.paddingRight = '1em';
         this.container.appendChild(this.footer);
 
+        this.toolbar = document.createElement('div');
+        this.toolbar.id = 'toolbar';
+        this.toolbar.classList.add('editorToolbar');
+        this.footer.appendChild(this.toolbar);
+
+        this.formatButton = document.createElement('button');
+        this.formatButton.id = 'format';
+        this.formatButton.classList.add('editorButton');
+        this.formatButton.innerText = 'Format SGF';
+        this.toolbar.appendChild(this.formatButton);
+
         this.caret = document.createElement('div');
         this.caret.id = 'caret';
         this.footer.appendChild(this.caret);
