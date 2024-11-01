@@ -184,11 +184,9 @@ function initBoard(rootNode) {
         }
         if (rootNode.props.SZ[0].includes(':')) {
             [X,Y] = Array.from(rootNode.props.SZ[0].split(':'), (x) => parseInt(x));
-            console.log(X,Y);
         } else {
             X = parseInt(rootNode.props.SZ[0]);
             Y = X;
-            console.log(X,Y);
         }
         for (let i=0; i < Y; i++) {
             EMPTY.push(Array.from(new Array(X + 1).join('.')));

@@ -39,7 +39,6 @@ function MakeSGF(node, headerBreaks=true, nodeBreaks=true) {
             ) && !(blackInfo.includes(orderedKeys[i]) && blackInfo.includes(orderedKeys[i+1])) && !(
                 whiteInfo.includes(orderedKeys[i]) && whiteInfo.includes(orderedKeys[i+1])
             ) && !(timeInfo.includes(orderedKeys[i]) && timeInfo.includes(orderedKeys[i+1]))) {
-                console.log(blackInfo,orderedKeys[i],orderedKeys[i+1])
                 suffix = '\n';
             }
             let values = [];

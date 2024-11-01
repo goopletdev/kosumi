@@ -49,7 +49,6 @@ class KosumiGoban {
         let widthUnit = Math.floor(canvasElement.width / (width + 2));
         let heightUnit = Math.floor(canvasElement.height / (height + 2));
         let unit = widthUnit > heightUnit ? heightUnit : widthUnit;
-        console.log(widthUnit,heightUnit, unit, canvasElement.width)
         // normalize the vertical and horizontal distance between intersections
         canvasElement.width = (width+2) * unit;
         canvasElement.height = (height+2) * unit;

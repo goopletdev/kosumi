@@ -98,7 +98,6 @@ class TextEditor {
     }
 
     update() {
-        console.log('\n\nNEWUPDATE')
         let activeLine = this.textarea.value.slice(0,this.textarea.selectionStart).split('\n').length-1;
         //let lines = Array.from(this.textarea.value.split('\n'), line => line ||= ' ');
         let lines = HighlightSGF(Array.from(this.textarea.value.split('\n'), line => line ||= ' ').join('\n'));
