@@ -36,21 +36,10 @@ body {
     border-width:1px;
     border-color: #c785ec;
     height: 100%;
-    width: 45%;
+    width: 50%;
     overflow: hidden;
 }
 
 #gobanParent {
     background-color:#8549a7;
-}
-
-
-#settings {
-    height:100%;
-    border:none;
-    width:10%;
-}
-
-.settingsButton {
-    font-family: 'ubuntu-condensed';
 }
