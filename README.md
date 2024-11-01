@@ -18,6 +18,7 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 - Try and use fewer loops in parse.js! 
 
 ## Known issues:
+- resizing using the middle dividing bar is slow
 - BIGBUG: canvas gets progressively smaller with different shaped boards, until refresh
 - smolbug: fix toggle display style button
 - BIGBUG: allow 'tt' for passes

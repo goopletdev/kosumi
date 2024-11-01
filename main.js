@@ -60,3 +60,20 @@ const lezgooo = () => {
 }
 
 document.getElementById('format').addEventListener('click',lezgooo);
+
+
+
+// splitBar resizer
+let splitBar = document.getElementById('splitBar');
+let mouseIsDown = false;
+
+splitBar.addEventListener('mousedown', function() {
+    mouseIsDown = true;
+})
+document.addEventListener('mouseup', function () {
+    mouseIsDown = false;
+})
+document.addEventListener('mousemove', function (mousePosition) {
+    if (!mouseIsDown) return;
+    texteditor.parent.style.width = `${mousePosition.clientX - texteditor.parent.getBoundingClientRect().left}px`;    
+})
