@@ -40,6 +40,11 @@ body {
     overflow: hidden;
 }
 
+#splitBar {
+    height:100%;
+    width: 10px;
+}
+
 #gobanParent {
     background-color:#8549a7;
 }
