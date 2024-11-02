@@ -7,6 +7,7 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 - Correct SGF style errors in SGF files from OGS, and maximize compatibility by unzipping compressed coordinates
 
 ## To-do list:
+- display actively edited node as active node on the goban
 - unit testing
 - jsdoc
 - move navigation event listeners to static function, have them listen to external game object
