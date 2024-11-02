@@ -142,12 +142,12 @@ let gameProps = {...properties, ...gameSpecificProperties[1]};
 
 
 const rootProperties = [
-    'FF',
-    'GM',
-    'AP',
-    'CA',
-    'ST',
-    'SZ',
+    'FF', // file format (1,3,4)
+    'GM', // game (number, default 1)
+    'AP', // application (Kosumi)
+    'CA', // charset
+    'ST', // variation style
+    'SZ', // board size
 ]
 const gameInfoProperties = [
     'GN', //name of the game (oft used within collection; could also be used as file-name)
