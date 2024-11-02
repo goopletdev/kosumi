@@ -86,10 +86,10 @@ function MakeSGF(node, headerBreaks=true, nodeBreaks=true) {
  * @param {boolean} nodeBreaks Whitespace after nodes
  * @returns {string} SGF string
  */
-function makeCollection(nodes) {
+function makeCollection(nodes, headerBreaks=true, nodeBreaks=true) {
     let collection = [];
     for (i = 0; i < nodes.length; i++) {
-        collection.push(MakeSGF(nodes[i]));
+        collection.push(MakeSGF(nodes[i],headerBreaks,nodeBreaks));
     }
     return collection.join('\n');
 }
