@@ -7,6 +7,9 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 - Correct SGF style errors in SGF files from OGS, and maximize compatibility by unzipping compressed coordinates
 
 ## To-do list:
+- unit testing
+- jsdoc
+- move navigation event listeners to static function, have them listen to external game object
 - map arrow keys to navigation panel buttons?
 - make line-highlighting instantaneous upon click/arrow
 - improve syntax highlighting (typing for propIdent/val pairs)
