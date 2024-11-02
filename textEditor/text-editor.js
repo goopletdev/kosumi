@@ -65,7 +65,7 @@ class TextEditor {
         this.toolbar.appendChild(this.formatButton);
 
         this.caret = document.createElement('div');
-        this.caret.id = 'caret';
+        this.caret.id = 'caretInfo';
         this.footer.appendChild(this.caret);
 
         const object = this;
