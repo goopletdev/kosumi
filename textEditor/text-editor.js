@@ -1,6 +1,13 @@
 import HighlightSGF from '../syntaxHighlighting/sgf-syntax.js';
 
+/**
+ * @module TextEditor
+ */
 class TextEditor {
+    /**
+     * Creates and appends the Kosumi TextEditor DOM element
+     * @param {HTMLElement} parent TextEditor HTML parent element
+     */
     constructor(parent) {
         this.parent = parent;
 
