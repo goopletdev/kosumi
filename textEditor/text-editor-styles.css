@@ -124,7 +124,7 @@
 
 .editorToolbar {
     text-align:left;
-    width:50%;
+    flex: 1;
 }
 
 .editorButton {
@@ -136,10 +136,10 @@
     border-width:1px;
 }
 
-#caret {
+#caretInfo {
     text-align:right;
     margin-right: 1ch;
-    width:50%;
+    width:fit-content;
 }
 
 /* KosumiTextEditor color themes */
