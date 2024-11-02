@@ -76,7 +76,7 @@ function tokenize(sgf,callback) {
                 type: sgf[i]
             })
         } else {
-            console.log(`'${sgf[i]}' not valid SGF char`);
+            // console.log(`'${sgf[i]}' not valid SGF char`);
         }
     }
     callback(tokens);
