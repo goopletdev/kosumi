@@ -3,7 +3,7 @@ import KosumiGoban from './goban/goban.js';
 import KosumiNavigation from './navigation/navigation-panel.js';
 import ParseSGF from './sgfStuff/parse-sgf.js';
 import MakeSGF from './sgfStuff/make-sgf.js';
-import {formatProps} from './sgfStuff/sgf-utils.js';
+import {formatProps, getNodeById, getLastMainNode} from './sgfStuff/sgf-utils.js';
 import {initBoard,initStates} from './sgfStuff/game-logic.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
@@ -59,8 +59,26 @@ const lezgooo = () => {
 
 }
 
-document.getElementById('format').addEventListener('click',lezgooo);
+const updateDisplay = () => {
+    gameTree = formatProps(ParseSGF(texteditor.textarea.value)[0]);
+    const EMPTY = initBoard(gameTree);
+    gameTree = initStates(EMPTY,gameTree);
+    let currentNodeId;
+    if (navigationPanel.hasOwnProperty('activeNode')) {
+        currentNodeId = navigationPanel.activeNode.id;
+    } else {
+        currentNodeId = 0;
+    }
 
+
+    //navigationPanel.activeNode = getNodeById(gameTree,currentNodeId);
+    navigationPanel.activeNode = getLastMainNode(gameTree)
+    KosumiGoban.paint(goban.boardState,navigationPanel.activeNode.state);
+}
+
+document.getElementById('format').addEventListener('click',lezgooo);
+texteditor.textarea.addEventListener('change', updateDisplay);
+texteditor.textarea.addEventListener('input',updateDisplay);
 
 
 // splitBar resizer
