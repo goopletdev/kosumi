@@ -26,10 +26,7 @@ class KosumiNavigation {
             that.update();
         });
         this.stepBackwardButton.addEventListener('click',function() {
-            console.log(that);
-            console.log(that.activeNode);
             if (that.activeNode.hasOwnProperty('parent')) {
-                console.log(that.activeNode.parent);
                 that.activeNode = that.activeNode.parent;
                 that.update();
             }
