@@ -105,9 +105,16 @@ class TextEditor {
     }
 
     update() {
-        let activeLine = this.textarea.value.slice(0,this.textarea.selectionStart).split('\n').length-1;
-        //let lines = Array.from(this.textarea.value.split('\n'), line => line ||= ' ');
-        let lines = HighlightSGF(Array.from(this.textarea.value.split('\n'), line => line ||= ' ').join('\n'));
+        let activeLine = this.textarea.value.slice(
+            0,this.textarea.selectionStart
+        ).split('\n').length-1;
+
+        let lines = HighlightSGF(Array.from(
+            this.textarea.value.split('\n'), line => line ||= ' '
+        ).join('\n').replace(new RegExp("&", "g"), "&amp;").replace(
+            new RegExp("<", "g"), "&lt;"
+        ));
+
         while (this.lines.childNodes.length > lines.length) {
             this.lines.removeChild(this.lines.childNodes[activeLine]);
             this.lineNumbers.removeChild(this.lineNumbers.lastChild);
@@ -115,7 +122,9 @@ class TextEditor {
         while (this.lines.childNodes.length < lines.length) {
             let newLine = document.createElement('div');
             newLine.classList.add('line');
-            this.lines.insertBefore(newLine,this.lines.childNodes[activeLine+1]);
+            this.lines.insertBefore(
+                newLine,this.lines.childNodes[activeLine+1]
+            );
     
             let newLineNumber = document.createElement('div');
             newLineNumber.classList.add('lineNumber');
@@ -127,15 +136,15 @@ class TextEditor {
             if (this.lines.childNodes[i].innerHTML !== lines[i]) {
                 this.lines.childNodes[i].innerHTML = lines[i];
             }
-            if (this.lineNumbers.childNodes[i].offsetHeight > this.lines.childNodes[i].offsetHeight) {
+            if (this.lineNumbers.childNodes[i].offsetHeight 
+                > this.lines.childNodes[i].offsetHeight) {
                 this.lineNumbers.childNodes[i].innerText = i+1;
             }
-            while (this.lineNumbers.childNodes[i].offsetHeight < this.lines.childNodes[i].offsetHeight) {
+            while (this.lineNumbers.childNodes[i].offsetHeight 
+                < this.lines.childNodes[i].offsetHeight) {
                 this.lineNumbers.childNodes[i].innerText += '\n';
             }
         }
-
-        //let highlighted = `<div>${text.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;")}</div>`;    
     }
 
     caretPosition() {
@@ -145,7 +154,8 @@ class TextEditor {
         let textToCursor = this.textarea.value.slice(0,beginSelect).split('\n');
         let activeLineFirst = textToCursor.length;
         let column = textToCursor[activeLineFirst-1].length+1;
-        let activeLineLast = this.textarea.value.slice(0,endSelect).split('\n').length;
+        let activeLineLast = this
+            .textarea.value.slice(0,endSelect).split('\n').length;
     
         if (activeLineFirst === activeLineLast) {
             this.lines.childNodes.forEach((element,i) => {
