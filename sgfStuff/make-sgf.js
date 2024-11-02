@@ -8,9 +8,14 @@ const timeInfo = ['TM','OT'];
  * @param {{
  * id: number;
  * moveNumber: number;
- * parent?: number;
  * props?: {};
- * children?: {}[]
+ * children?: {
+ *  id: number;
+ *  moveNumber: number;
+ *  parent: {};
+ *  props?: {};
+ *  children?: {}[]
+ * }[]
  * }} node Root node from game tree
  * @param {boolean} headerBreaks Whitespace in first node
  * @param {boolean} nodeBreaks Whitespace after nodes

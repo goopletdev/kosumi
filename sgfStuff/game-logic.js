@@ -75,6 +75,12 @@ function getChain(goban,coord,chain=[]) {
     return chain;
 }
 
+/**
+ * 
+ * @param {*} chains 
+ * @param {*} coord 
+ * @returns 
+ */
 function coordInChains(chains,coord) {
     for (let chain of chains) {
         if (arrayHasCoord(chain,coord)) {
@@ -84,12 +90,24 @@ function coordInChains(chains,coord) {
     return false;
 }
 
+/**
+ * Sets newmove by setting ti toLowerCase()
+ * @param {matrix} state Boardstate
+ * @param {[number,number][]} move 
+ * @returns Boardstate with lowercase lastMoves
+ */
 function setNew(state,move) {
     let lower = getValue(state,move).toLowerCase();
     state = setValue(state,move,lower);
     return state;
 }
 
+/**
+ * Applies game logic to boardstate and new moves
+ * @param {matrix} state Previous boardstate
+ * @param {[number,number][]} moves Array of numeric coordinates
+ * @returns new boardstate
+ */
 function calculateBoard(state,moves) {
     let newState = clone(state);
     let checkpoints = moves.slice(1);
@@ -128,6 +146,12 @@ function calculateBoard(state,moves) {
     return newState;
 }
 
+/**
+ * Generates boardstate by placing moves on parent boardstate
+ * @param {matrix} lastState Boardstate at parent node
+ * @param {object} props Node properties
+ * @returns {matrix} new boardstate
+ */
 function getState(lastState,props) {
     let newState = clone(lastState);
     for (let key of Object.keys(props)) {
@@ -151,8 +175,18 @@ function getState(lastState,props) {
     return newState;
 }
 
+/**
+ * Generates board state for node and its children
+ * @param {matrix} lastState Game state at parent node
+ * @param {object} gameTree Target node to generate board state
+ * @returns {object} gameTree with node's state
+ */
 function initStates(lastState, gameTree) {
-    gameTree.state = getState(lastState,gameTree.props);
+    if (gameTree.hasOwnProperty('props')) {
+        gameTree.state = getState(lastState,gameTree.props);
+    } else {
+        gameTree.state = lastState;
+    }
     if (gameTree.hasOwnProperty('children')) {
         for (let child of gameTree.children) {
             child = initStates(gameTree.state,child);
@@ -161,6 +195,12 @@ function initStates(lastState, gameTree) {
     return gameTree;
 }
 
+/**
+ * Generates deep clone of given boardstate
+ * @param {matrix} board Boardstate
+ * @param {boolean} keepCase Maintain case sensitivity
+ * @returns {matrix} deep clone of boardstate
+ */
 function clone(board,keepCase=false) {
     let goban = [];
     for (let row of board) {
@@ -173,6 +213,12 @@ function clone(board,keepCase=false) {
     return goban;
 }
 
+/**
+ * Initializes empty board matrix
+ * @param {object} rootNode Root node of gameTree; if 
+ * it doesn't have property SZ, defaults to 19.
+ * @returns empty board matrix
+ */
 function initBoard(rootNode) {
     let EMPTY = [];
     let X,Y;
