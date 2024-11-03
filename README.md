@@ -58,3 +58,4 @@ Here are some pictures of my cats Denna and Kvothe
 - [css-tricks.com style scrollbar](https://css-tricks.com/the-current-state-of-styling-scrollbars-in-css/)
 - [color lovers themes](https://www.colourlovers.com/)
 - [contrast checker](https://webaim.org/resources/contrastchecker/)
+- [GTP (Go Text Protocol) specification](https://www.lysator.liu.se/~gunnar/gtp/gtp2-spec-draft2/gtp2-spec.html)
