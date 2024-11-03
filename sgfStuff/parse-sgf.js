@@ -217,8 +217,7 @@ function makeTree(tokens, parent, move = 0) {
 }
 
 /**
- * Returns collection of Game objects from an
- * SGF collection as an array
+ * Returns array of Game objects from an SGF collection
  * @param {string} sgf SGF string
  * @returns {{
  * id: number;
