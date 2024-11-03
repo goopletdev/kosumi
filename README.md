@@ -28,6 +28,10 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 - BIGBUG: allow 'tt' for passes
 - smoler bug: allow for parsing of collections
 
+## Learning goals:
+- actually understand how to use jsdoc
+- figure out unit testing
+
 ## Credits:
 the lovely, helpful, experienced, encouraging, friendly folks in the OGS forums for answering my endless questions about SGF and ebb'neffing
 
