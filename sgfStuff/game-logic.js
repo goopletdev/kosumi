@@ -1,11 +1,15 @@
-//
-//
-// PPPLLLEEEAAASSSEEE forgive the 
-// spagghettishness of this code
-// i wanted to try smth and got carried away
+/**
+ * @module game-logic
+ */
 
 import {numericCoord} from './sgf-utils.js';
 
+/**
+ * Gets array of unoccupied intersections adjacent to chain's coords
+ * @param {matrix} matrix Boardstate
+ * @param {[]} chain Chain of stones
+ * @returns {[]} array of chain's liberties
+ */
 function getLiberties(matrix, chain) {
     let liberties = [];
     for (let link of chain) {
@@ -19,15 +23,35 @@ function getLiberties(matrix, chain) {
     return liberties;
 }
 
+/**
+ * Returns value at coordinate
+ * @param {matrix} matrix Boardstate
+ * @param {[number,number]} coord Numeric coordinate
+ * @returns {string} value at coordinate
+ */
 function getValue(matrix,coord) {
     return matrix[coord[1]][coord[0]];
 }
 
+/**
+ * Sets value of boardstate at coordinate
+ * @param {matrix} matrix boardstate
+ * @param {[number,number]} coord Numeric coordinate
+ * @param {string} value 'B','W','b','w',etc
+ * @returns {matrix} Mutated matrix
+ */
 function setValue(matrix,coord,value) {
     matrix[coord[1]][coord[0]] = value;
     return matrix;
 }
 
+/**
+ * Returns array of orthogonally adjacent coordinates to a given coordinate
+ * Useful for finding legal coordinates given a coord on edge or corner
+ * @param {matrix} matrix Boardstate
+ * @param {[number,number]} coord Coordinate whose adjacent coords you seek
+ * @returns {array} of adjacent coordinates
+ */
 function neighbors(matrix,coord) {
     let [x,y] = coord;
     let adjacent = [];
@@ -42,6 +66,12 @@ function neighbors(matrix,coord) {
     return adjacent;
 }
 
+/**
+ * Finds friendly neighbors; 'links' of a chain
+ * @param {matrix} matrix Boardstate
+ * @param {[number,number]} coord Numeric coordinate
+ * @returns {array} of adjacent stones that share a color w/ given coord
+ */
 function adjacentLinks(matrix,coord) {
     let chainColor = getValue(matrix,coord);
     let adjacent = neighbors(matrix,coord);
@@ -54,6 +84,12 @@ function adjacentLinks(matrix,coord) {
     return links;
 }
 
+/**
+ * Checks whether given chain of stones contains a stone at a given coordinate
+ * @param {[number,number][]} chain Array of coordinates in number,number form
+ * @param {[number,number]} coord Coordinate in number form
+ * @returns {boolean} true if the chain contains the coordinate, false otherwise
+ */
 function arrayHasCoord(chain,coord) {
     for (let link of chain) {
         if (link[0] === coord[0] && link[1] === coord[1]) {
@@ -76,10 +112,10 @@ function getChain(goban,coord,chain=[]) {
 }
 
 /**
- * 
- * @param {*} chains 
- * @param {*} coord 
- * @returns 
+ * Checks whether given array of chains contains a stone at a given coordinate
+ * @param {Array} chains array of [number,number] coordinates
+ * @param {[number,number]} coord coordinate to check for
+ * @returns true if array of chains includes coordinate, false otherwise
  */
 function coordInChains(chains,coord) {
     for (let chain of chains) {
@@ -91,10 +127,10 @@ function coordInChains(chains,coord) {
 }
 
 /**
- * Sets newmove by setting ti toLowerCase()
+ * Indicates newmove by setting move toLowerCase()
  * @param {matrix} state Boardstate
  * @param {[number,number][]} move 
- * @returns Boardstate with lowercase lastMoves
+ * @returns Boardstate with lowercase newMoves
  */
 function setNew(state,move) {
     let lower = getValue(state,move).toLowerCase();
