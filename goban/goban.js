@@ -23,12 +23,25 @@ class KosumiGoban {
         this.fillCanvas();
     }
 
-    setCanvasSize() {
+    setCanvasSize(columns=19,rows=19) {
+        this.columns = columns;
+        this.rows = rows;
+        this.lineSpacing = this.display
+
+        this.bounds = this.parent.getBoundingClientRect();
+        let heightSpacing = (this.bounds.bottom-this.bounds.top)/(rows+2);
+        let widthSpacing = (this.bounds.right-this.bounds.left)/(columns+2);
+        this.lineSpacing = heightSpacing < widthSpacing ? heightSpacing : widthSpacing;
+
+        this.display.width = this.lineSpacing * (columns + 2);
+        this.display.height = this.lineSpacing * (rows + 2);
+
+/*
         this.bounds = this.container.getBoundingClientRect();
         const height = this.bounds.bottom-this.bounds.top;
         const width = this.bounds.right-this.bounds.left;
         this.display.width = width < height? height : width;
-        this.display.height = this.display.width;
+        this.display.height = this.display.width;*/
     }
 
     setCanvasUnits(columns,rows) {
@@ -158,9 +171,9 @@ class KosumiGoban {
     }
 
     updateCanvas(boardState) {
-        this.setCanvasSize();
+        this.setCanvasSize(boardState[0].length,boardState.length);
         this.fillCanvas();
-        this.setCanvasUnits(boardState[0].length,boardState.length);
+        //this.setCanvasUnits(boardState[0].length,boardState.length);
         this.drawBoundingRectangle();
         this.drawGrid();
         this.drawStars();

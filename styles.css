@@ -30,7 +30,7 @@ body {
 }
 
 #editorParent,
-#gobanParent {
+#modules {
     border:solid;
     border-radius:7px;
     border-width:1px;
@@ -46,7 +46,12 @@ body {
     cursor:col-resize;
 }
 
-#gobanParent {
+#modules {
     background-color:#8549a7;
     flex:1;
+}
+
+#gobanParent {
+    height:65%;
+    width:100%;
 }

@@ -4,8 +4,7 @@
 }
 
 .gobanContainer {
-    height:60%;
-    min-height:fit-content;
+    height:fit-content;
     width:fit-content;
     vertical-align:middle;
     font-size:16px;

@@ -8,7 +8,7 @@ import {initBoard,initStates} from './sgfStuff/game-logic.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
 const goban = new KosumiGoban(document.getElementById('gobanParent'));
-const navigationPanel = new KosumiNavigation(document.getElementById('gobanParent'));
+const navigationPanel = new KosumiNavigation(document.getElementById('modules'));
 goban.gameTree;
 
 navigationPanel.setGoban(goban);
