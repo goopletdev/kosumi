@@ -1,4 +1,8 @@
 /**
+ * @module sgf-syntax
+ */
+
+/**
  * @private
  * @param {string} sgf SGF string to parse
  * @returns {{
@@ -105,6 +109,19 @@ function tokenize(sgf,callback) {
     callback(tokens);
 }
 
+/**
+ * @private
+ * @param {
+ * {
+ * type: (
+ * 'openParenthesis'|'closeParenthesis'|'semicolon'|'propVal'|'propId'|'whitespace'|'error'|'openBracket' | 'closeBracket'
+ * );
+ * value: string;
+ * characteristic?: string;
+ * }[]
+ * } tokens 
+ * @returns {HTMLElement[]} 
+ */
 function syntaxHTML(tokens) {
     let html = [];
     let line = '';
@@ -132,6 +149,11 @@ function syntaxHTML(tokens) {
     return html;
 }
 
+/**
+ * Provides syntax highlighting on sgf, split at linebreaks into array
+ * @param {string} sgf sgf text
+ * @returns {HTMLElement[]} spans with classes for coloring
+ */
 function HighlightSGF(sgf) {
     let text;
     tokenize(sgf, (result) => {
