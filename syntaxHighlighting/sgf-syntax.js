@@ -22,57 +22,58 @@ function tokenize(sgf,callback) {
     for (let i = 0; i < sgf.length; i++) {
 
         // handle square bracket contents (property value)
+        let sanitizedValue = sgf[i].replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
         if (inBrackets && escaped) {
             escaped = false;
             tokens.push({
                 type: 'propVal',
-                value: `\\${sgf[i]}`,
+                value: `\\${sanitizedValue}`,
                 characteristic: 'escapedCharacter'
             })
-        } else if (inBrackets && sgf[i] === '\\' && sgf[i+1] !== '\n') {
+        } else if (inBrackets && sanitizedValue === '\\' && sgf[i+1] !== '\n') {
             // not sure about that last check for sgf[i+1]; should 
             // get opinions
             escaped = true;
-        } else if (inBrackets && sgf[i] === ']') {
+        } else if (inBrackets && sanitizedValue === ']') {
             inBrackets = false;
             tokens.push({
                 type: 'closeBracket',
                 value: ']'
             })
-        } else if (inBrackets && sgf[i] === '\n') {
+        } else if (inBrackets && sanitizedValue === '\n') {
             tokens.push({
                 type: 'newline',
-                value: sgf[i],
+                value: sanitizedValue,
             })
         } else if (inBrackets && i < sgf.length - 1) {
             tokens.push({
                 type: 'propertyValue',
-                value: `${sgf[i]}`,
+                value: `${sanitizedValue}`,
                 characteristic: 'normalCharacter'
             })
         } else if (inBrackets) {
             tokens.push({
                 type: 'propertyValue',
-                value: sgf[i],
+                value: sanitizedValue,
                 characteristic: 'normalCharacter',
                 error: 'missingClose'
             })
-        } else if (sgf[i] === '[') {
+        } else if (sanitizedValue === '[') {
             inBrackets = true;
             tokens.push({
                 type: 'openBracket',
                 value: '['
             })
         // handle property identifier
-        } else if (/[A-Z]/.test(sgf[i])) {
+        } else if (/[A-Z]/.test(sanitizedValue)) {
             tokens.push({
                 type: 'propertyIdentifier',
-                value: sgf[i]
+                value: sanitizedValue
             })
         // non-bracket terminal symbols
-        } else if ('();'.includes(sgf[i])) {
+        } else if ('();'.includes(sanitizedValue)) {
             let punctuationType;
-            switch (sgf[i]) {
+            switch (sanitizedValue) {
                 case '(': 
                     punctuationType = 'openParenthesis';
                     break;
@@ -85,24 +86,24 @@ function tokenize(sgf,callback) {
             }
             tokens.push({
                 type: punctuationType,
-                value: sgf[i]
+                value: sanitizedValue
             })
         // whitespace
-        } else if (sgf[i] === '\n') {
+        } else if (sanitizedValue === '\n') {
             tokens.push({
                 type: 'newline',
-                value: sgf[i]
+                value: sanitizedValue
             })
-        } else if (' \t'.includes(sgf[i])){
+        } else if (' \t'.includes(sanitizedValue)){
             tokens.push({
                 type: 'whitespace',
-                value: sgf[i]
+                value: sanitizedValue
             })
         // erroneous character
         } else {
             tokens.push({
                 type: 'error',
-                value: sgf[i]
+                value: sanitizedValue
             })
         }
     }

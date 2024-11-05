@@ -111,9 +111,7 @@ class TextEditor {
 
         let lines = HighlightSGF(Array.from(
             this.textarea.value.split('\n'), line => line ||= ' '
-        ).join('\n').replace(new RegExp("&", "g"), "&amp;").replace(
-            new RegExp("<", "g"), "&lt;"
-        ));
+        ).join('\n'));
 
         while (this.lines.childNodes.length > lines.length) {
             this.lines.removeChild(this.lines.childNodes[activeLine]);
