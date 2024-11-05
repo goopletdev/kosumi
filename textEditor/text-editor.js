@@ -136,14 +136,16 @@ class TextEditor {
             if (this.lines.childNodes[i].innerHTML !== lines[i]) {
                 this.lines.childNodes[i].innerHTML = lines[i];
             }
-            if (this.lineNumbers.childNodes[i].offsetHeight 
-                > this.lines.childNodes[i].offsetHeight) {
-                this.lineNumbers.childNodes[i].innerText = i+1;
-            }
-            while (this.lineNumbers.childNodes[i].offsetHeight 
-                < this.lines.childNodes[i].offsetHeight) {
-                this.lineNumbers.childNodes[i].innerText += '\n';
-            }
+
+            // find out whether this is faster than the following commented-out bit
+            let lineBounds = this.lines.childNodes[i].getBoundingClientRect();
+            let lineHeight = lineBounds.bottom-lineBounds.top;
+            this.lineNumbers.childNodes[i].style.height = `${lineHeight}px`
+            /*let lineNumberBounds = this.lineNumbers.childNodes[i].getBoundingClientRect();
+            let lineNumberHeight = lineNumberBounds.bottom-lineNumberBounds.top;
+            if (lineNumberHeight !== lineHeight) {
+                this.lineNumbers.childNodes[i].style.height = `${lineHeight}px`;
+            }*/
         }
     }
 
