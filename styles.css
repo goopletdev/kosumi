@@ -16,10 +16,10 @@ body {
 
 .app {
     background-color: #deb7ff;
-    padding: 1em;
+    padding: 0.5em;
     text-align:center;
     width: 100%;
-    margin:3%;
+    margin:0.5em;
     border:solid;
     border-width: 3px;
     border-color:#a86add;
@@ -42,7 +42,7 @@ body {
 
 #splitBar {
     height:100%;
-    width: 10px;
+    width: .5em;
     cursor:col-resize;
 }
 
