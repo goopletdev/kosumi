@@ -39,7 +39,7 @@ const lezgooo = () => {
 
     navigationPanel.activeNode = gameTree;
 
-    KosumiGoban.paint(goban.boardState,navigationPanel.activeNode.state);
+    goban.updateCanvas(navigationPanel.activeNode.state);
 
     newSGF = MakeSGF(gameTree);
     texteditor.textarea.value = newSGF;
@@ -73,7 +73,7 @@ const updateDisplay = () => {
 
     //navigationPanel.activeNode = getNodeById(gameTree,currentNodeId);
     navigationPanel.activeNode = getLastMainNode(gameTree)
-    KosumiGoban.paint(goban.boardState,navigationPanel.activeNode.state);
+    goban.updateCanvas(navigationPanel.activeNode.state);
 }
 
 document.getElementById('format').addEventListener('click',lezgooo);

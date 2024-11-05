@@ -1,181 +1,171 @@
 import {sgfCoordinates} from '../sgfStuff/sgfProperties.js'
-//const sgfCoordinates = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 class KosumiGoban {
-    constructor(parent, displayStyle = 'canvas') {
-        this.displayStyle = displayStyle;
+    constructor(parent) {
         this.parent = parent;
 
         this.container = document.createElement('div');
         this.container.classList.add('gobanContainer');
         this.parent.appendChild(this.container);
 
-        if (this.displayStyle === 'canvas') {
-            this.boardState = document.createElement('canvas');
-            this.boardState.height = '400';
-            this.boardState.width = '400';
-            this.boardState.id = 'kosumiCanvas';
-            this.boardState.classList.add('gobanCanvas');
-            this.container.appendChild(this.boardState);
+        this.display = document.createElement('canvas');
+        this.display.id = 'kosumiCanvas';
+        this.display.classList.add('gobanCanvas');
+        this.container.appendChild(this.display);
 
-            if (this.boardState.getContext) {
-                const context = this.boardState.getContext('2d');
-    
-                context.fillStyle = 'burlywood';
-                context.fillRect(0,0,this.boardState.width,this.boardState.height);
-            }
-        } else {
-            this.boardState = document.createElement('pre');
-            this.boardState.classList.add('gobanBoardState');
-            this.boardState.innerText = KosumiGoban.placeholder;
-            this.container.appendChild(this.boardState);
+        this.setCanvasSize();
+        this.context = this.display.getContext('2d');
+        this.woodColor = 'burlywood';
+        this.lineColor = 'black';
+        this.blackColor = 'black';
+        this.whiteColor = 'white';
+        this.backgroundColor = '#deb7ff';
+        this.fillCanvas();
+    }
+
+    setCanvasSize() {
+        this.bounds = this.container.getBoundingClientRect();
+        const height = this.bounds.bottom-this.bounds.top;
+        const width = this.bounds.right-this.bounds.left;
+        this.display.width = width < height? height : width;
+        this.display.height = this.display.width;
+    }
+
+    setCanvasUnits(columns,rows) {
+        this.columns = columns;
+        this.rows = rows;
+        this.lineSpacing = this.display.width/(columns+2);
+    }
+
+    fillCanvas() {
+        this.context.fillStyle = this.woodColor;
+        this.context.fillRect(0,0,this.display.width,this.display.height);
+    }
+
+    drawBoundingRectangle() {
+        this.context.strokeStyle = this.lineColor;
+        this.context.lineWidth = 2;
+        this.context.strokeRect(this.lineSpacing*1.5,this.lineSpacing*1.5,this.lineSpacing*(this.columns-1),this.lineSpacing*(this.rows-1));
+    }
+
+    drawGrid() {
+        this.context.strokeStyle = this.lineColor;
+        let width = this.lineSpacing/25;
+        this.context.lineWidth = width > 1 ? width : 1;
+
+        this.context.beginPath();
+        for (let y=1; y<this.rows-1; y++) {
+            this.context.moveTo(this.lineSpacing*1.5,this.lineSpacing * (y+1.5));
+            this.context.lineTo(this.lineSpacing * (this.columns+0.5),this.lineSpacing * (y+1.5));
+        }
+        for (let x=1; x<this.columns-1; x++) {
+            this.context.moveTo(this.lineSpacing*(x+1.5),this.lineSpacing*1.5);
+            this.context.lineTo(this.lineSpacing*(x+1.5),this.lineSpacing*(this.rows+0.5));
+        }
+        this.context.stroke();
+    }
+
+    drawStars() {
+        this.stars = [];
+        if (this.rows === 19 && this.columns === 19) {
+            this.stars = [
+                [3,3],
+                [3,9],
+                [3,15],
+                [9,3],
+                [9,9],
+                [9,15],
+                [15,3],
+                [15,9],
+                [15,15],
+            ];
+        } else if (this.rows === 13 && this.columns === 13) {
+            this.stars = [
+                [3,3],
+                [3,6],
+                [3,9],
+                [6,3],
+                [6,6],
+                [6,9],
+                [9,3],
+                [9,6],
+                [9,9],
+            ];
+        } else if (this.rows === 9 && this.columns === 9) {
+            this.stars = [
+                [2,2],
+                [2,6],
+                [4,4],
+                [6,2],
+                [6,6],
+            ]
+        } else if (this.rows % 2 && this.columns % 2) {
+            this.stars.push([Math.floor(this.columns/2),Math.floor(this.rows/2)]);
+        }
+        this.context.fillStyle = this.lineColor;
+        for (let star of this.stars) {
+            this.context.beginPath();
+            this.context.arc(this.lineSpacing*(star[0]+1.5),this.lineSpacing*(star[1]+1.5),this.lineSpacing/7.6,0,Math.PI*2);
+            this.context.fill();
         }
     }
 
-    update(state) {
-        if (this.displayStyle === 'html') {
-            this.boardState.innerHTML = KosumiGoban.asciiHTML(state);
-        } else if (this.displayStyle === 'ascii') {
-            this.boardState.innerText = KosumiGoban.ascii(state);
-        } else if (this.displayStyle === 'canvas') {
-            KosumiGoban.paint(this.boardState, state);
+    drawCoordinates() {
+        this.fontSize = this.lineSpacing-5;
+        this.context.font = `${this.fontSize}px ubuntu-condensed`;
+        this.context.textAlign = 'center';
+        this.context.textBaseline = 'middle';
+        this.context.fillStyle = this.lineColor;
+        for (let i=0; i< this.columns; i++) {
+            this.context.fillText(sgfCoordinates[i],this.lineSpacing*(i+1.5),(this.lineSpacing*.5));
+            this.context.fillText(sgfCoordinates[i],this.lineSpacing*(i+1.5),this.lineSpacing*(this.rows+1.5))
+        }
+        for (let i=0; i< this.rows; i++) {
+            this.context.fillText(sgfCoordinates[i],this.lineSpacing*.5,this.lineSpacing*(i+1.5));
+            this.context.fillText(sgfCoordinates[i],this.lineSpacing*(this.columns+1.5),this.lineSpacing*(i+1.5));
         }
     }
-     
-    static paint(canvasElement, boardState) {
-        let width = boardState[0].length;
-        let height= boardState.length;
 
-        let widthUnit = Math.floor(canvasElement.width / (width + 2));
-        let heightUnit = Math.floor(canvasElement.height / (height + 2));
-        let unit = widthUnit > heightUnit ? heightUnit : widthUnit;
-        // normalize the vertical and horizontal distance between intersections
-        canvasElement.width = (width+2) * unit;
-        canvasElement.height = (height+2) * unit;
-        
-        if (canvasElement.getContext) { // can probably get rid of this line
-            const context = canvasElement.getContext('2d');
-
-            //context.fillStyle = 'rgb(240, 177, 95)';
-            context.fillStyle = '#deb7ff';
-            context.fillRect(0,0,canvasElement.width,canvasElement.height);
-
-            context.fillStyle = 'burlywood';
-            context.fillRect(unit,unit,canvasElement.width-(unit*2),canvasElement.height-(unit*2));
-            for (let y=0; y<height; y++) {
-                if (y===0 || y===height-1) {
-                    context.lineWidth = 2;
-                } else {
-                    context.lineWidth = 1;
+    drawStones(boardState) {
+        for (let y=0; y<this.rows; y++) {
+            for (let x=0; x<this.columns; x++) {
+                let newMove = boardState[y][x];
+                switch (newMove.toUpperCase()) {
+                    case 'W':
+                        this.context.fillStyle = 'white';
+                        this.context.strokeStyle = 'black';
+                        break;
+                    case 'B':
+                        this.context.fillStyle = 'black';
+                        this.context.strokeStyle = 'white';
+                        break;
+                    default:
+                        continue;
                 }
-                context.strokeStyle = 'black';
-                context.beginPath()
-                context.moveTo(unit*1.5,unit * (y+1.5));
-                context.lineTo(unit * (width+0.5),unit * (y+1.5));
-                context.stroke();
-            }
-            for (let x=0; x<width; x++) {
-                if (x===0 || x===width-1) {
-                    context.lineWidth = 2;
-                } else {
-                    context.lineWidth = 1;
-                }
-                context.strokeStyle = 'black';
-                context.beginPath()
-                context.moveTo(unit*(x+1.5),unit*1.5);
-                context.lineTo(unit*(x+1.5),unit*(height+0.5));
-                context.stroke();
-            }
-            // board markings 
-            context.fillStyle = 'black';
+                this.context.beginPath();
+                this.context.arc(this.lineSpacing*(x+1.5),this.lineSpacing*(y+1.5),(this.lineSpacing/2)-0.5,0,Math.PI*2);
+                this.context.fill();
 
-            // star points 
-            let stars = [];
-            if (height === 19 && width === 19) {
-                stars = [
-                    [3,3],
-                    [3,9],
-                    [3,15],
-                    [9,3],
-                    [9,9],
-                    [9,15],
-                    [15,3],
-                    [15,9],
-                    [15,15],
-                ];
-            } else if (height === 13 && width === 13) {
-                stars = [
-                    [3,3],
-                    [3,6],
-                    [3,9],
-                    [6,3],
-                    [6,6],
-                    [6,9],
-                    [9,3],
-                    [9,6],
-                    [9,9],
-                ];
-            } else if (height === 9 && width === 9) {
-                stars = [
-                    [2,2],
-                    [2,6],
-                    [4,4],
-                    [6,2],
-                    [6,6],
-                ]
-            } else if (height % 2 && width % 2) {
-                stars.push([Math.floor(width/2),Math.floor(height/2)]);
-            }
-
-            for (let star of stars) {
-                context.beginPath();
-                context.arc(unit*(star[0]+1.5),unit*(star[1]+1.5),unit/7.6,0,Math.PI*2);
-                context.fill();
-            }
-            
-            // coords
-            let fontSize = unit-5;
-            context.font = `${fontSize}px ubuntu-condensed`;
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
-            for (let i=0; i< width; i++) {
-                context.fillText(sgfCoordinates[i],unit*(i+1.5),(unit*.5));
-                context.fillText(sgfCoordinates[i],unit*(i+1.5),unit*(height+1.5))
-            }
-            for (let i=0; i< height; i++) {
-                context.fillText(sgfCoordinates[i],unit*.5,unit*(i+1.5));
-                context.fillText(sgfCoordinates[i],unit*(width+1.5),unit*(i+1.5));
-            }
-            // stones
-            for (let y=0; y<height; y++) {
-                for (let x=0; x<width; x++) {
-                    let newMove = boardState[y][x];
-                    switch (newMove.toUpperCase()) {
-                        case 'W':
-                            context.fillStyle = 'white';
-                            context.strokeStyle = 'black';
-                            break;
-                        case 'B':
-                            context.fillStyle = 'black';
-                            context.strokeStyle = 'white';
-                            break;
-                        default:
-                            continue;
-                    }
-                    context.beginPath();
-                    context.arc(unit*(x+1.5),unit*(y+1.5),(unit/2)-0.5,0,Math.PI*2);
-                    context.fill();
-
-                    // last move marker
-                    if (newMove.toLowerCase() === newMove) {
-                        context.lineWidth = unit/12;
-                        context.beginPath();
-                        context.arc(unit*(x+1.5),unit*(y+1.5),unit/3.5,0,Math.PI*2);
-                        context.stroke();
-                    }
+                // last move marker
+                if (newMove.toLowerCase() === newMove) {
+                    this.context.lineWidth = this.lineSpacing/12;
+                    this.context.beginPath();
+                    this.context.arc(this.lineSpacing*(x+1.5),this.lineSpacing*(y+1.5),this.lineSpacing/3.5,0,Math.PI*2);
+                    this.context.stroke();
                 }
             }
         }
+    }
+
+    updateCanvas(boardState) {
+        this.setCanvasSize();
+        this.fillCanvas();
+        this.setCanvasUnits(boardState[0].length,boardState.length);
+        this.drawBoundingRectangle();
+        this.drawGrid();
+        this.drawStars();
+        this.drawCoordinates();
+        this.drawStones(boardState);
     }
 }
 

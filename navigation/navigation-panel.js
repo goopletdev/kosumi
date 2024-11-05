@@ -63,9 +63,8 @@ class KosumiNavigation {
     }
 
     update() {
-        this.goban.update(this.activeNode.state);
+        this.goban.updateCanvas(this.activeNode.state);
         this.info.value = `(node ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
-
     }
 
 
