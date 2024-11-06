@@ -86,6 +86,11 @@ function unzipProps(props) {
     return props;
 }
 
+/**
+ * Returns array of root property identifiers given a props object
+ * @param {object} props the properties of a node
+ * @returns {Array} array of root propIdents
+ */
 function getRoot(props) {
     let rootProps = [];
     for (let key of Object.keys(props)) {
