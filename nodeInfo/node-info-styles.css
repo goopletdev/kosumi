@@ -3,8 +3,6 @@
     flex-direction: row;
     font-size: small;
     justify-content: space-evenly;
-    overflow-y:scroll;
-    height:10em;
 }
 
 .kosumiNodeInfoRoot,

@@ -46,12 +46,31 @@ body {
     cursor:col-resize;
 }
 
+#modulesContainer {
+    flex:1;
+    overflow: hidden;
+}
+
 #modules {
     background-color:#8549a7;
-    flex:1;
+    height:100%;
+    width:100%;
+    position:relative;
+}
+
+#gobanParent,
+#navigationParent,
+#infoParent {
+    width:100%;
 }
 
 #gobanParent {
     height:65%;
-    width:100%;
+}
+
+#infoParent {
+    position:absolute;
+    bottom:0;
+    height:10%;
+    overflow-y: scroll;
 }
