@@ -65,12 +65,17 @@ body {
 }
 
 #gobanParent {
-    height:65%;
+    height:80%;
+}
+
+#navigationparent {
+    height: 10%;
+    min-height: fit-content;
 }
 
 #infoParent {
-    position:absolute;
-    bottom:0;
+    /*position:absolute;
+    bottom:0;*/
     height:10%;
     overflow-y: scroll;
 }
