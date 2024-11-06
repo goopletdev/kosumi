@@ -40,8 +40,8 @@ class KosumiNavigation {
         this.skipForewardButton.addEventListener('click',function() {
             while (that.activeNode.hasOwnProperty('children')) {
                 that.activeNode = that.activeNode.children[0];
-                that.update();
-            }
+            };
+            that.update();
         })
 
         this.panel.append(
