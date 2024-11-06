@@ -1,0 +1,15 @@
+.kosumiNodeInfo {
+    display:flex;
+    flex-direction: row;
+    font-size: small;
+    justify-content: space-evenly;
+    overflow-y:scroll;
+    height:10em;
+}
+
+.kosumiNodeInfoRoot,
+.kosumiNodeInfoGameInfo,
+.kosumiNodeInfoOther {
+    text-align: left;
+    max-width: 40%;
+}

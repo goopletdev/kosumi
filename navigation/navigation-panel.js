@@ -51,9 +51,9 @@ class KosumiNavigation {
             this.skipForewardButton
         )
 
-        this.info = document.createElement('textarea');
-        this.info.classList.add('gobanInfo');
-        this.parent.appendChild(this.info);
+        //this.info = document.createElement('textarea');
+        //this.info.classList.add('gobanInfo');
+        //this.parent.appendChild(this.info);
 
         this.activeNode;
     }
@@ -62,9 +62,13 @@ class KosumiNavigation {
         this.goban = kosumiGobanObject; 
     }
 
+    setInfo(kosumiInfoObject) {
+        this.info = kosumiInfoObject;
+    }
+
     update() {
         this.goban.updateCanvas(this.activeNode.state);
-        this.info.value = `(node ${this.activeNode.id}) Move ${this.activeNode.moveNumber}:\n${JSON.stringify(this.activeNode.props)}`;
+        this.info.updateInfoPanel(this.activeNode);
     }
 
 

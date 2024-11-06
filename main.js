@@ -80,7 +80,7 @@ const updateDisplay = () => {
 
     //navigationPanel.activeNode = getNodeById(gameTree,currentNodeId);
     navigationPanel.activeNode = getLastMainNode(gameTree)
-    goban.updateCanvas(navigationPanel.activeNode.state);
+    navigationPanel.update();
 }
 
 document.getElementById('format').addEventListener('click',lezgooo);
