@@ -150,4 +150,13 @@ function getLastMainNode(tree) {
         return tree;
     }
 }
-export {numericCoord,unzipCoords,formatProps,getNodeById,getLastMainNode,root,sgfCoord}
+
+function getRootNode(node) {
+    if (!node.hasOwnProperty('parent')) {
+        return node;
+    } else {
+        return getRootNode(node.parent);
+    }
+}
+
+export {numericCoord,unzipCoords,formatProps,getNodeById,getLastMainNode,getRootNode,root,sgfCoord}
