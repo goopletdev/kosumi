@@ -1,17 +1,24 @@
+console.log('in main');
 import TextEditor from './textEditor/text-editor.js';
 import KosumiGoban from './goban/goban.js';
 import KosumiNavigation from './navigation/navigation-panel.js';
+import KosumiNodeInfo from './nodeInfo/node-info.js';
 import ParseSGF from './sgfStuff/parse-sgf.js';
 import MakeSGF from './sgfStuff/make-sgf.js';
 import {formatProps, getNodeById, getLastMainNode} from './sgfStuff/sgf-utils.js';
 import {initBoard,initStates} from './sgfStuff/game-logic.js';
 
+console.log('begin');
+
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
 const goban = new KosumiGoban(document.getElementById('gobanParent'));
 const navigationPanel = new KosumiNavigation(document.getElementById('modules'));
+const infoPanel = new KosumiNodeInfo(document.getElementById('modules'));
+
 goban.gameTree;
 
 navigationPanel.setGoban(goban);
+navigationPanel.setInfo(infoPanel);
 
 let oldSGF;
 let newSGF;
