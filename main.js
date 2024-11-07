@@ -4,8 +4,8 @@ import KosumiNavigation from './navigation/navigation-panel.js';
 import KosumiNodeInfo from './nodeInfo/node-info.js';
 import ParseSGF from './sgfStuff/parse-sgf.js';
 import MakeSGF from './sgfStuff/make-sgf.js';
-import {formatProps, getNodeById, getLastMainNode} from './sgfStuff/sgf-utils.js';
 import {initBoard,initStates} from './sgfStuff/game-logic.js';
+import StoneWalker from './stone-walker.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
 const goban = new KosumiGoban(document.getElementById('gobanParent'));
@@ -36,7 +36,8 @@ const toggleSGF = () => {
 const lezgooo = () => {
     oldSGF = texteditor.textarea.value;
 
-    gameTree = formatProps(ParseSGF(oldSGF)[0]);
+    gameTree = ParseSGF(oldSGF)[0];
+    StoneWalker.formatTree(gameTree);
 
     const EMPTY = initBoard(gameTree);
     gameTree = initStates(EMPTY,gameTree);
@@ -64,7 +65,8 @@ const lezgooo = () => {
 }
 
 const updateDisplay = () => {
-    gameTree = formatProps(ParseSGF(texteditor.textarea.value)[0]);
+    gameTree = ParseSGF(texteditor.textarea.value)[0];
+    StoneWalker.formatTree(gameTree);
     const EMPTY = initBoard(gameTree);
     gameTree = initStates(EMPTY,gameTree);
     let currentNodeId;
