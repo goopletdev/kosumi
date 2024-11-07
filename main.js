@@ -78,7 +78,7 @@ const updateDisplay = () => {
 
 
     //navigationPanel.activeNode = getNodeById(gameTree,currentNodeId);
-    navigationPanel.activeNode = getLastMainNode(gameTree)
+    navigationPanel.activeNode = StoneWalker.getTerminalNode(gameTree);
     navigationPanel.update();
 }
 
