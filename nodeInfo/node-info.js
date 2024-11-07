@@ -1,5 +1,5 @@
-import { getRootNode } from "../sgfStuff/sgf-utils.js";
-import { gameName, propertyDefinitions } from "../sgfStuff/sgfProperties.js";
+import { propertyDefinitions } from "../sgfStuff/sgfProperties.js";
+import StoneWalker from "../stone-walker.js";
 
 class KosumiNodeInfo {
     constructor(parent) {
@@ -39,7 +39,7 @@ class KosumiNodeInfo {
     }
 
     updateGameInfo(node) {
-        let nodeProps = getRootNode(node).props;
+        let nodeProps = StoneWalker.getRootNode(node).props;
         let gameInfoProperties = '';
         for (let key of Object.keys(nodeProps)) {
             if (propertyDefinitions.hasOwnProperty(key)) {
@@ -53,7 +53,7 @@ class KosumiNodeInfo {
     }
 
     updateRootInfo(node) {
-        let nodeProps = getRootNode(node).props;
+        let nodeProps = StoneWalker.getRootNode(node).props;
         let rootProperties = '';
         for (let key of ['FF','GM','AP','CA','ST','SZ']) {
             let propertyValue;
