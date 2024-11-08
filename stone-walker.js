@@ -5,9 +5,6 @@
 import SGF from './sgf-handler.js';
 
 class StoneWalker {
-    /**
-     * 
-     */
     constructor (gameObject) {
         this.root = gameObject;
         this.currentNode;
