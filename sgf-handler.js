@@ -47,7 +47,7 @@ class SGF {
     /**
      * Unzips 'ab:bc' coords into array ['ab','bb','ac','cc']
      * @param {string} zippedCoords Compressed SGF coordinates [xy:xy]
-     * @returns {[string][]} Array of uncompressed SGF coordinates [xy]
+     * @returns {string[]} Array of uncompressed SGF coordinates [xy]
      */
     static unzipCoords(zippedCoords) {
         let coords = [];
