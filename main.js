@@ -1,5 +1,5 @@
 import TextEditor from './textEditor/text-editor.js';
-import KosumiGoban from './goban/goban.js';
+import GobanCanvas from './goban/goban.js';
 import KosumiNavigation from './navigation/navigation-panel.js';
 import KosumiNodeInfo from './nodeInfo/node-info.js';
 import ParseSGF from './sgfStuff/parse-sgf.js';
@@ -8,7 +8,7 @@ import {initBoard,initStates} from './sgfStuff/game-logic.js';
 import StoneWalker from './stone-walker.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
-const goban = new KosumiGoban(document.getElementById('gobanParent'));
+const goban = new GobanCanvas(document.getElementById('gobanParent'));
 const navigationPanel = new KosumiNavigation(document.getElementById('navigationParent'));
 const infoPanel = new KosumiNodeInfo(document.getElementById('infoParent'));
 

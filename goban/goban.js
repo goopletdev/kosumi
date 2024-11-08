@@ -1,6 +1,6 @@
 import {sgfCoordinates} from '../sgfStuff/sgfProperties.js'
 
-class KosumiGoban {
+class GobanCanvas {
     constructor(parent) {
         this.parent = parent;
 
@@ -182,4 +182,4 @@ class KosumiGoban {
     }
 }
 
-export default KosumiGoban;
+export default GobanCanvas;
