@@ -4,6 +4,7 @@
  */
 
 import SGF from "./sgf-handler.js";
+import { propertyDefinitions } from "./sgfProperties.js";
 
 /**
  * @private

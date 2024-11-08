@@ -2,7 +2,7 @@
  * @module SGF
  */
 import { tokenize, parseTokens, makeTree } from "./parse-sgf.js";
-import { sgfPropOrder } from "./sgfProperties.js";
+import { sgfPropOrder, propertyDefinitions } from "./sgfProperties.js";
 const propOrder = sgfPropOrder.flat();
 const blackInfo = ['PB','BR','BT'];
 const whiteInfo = ['PW','WR','WT'];
@@ -101,7 +101,14 @@ class SGF {
                 let values = [];
                 for (let val of node.props[key]) {
                     // handle escaped characters in PropertyValues
-                    values.push(val.replaceAll('\\','\\\\').replaceAll(']','\\]'));
+                    let newVal = val;
+                    if (typeof val !== 'string') {
+                        newVal = '';
+                        for (let number of val) {
+                            newVal += SGF.coordinates[number];
+                        }
+                    } 
+                    values.push(newVal.replaceAll('\\','\\\\').replaceAll(']','\\]'));
                 }
                 sgf += `${key}[${values.join('][')}]${suffix}`;
             }) 
