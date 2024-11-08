@@ -33,7 +33,7 @@ const toggleSGF = () => {
 const lezgooo = () => {
     oldSGF = texteditor.textarea.value;
 
-    gameTree = ParseSGF(oldSGF)[0];
+    gameTree = SGF.parse(oldSGF)[0];
     StoneWalker.formatTree(gameTree);
 
     const EMPTY = initBoard(gameTree);
@@ -62,19 +62,11 @@ const lezgooo = () => {
 }
 
 const updateDisplay = () => {
-    gameTree = ParseSGF(texteditor.textarea.value)[0];
+    gameTree = SGF.parse(texteditor.textarea.value)[0];
     StoneWalker.formatTree(gameTree);
     const EMPTY = initBoard(gameTree);
     gameTree = initStates(EMPTY,gameTree);
-    let currentNodeId;
-    if (navigationPanel.hasOwnProperty('activeNode')) {
-        currentNodeId = navigationPanel.activeNode.id;
-    } else {
-        currentNodeId = 0;
-    }
 
-
-    //navigationPanel.activeNode = getNodeById(gameTree,currentNodeId);
     navigationPanel.activeNode = StoneWalker.getTerminalNode(gameTree);
     navigationPanel.update();
 }

@@ -218,25 +218,4 @@ function makeTree(tokens, parent, move = 0) {
     }
 }
 
-/**
- * Returns array of Game objects from an SGF collection
- * @param {string} sgf SGF string
- * @returns {{
- * id: number;
- * moveNumber: number;
- * parent?: number;
- * props?: {};
- * children?: {}[]
- * }[]} Game node tree
- */
-function ParseSGF(sgf) {
-    let tree;
-    SGF.tokenize(sgf, (result) => {
-        parseTokens(result, (result) => {
-            tree = makeTree(result);
-        });
-    });
-    return tree;
-}
-
-export {ParseSGF as default, tokenize, parseTokens};
+export {tokenize, parseTokens, makeTree};
