@@ -2,7 +2,7 @@
  * @module game-logic
  */
 
-import SGFHandler from "../sgf-handler.js";
+import SGF from "./sgf-handler.js";
 
 //import {SGFHandler.numericCoord} from './sgf-utils.js';
 
@@ -200,13 +200,13 @@ function getState(lastState,props) {
                 point = '.';
             }
             for (let i=0; i<props[key].length; i++) {
-                let newCoord = SGFHandler.numericCoord(props[key][i]);
+                let newCoord = SGF.numericCoord(props[key][i]);
                 newState[newCoord[1]][newCoord[0]] = point;
             }
         } else if (['B','W'].includes(key) && props[key][0].length>0) {
             let moves = [key];
             for (let move of props[key]) {
-                moves.push(SGFHandler.numericCoord(move));
+                moves.push(SGF.numericCoord(move));
             }
             newState = calculateBoard(lastState,moves);
         }
