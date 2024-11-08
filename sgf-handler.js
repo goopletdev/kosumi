@@ -1,9 +1,15 @@
+/**
+ * @module SGF
+ */
+
+import { sgfPropOrder } from "./sgfStuff/sgfProperties.js";
+const propOrder = sgfPropOrder.flat();
+const blackInfo = ['PB','BR','BT'];
+const whiteInfo = ['PW','WR','WT'];
+const timeInfo = ['TM','OT'];
+
 class SGF {
-    constructor() {
-
-    }
-
-    static sgfCoordinates = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    static coordinates = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     static zippableProperties = [
         'AB',
         'AE',
