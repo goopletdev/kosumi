@@ -135,16 +135,22 @@ class SGF {
     /**
      * Returns array of Game objects from an SGF
      * @param {string} sgf SGF/SGF collection string
+     * @param {string} application Name of SGF editor
      * @returns {object[]} Array of game node trees
      */
-    static parse(sgf) {
-        let tree;
+    static parse(sgf, application=propertyDefinitions.AP.kosumiDefault) {
+        let collection;
         tokenize(sgf, (result) => {
             parseTokens(result, (result) => {
-                tree = makeTree(result);
+                collection = makeTree(result);
             });
         });
-        return tree;
+        if (application) {
+            for (let gameTree of collection) {
+                gameTree.props.AP = [application];
+            }
+        }
+        return collection;
     }
 }
 

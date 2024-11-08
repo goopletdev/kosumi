@@ -34,7 +34,6 @@ const lezgooo = () => {
     oldSGF = texteditor.textarea.value;
 
     gameTree = SGF.parse(oldSGF)[0];
-    StoneWalker.formatTree(gameTree);
 
     const EMPTY = initBoard(gameTree);
     gameTree = initStates(EMPTY,gameTree);
@@ -61,7 +60,6 @@ const lezgooo = () => {
 
 const updateDisplay = () => {
     gameTree = SGF.parse(texteditor.textarea.value)[0];
-    StoneWalker.formatTree(gameTree);
     const EMPTY = initBoard(gameTree);
     gameTree = initStates(EMPTY,gameTree);
 

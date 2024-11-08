@@ -189,63 +189,6 @@ class StoneWalker {
             return this.getNodeAtMove(node.children[0]);
         } else return -1;
     }
-
-    /**
-     * Unzips all compressable properties of given node;
-     * Mutates, returns nothing
-     * @param {object} node Game tree node
-     * @returns {number} Number of mutated properties
-     */
-    static decompress(node) {
-    // this is insane, rewrite??
-        let zipCount = 0;
-        for (let key of Object.keys(node.props)) {
-            if (SGF.zippableProperties.includes(key)) {
-                let newValue = [];
-                for (let i=0; i < node.props[key].length; i++) {
-                    if (node.props[key][i].includes(':')) {
-                        zipCount ++;
-                        let unzipped = SGF.unzipCoords(node.props[key][i]);
-                        for (let coordinate of unzipped) {
-                            newValue.push(coordinate);
-                        }
-                    } else {
-                        newValue.push(node.props[key][i]);
-                    }
-                }
-                node.props[key] = newValue;
-            }
-        }
-        return zipCount;
-    }
-
-    /**
-     * Mutates properties of every node in game tree;
-     * sets AP to Kosumi:1.0, unzips compressed points,
-     * logs erroneous root props at non-root node
-     * @param {object} node 
-     * @returns {object} Mutated node
-     */
-    static formatTree(node) {
-        if (!node.hasOwnProperty('parent')) {
-            node.props.AP = ['Kosumi:0.1.0'];
-        } else if (node.hasOwnProperty('props')) {
-            for (let key of Object.keys(node.props)) {
-                if (SGF.rootProperties.includes(key)) {
-                    console.log(`Error: root ${key} at node ${node.id}`);
-                }
-            }
-        }
-        if (node.hasOwnProperty('props')) {
-            this.decompress(node);
-        }
-        if (node.hasOwnProperty('children')) {
-            for (let child of node.children) {
-                this.formatTree(child);
-            }
-        }
-        return node;
-    }
 }
 
 export default StoneWalker;

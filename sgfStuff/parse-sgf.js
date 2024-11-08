@@ -137,8 +137,20 @@ function parseTokens(tokens,callback) {
                         }`
                     )
                 }
-            } else { // token.type === propVal
-                node.props[propertyId].push(tok.value);
+            } else { // token.type is propVal
+                // unzip coordinates, convert alpha to numeric coords
+                if (SGF.zippableProperties.includes(propertyId)
+                    && tok.value.includes(':')) {
+                        for (let value of SGF.unzipCoords(tok.value)) {
+                            node.props[propertyId].push(SGF.numericCoord(value));
+                        }
+                } else if (propertyDefinitions[propertyId].value.includes('stone')
+                    || propertyDefinitions[propertyId].value.includes('point')
+                    || ['B','W'].includes(propertyId)) {
+                        node.props[propertyId].push(SGF.numericCoord(tok.value));
+                } else {
+                    node.props[propertyId].push(tok.value);
+                }
                 if ('();'.includes(tokens[i+1].type)) {
                     inNode = false;
                 }
@@ -198,6 +210,14 @@ function makeTree(tokens, parent, move = 0) {
             }
             if (tokens[0].hasOwnProperty('props')) {
                 node.props = tokens[0].props;
+                // check whether erroneous root props at non-root node
+                if (node.hasOwnProperty('parent')) {
+                    for (let key of Object.keys(node.props)) {
+                        if (SGF.rootProperties.includes(key)) {
+                            console.log(`Error: root ${key} at node ${node.id}`);
+                        }
+                    }
+                }
             }
             if (tokens.length > 1) {
                 let childs = makeTree(
