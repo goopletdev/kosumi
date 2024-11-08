@@ -1,4 +1,4 @@
-import SGF from '../sgf-handler.js';
+import SGF from '../sgfStuff/sgf-handler.js';
 
 class GobanCanvas {
     constructor(parent) {

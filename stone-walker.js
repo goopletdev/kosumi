@@ -2,9 +2,13 @@
  * @module StoneWalker
  */
 
-import SGF from './sgf-handler.js';
+import SGF from './sgfStuff/sgf-handler.js';
 
 class StoneWalker {
+    /**
+     * Construct StoneWalker instance
+     * @param {object} gameObject Parsed SGF
+     */
     constructor (gameObject) {
         this.root = gameObject;
         this.currentNode;
