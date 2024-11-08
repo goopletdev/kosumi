@@ -231,7 +231,7 @@ class StoneWalker {
      */
     static formatTree(node) {
         if (!node.hasOwnProperty('parent')) {
-            node.props.AP = ['Kosumi:1.0'];
+            node.props.AP = ['Kosumi:0.1.0'];
         } else if (node.hasOwnProperty('props')) {
             for (let key of Object.keys(node.props)) {
                 if (SGF.rootProperties.includes(key)) {

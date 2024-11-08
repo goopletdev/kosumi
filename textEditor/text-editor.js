@@ -17,7 +17,7 @@ class TextEditor {
 
         this.header = document.createElement('header');
         this.header.classList.add('editorHeader');
-        this.header.innerText = 'Kosumi 1.0'
+        this.header.innerText = 'Kosumi 0.1.0'
         this.container.appendChild(this.header);
 
         this.mainWrapper = document.createElement('div');

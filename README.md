@@ -1,9 +1,9 @@
-# Kosumi[1.0]: a Go Library
+# Kosumi[0.1.0]: a Go Library
 Text-based SGF editor. It's a work in progress as I learn the basics of JavaScript and programming in general. 
 
 ## Features:
 - Syntax highlighting
-- Display and navigate through your game on an ASCII or graphical goban
+- Display the boardstate on a graphical goban
 - Correct SGF style errors in SGF files from OGS, and maximize compatibility by unzipping compressed coordinates
 
 ## To-do list:

@@ -47,7 +47,7 @@ const propertyDefinitions = {
         name: 'application',
         value: 'simpletext:simpletext',
         type: 'root',
-        kosumiDefault: 'Kosumi:1.0',
+        kosumiDefault: 'Kosumi:0.1.0',
         redBeanDefault: null,
     },
     CA: {
