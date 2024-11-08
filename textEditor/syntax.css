@@ -1,0 +1,31 @@
+.token.openParenthesis,
+.token.closeParenthesis {
+    color: rgb(44, 105, 216);
+}
+
+.token.semicolon {
+    color: rgb(176, 62, 192);
+}
+
+.token.propertyIdentifier {
+    color:rgb(91, 213, 213);
+}
+
+.token.openBracket,
+.token.closeBracket {
+    color: rgb(223, 147, 6);
+}
+
+.token.propertyValue.normalCharacter {
+    color: rgb(174, 119, 0);
+}
+
+.token.propertyValue.escapedCharacter {
+    color: rgb(255, 217, 46);
+}
+
+.token.error {
+    color: black;
+    background-color: rgba(255, 34, 34, 0.774);
+}
+/*token.whitespace*/
