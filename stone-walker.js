@@ -13,10 +13,6 @@ class StoneWalker {
         this.currentNode;
     }
 
-    unzipAll() {
-
-    }
-
     /**
      * Sets currentNode to node in current branch at moveNumber
      * @param {number} moveNumber 
