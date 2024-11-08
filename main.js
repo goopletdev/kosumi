@@ -47,8 +47,6 @@ const lezgooo = () => {
     texteditor.textarea.value = newSGF;
     texteditor.update();
 
-    navigationPanel.info.value = `(node ${navigationPanel.activeNode.id}) Move ${navigationPanel.activeNode.moveNumber}:\n${JSON.stringify(navigationPanel.activeNode.props)}`;
-
     let toggleButton = document.getElementById('toggleButton');
     if (!toggleButton) {
         toggleButton = document.createElement('button');
