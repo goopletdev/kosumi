@@ -3,9 +3,9 @@ import GobanCanvas from './goban/goban.js';
 import KosumiNavigation from './navigation/navigation-panel.js';
 import KosumiNodeInfo from './nodeInfo/node-info.js';
 import ParseSGF from './sgfStuff/parse-sgf.js';
-import MakeSGF from './sgfStuff/make-sgf.js';
 import {initBoard,initStates} from './sgfStuff/game-logic.js';
 import StoneWalker from './stone-walker.js';
+import SGF from './sgf-handler.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
 const goban = new GobanCanvas(document.getElementById('gobanParent'));
@@ -46,7 +46,7 @@ const lezgooo = () => {
 
     goban.updateCanvas(navigationPanel.activeNode.state);
 
-    newSGF = MakeSGF(gameTree);
+    newSGF = SGF.encode(gameTree);
     texteditor.textarea.value = newSGF;
     texteditor.update();
 
