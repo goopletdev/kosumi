@@ -2,7 +2,7 @@
  * @module StoneWalker
  */
 
-import SGF from './sgfStuff/sgf-handler.js';
+import SGF from './sgf/sgf-handler.js';
 
 class StoneWalker {
     /**

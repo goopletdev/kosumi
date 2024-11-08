@@ -1,4 +1,4 @@
-import HighlightSGF from '../syntaxHighlighting/sgf-syntax.js';
+import HighlightSGF from './sgf-syntax.js';
 
 /**
  * @module TextEditor

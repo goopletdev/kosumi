@@ -2,9 +2,9 @@ import TextEditor from './textEditor/text-editor.js';
 import GobanCanvas from './goban/goban.js';
 import KosumiNavigation from './navigation/navigation-panel.js';
 import KosumiNodeInfo from './nodeInfo/node-info.js';
-import {initBoard,initStates} from './sgfStuff/game-logic.js';
+import {initBoard,initStates} from './sgf/game-logic.js';
 import StoneWalker from './stone-walker.js';
-import SGF from './sgfStuff/sgf-handler.js';
+import SGF from './sgf/sgf-handler.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
 const goban = new GobanCanvas(document.getElementById('gobanParent'));

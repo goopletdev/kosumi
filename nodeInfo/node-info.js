@@ -1,4 +1,4 @@
-import { propertyDefinitions } from "../sgfStuff/sgfProperties.js";
+import { propertyDefinitions } from "../sgf/sgfProperties.js";
 import StoneWalker from "../stone-walker.js";
 
 class KosumiNodeInfo {
