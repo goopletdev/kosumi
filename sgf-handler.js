@@ -131,6 +131,80 @@ class SGF {
         }
         return collection.join('\n\n');
     }
+
+    static tokenize(sgf, callback) {
+        let tokens = [];
+
+        let inPropId = false;
+        let propIdContents = '';
+
+        let bracketPosition;
+        let inBrackets = false;
+        let escaped = false;
+        let bracketContents = '';
+
+        for (let i=0; i < sgf.length; i++) {
+            // handle square bracket contents (property value)
+            if (inBrackets) {
+                if (escaped) {
+                    escaped = false;
+                    bracketContents += sgf[i];
+                } else if (sgf[i] === '\\') {
+                    escaped = true;
+                } else if (sgf[i] === ']') {
+                    inBrackets = false;
+                    tokens.push({
+                        type: 'propVal',
+                        value: bracketContents.slice(0),
+                    })
+                    bracketContents = '';
+                } else if (i < sgf.length - 1) {
+                    bracketContents += sgf[i];
+                } else {
+                    throw new Error(
+                        `missing ']' after '[' at ${bracketPosition}`
+                    );
+                }
+            } else if (sgf[i] === '[') {
+                bracketPosition = i;
+                inBrackets = true;
+
+            // handle property identifier
+            } else if (/[A-Z]/.test(sgf[i])) {
+                propIdContents += sgf[i];
+                inPropId = true;
+                if (!/[A-Z]/.test(sgf[i+1])) {
+                    if (sgf[i+1] === '[') {
+                        inPropId = false;
+                    }
+                    tokens.push({
+                        type: 'propId',
+                        value: propIdContents.slice(0),
+                    });
+                    propIdContents = '';
+                }
+            } else if (inPropId) {
+                throw new Error(
+                    `expecting propVal after propId '${
+                        tokens[tokens.length-1].value
+                    }'`
+                );
+
+            // non-bracket terminal symbols
+            } else if ('();'.includes(sgf[i])) {
+                tokens.push({
+                    type: sgf[i]
+                });
+            } else {
+                // not a valid sgf character; throw error? idk
+            }
+        }
+        callback(tokens);
+    }
+
+    static parseTokens(tokens) {
+
+    }
 }
 
 export default SGF;

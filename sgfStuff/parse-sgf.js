@@ -3,6 +3,8 @@
  * @module parse-sgf
  */
 
+import SGF from "../sgf-handler.js";
+
 /**
  * @private
  * @param {string} sgf SGF string to parse
@@ -229,7 +231,7 @@ function makeTree(tokens, parent, move = 0) {
  */
 function ParseSGF(sgf) {
     let tree;
-    tokenize(sgf, (result) => {
+    SGF.tokenize(sgf, (result) => {
         parseTokens(result, (result) => {
             tree = makeTree(result);
         });
