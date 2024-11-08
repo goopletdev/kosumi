@@ -1,4 +1,4 @@
-import {sgfCoordinates} from '../sgfStuff/sgfProperties.js'
+import SGF from '../sgf-handler.js';
 
 class GobanCanvas {
     constructor(parent) {
@@ -130,12 +130,12 @@ class GobanCanvas {
         this.context.textBaseline = 'middle';
         this.context.fillStyle = this.lineColor;
         for (let i=0; i< this.columns; i++) {
-            this.context.fillText(sgfCoordinates[i],this.lineSpacing*(i+1.5),(this.lineSpacing*.5));
-            this.context.fillText(sgfCoordinates[i],this.lineSpacing*(i+1.5),this.lineSpacing*(this.rows+1.5))
+            this.context.fillText(SGF.coordinates[i],this.lineSpacing*(i+1.5),(this.lineSpacing*.5));
+            this.context.fillText(SGF.coordinates[i],this.lineSpacing*(i+1.5),this.lineSpacing*(this.rows+1.5))
         }
         for (let i=0; i< this.rows; i++) {
-            this.context.fillText(sgfCoordinates[i],this.lineSpacing*.5,this.lineSpacing*(i+1.5));
-            this.context.fillText(sgfCoordinates[i],this.lineSpacing*(this.columns+1.5),this.lineSpacing*(i+1.5));
+            this.context.fillText(SGF.coordinates[i],this.lineSpacing*.5,this.lineSpacing*(i+1.5));
+            this.context.fillText(SGF.coordinates[i],this.lineSpacing*(this.columns+1.5),this.lineSpacing*(i+1.5));
         }
     }
 

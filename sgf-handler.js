@@ -33,7 +33,7 @@ class SGF {
     static numericCoord(sgfCoord) {
         let numCoord = [];
         for (let i=0; i < sgfCoord.length; i++) {
-            numCoord.push(this.sgfCoordinates.indexOf(sgfCoord[i]));
+            numCoord.push(this.coordinates.indexOf(sgfCoord[i]));
         }
         return numCoord;
     }

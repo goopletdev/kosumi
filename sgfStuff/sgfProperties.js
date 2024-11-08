@@ -617,7 +617,6 @@ const miscProperties = [
 ]
 
 // utility values
-const sgfCoordinates = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const sgfPropOrder = [
     rootProperties,
     gameInfoProperties,
@@ -628,18 +627,6 @@ const sgfPropOrder = [
     nodeAnnotationProperties,
     markupProperties,
     miscProperties
-]
-const zipableProps = [
-    'AB',
-    'AE',
-    'AW',
-    'CR',
-    'DD',
-    'MA',
-    'SL',
-    'SQ',
-    'TR',
-    'VW',
 ]
 
 export {
@@ -654,7 +641,5 @@ export {
     nodeAnnotationProperties,
     markupProperties,
     miscProperties,
-    sgfCoordinates,
     sgfPropOrder,
-    zipableProps,
 }
