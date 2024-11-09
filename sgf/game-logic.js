@@ -2,8 +2,6 @@
  * @module game-logic
  */
 
-import SGF from "./sgf-handler.js";
-
 /**
  * Gets array of unoccupied intersections adjacent to chain's coords
  * @param {matrix} matrix Boardstate
