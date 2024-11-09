@@ -15,7 +15,8 @@ navigationPanel.setInfo(infoPanel);
 
 let oldSGF;
 let newSGF;
-let gameTree;
+let gameTree = {currentNode: {id: 0}};
+let collection;
 
 const toggleSGF = () => {
     let toggleButton = document.getElementById('toggleButton');
