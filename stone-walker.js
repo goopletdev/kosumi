@@ -2,16 +2,18 @@
  * @module StoneWalker
  */
 
-import SGF from './sgf/sgf-handler.js';
+import { initBoard, initStates } from "./sgf/game-logic.js";
 
 class StoneWalker {
     /**
      * Construct StoneWalker instance
-     * @param {object} gameObject Parsed SGF
+     * @param {object} gameObject Root node of parsed SGF
+     * @param {number} currentNode sets currentNode to tree node w/ given id
      */
-    constructor (gameObject) {
-        this.root = gameObject;
-        this.currentNode;
+    constructor (gameObject, currentNode=0) {
+        this.currentNode = StoneWalker.getNodeById(gameObject, currentNode);
+        this.EMPTY = initBoard(gameObject);
+        this.root = initStates(this.EMPTY, gameObject);
     }
 
     /**
@@ -32,6 +34,20 @@ class StoneWalker {
             } else {
                 return -1;
             }
+        }
+    }
+
+    /**
+     * Sets currentNode to root node
+     * @returns {object} New currentNode, or -1 if already root
+     */
+    rootNode() {
+        if (this.currentNode.hasOwnProperty('parent')) {
+            let currentNode = this.currentNode;
+            this.currentNode = StoneWalker.getRootNode(currentNode);
+            return this.currentNode;
+        } else {
+            return -1;
         }
     }
 
@@ -113,7 +129,7 @@ class StoneWalker {
      */
     terminalNode() {
         if (this.currentNode.hasOwnProperty('children')) {
-            currentNode = this.currentNode;
+            let currentNode = this.currentNode;
             this.currentNode = StoneWalker.getTerminalNode(currentNode);
             return this.currentNode;
         }

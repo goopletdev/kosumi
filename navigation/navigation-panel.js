@@ -1,3 +1,5 @@
+import StoneWalker from "../stone-walker.js";
+
 class KosumiNavigation {
     constructor (parent) {
         this.parent = parent;

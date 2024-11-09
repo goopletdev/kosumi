@@ -2,7 +2,6 @@ import TextEditor from './textEditor/text-editor.js';
 import GobanCanvas from './goban/goban.js';
 import KosumiNavigation from './navigation/navigation-panel.js';
 import KosumiNodeInfo from './nodeInfo/node-info.js';
-import {initBoard,initStates} from './sgf/game-logic.js';
 import StoneWalker from './stone-walker.js';
 import SGF from './sgf/sgf-handler.js';
 
@@ -30,19 +29,25 @@ const toggleSGF = () => {
     texteditor.update();
 }
 
+const updateDisplay = () => {
+    collection = SGF.parse(texteditor.textarea.value);
+    gameTree = new StoneWalker(collection[0], gameTree.currentNode.id);
+    navigationPanel.setWalker(gameTree);
+
+    //navigationPanel.activeNode = StoneWalker.getTerminalNode(gameTree.root);
+    //navigationPanel.update();
+}
+
 const lezgooo = () => {
     oldSGF = texteditor.textarea.value;
+    collection = SGF.parse(oldSGF);
+    gameTree = new StoneWalker(collection[0], gameTree.currentNode.id);
+    navigationPanel.setWalker(gameTree);
+    //navigationPanel.activeNode = gameTree.root;
 
-    gameTree = SGF.parse(oldSGF)[0];
+    //goban.updateCanvas(navigationPanel.activeNode.state);
 
-    const EMPTY = initBoard(gameTree);
-    gameTree = initStates(EMPTY,gameTree);
-
-    navigationPanel.activeNode = gameTree;
-
-    goban.updateCanvas(navigationPanel.activeNode.state);
-
-    newSGF = SGF.encode(gameTree);
+    newSGF = SGF.encode(gameTree.root);
     texteditor.textarea.value = newSGF;
     texteditor.update();
 
@@ -58,14 +63,6 @@ const lezgooo = () => {
 
 }
 
-const updateDisplay = () => {
-    gameTree = SGF.parse(texteditor.textarea.value)[0];
-    const EMPTY = initBoard(gameTree);
-    gameTree = initStates(EMPTY,gameTree);
-
-    navigationPanel.activeNode = StoneWalker.getTerminalNode(gameTree);
-    navigationPanel.update();
-}
 
 document.getElementById('format').addEventListener('click',lezgooo);
 texteditor.textarea.addEventListener('change', updateDisplay);
