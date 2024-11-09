@@ -20,42 +20,12 @@ class KosumiNavigation {
         this.stepBackwardButton.classList.add('kosumiNavigationButton');
         this.stepForewardButton.classList.add('kosumiNavigationButton');
         this.skipForewardButton.classList.add('kosumiNavigationButton');
-        let that = this;
-        this.skipBackwardButton.addEventListener('click',function() {
-            while(that.activeNode.hasOwnProperty('parent')) {
-                that.activeNode = that.activeNode.parent;
-            };
-            that.update();
-        });
-        this.stepBackwardButton.addEventListener('click',function() {
-            if (that.activeNode.hasOwnProperty('parent')) {
-                that.activeNode = that.activeNode.parent;
-                that.update();
-            }
-        });
-        this.stepForewardButton.addEventListener('click',function() {
-            if (that.activeNode.hasOwnProperty('children')) {
-                that.activeNode = that.activeNode.children[0];
-                that.update();
-            }
-        });
-        this.skipForewardButton.addEventListener('click',function() {
-            while (that.activeNode.hasOwnProperty('children')) {
-                that.activeNode = that.activeNode.children[0];
-            };
-            that.update();
-        })
-
         this.panel.append(
             this.skipBackwardButton,
             this.stepBackwardButton,
             this.stepForewardButton,
-            this.skipForewardButton
+            this.skipForewardButton,
         )
-
-        //this.info = document.createElement('textarea');
-        //this.info.classList.add('gobanInfo');
-        //this.parent.appendChild(this.info);
 
         this.activeNode;
     }
@@ -68,9 +38,38 @@ class KosumiNavigation {
         this.info = kosumiInfoObject;
     }
 
-    update() {
-        this.goban.updateCanvas(this.activeNode.state);
-        this.info.updateInfoPanel(this.activeNode);
+    /**
+     * 
+     * @param {StoneWalker} walker 
+     */
+    setWalker(walker) {
+        let nav = this;
+        this.skipBackwardButton.addEventListener('click', function() {
+            walker.rootNode();
+            nav.update(walker.currentNode);
+        });
+        this.stepBackwardButton.addEventListener('click', function() {
+            walker.parentNode();
+            nav.update(walker.currentNode);
+        });
+        this.stepForewardButton.addEventListener('click', function() {
+            walker.firstChild();
+            nav.update(walker.currentNode);
+        });
+        this.skipForewardButton.addEventListener('click', function() {
+            walker.terminalNode();
+            nav.update(walker.currentNode);
+        });
+        this.update(walker.currentNode);
+    }
+
+    /**
+     * 
+     * @param {object} node 
+     */
+    update(node) {
+        this.goban.updateCanvas(node.state);
+        this.info.updateInfoPanel(node);
     }
 
 
