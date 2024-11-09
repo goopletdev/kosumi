@@ -173,7 +173,6 @@ class GobanCanvas {
     updateCanvas(boardState) {
         this.setCanvasSize(boardState[0].length,boardState.length);
         this.fillCanvas();
-        //this.setCanvasUnits(boardState[0].length,boardState.length);
         this.drawBoundingRectangle();
         this.drawGrid();
         this.drawStars();
