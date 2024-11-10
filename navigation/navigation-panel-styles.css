@@ -17,6 +17,6 @@
 }
 
 .kosumiMoveNumber {
-    width:2ch;
-    min-width: fit-content;
+    width:6ch;
+    font-size:12px;
 }

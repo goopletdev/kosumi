@@ -22,7 +22,7 @@ class KosumiNavigation {
         this.stepForewardButton.classList.add('kosumiNavigationButton');
         this.skipForewardButton.classList.add('kosumiNavigationButton');
         this.moveNumber = document.createElement('input');
-        this.moveNumber.type = 'text';
+        this.moveNumber.type = 'number';
         this.moveNumber.id = 'kosumiMoveNumber';
         this.moveNumber.classList.add('kosumiMoveNumber');
         this.moveNumber.name = 'moveNumber';
