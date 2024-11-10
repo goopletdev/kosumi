@@ -7,22 +7,15 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 - Correct SGF style errors in SGF files from OGS, and maximize compatibility by unzipping compressed coordinates
 
 ## To-do list:
-- parsing large files takes too long. find out why.
-- move initBoard and initStates to stonewalker constructor
-
 - display actively edited node as active node on the goban
+- improve error handling for SGF parsing; explain common errors better
 - unit testing
 - jsdoc
-- move navigation event listeners to static function, have them listen to external game object
 - map arrow keys to navigation panel buttons?
 - make line-highlighting instantaneous upon click/arrow
 - improve syntax highlighting (typing for propIdent/val pairs)
-- flesh out nodeInfo class
 - navigation: allow for variations
-- figure out how to better group sgf utility funcs and object utility funcs
 - Allow compressing coords when generating SGF
-- Basically rewrite everything in `game-logic.js` so it's not pure spaghetti, and add JSdoc while at it
-- Try and use fewer loops in parse.js! 
 
 ## Known issues:
 - resizing using the middle dividing bar is slow
