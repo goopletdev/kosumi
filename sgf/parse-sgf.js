@@ -188,7 +188,7 @@ function getTreeEnd(toks) {
  * @returns {{}} Node tree of all moves and variations
  */
 function makeTree(tokens, parent, move = 0) {
-    if (tokens[0]) {
+    if (tokens) {
         if (tokens[0].type === '(') {
             let trees = [];
             while (tokens.length) {
@@ -234,7 +234,7 @@ function makeTree(tokens, parent, move = 0) {
         }
     } else {
         throw new Error(
-            `'tokens[0]' in makeTree is ${tokens[0]}`
+            `'tokens' in makeTree is ${tokens}`
         )
     }
 }
