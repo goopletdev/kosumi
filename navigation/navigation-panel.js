@@ -46,7 +46,7 @@ class KosumiNavigation {
     }
 
     /**
-     * 
+     * Assigns listeners to this's buttons that interact with walker
      * @param {StoneWalker} walker 
      */
     setWalker(walker) {
