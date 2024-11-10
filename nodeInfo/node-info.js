@@ -24,22 +24,30 @@ class KosumiNodeInfo {
         this.gameInfo = [];
     }
 
-    updateInfo(node) {
-        this.nodeProperties.innerText = `(node ${node.id}) Move ${node.moveNumber}:\n`;
-        for (let key of Object.keys(node.props)) {
-            if (node.id === 0 && ['root','game-info'].includes(propertyDefinitions[key].type)) {
+    /**
+     * 
+     * @param {StoneWalker} walker 
+     */
+    updateInfo(walker) {
+        this.nodeProperties.innerText = `(node ${walker.root.id}) Move ${walker.root.moveNumber}:\n`;
+        for (let key of Object.keys(walker.root.props)) {
+            if (walker.root.id === 0 && ['root','game-info'].includes(propertyDefinitions[key].type)) {
                 continue;
             }
             if (Object.keys(propertyDefinitions).includes(key)) {
-                this.nodeProperties.innerText += `${key} ${propertyDefinitions[key].name}: ${node.props[key]}\n`;
+                this.nodeProperties.innerText += `${key} ${propertyDefinitions[key].name}: ${walker.root.props[key]}\n`;
             } else {
-                this.nodeProperties.innerText += `${key}: ${node.props[key]}\n`
+                this.nodeProperties.innerText += `${key}: ${walker.root.props[key]}\n`
             }
         }
     }
 
-    updateGameInfo(node) {
-        let nodeProps = StoneWalker.getRootNode(node).props;
+    /**
+     * 
+     * @param {StoneWalker} walker 
+     */
+    updateGameInfo(walker) {
+        let nodeProps = walker.root.props;
         let gameInfoProperties = '';
         for (let key of Object.keys(nodeProps)) {
             if (propertyDefinitions.hasOwnProperty(key)) {
@@ -52,8 +60,12 @@ class KosumiNodeInfo {
         this.gameInfoProperties.innerText = gameInfoProperties;
     }
 
-    updateRootInfo(node) {
-        let nodeProps = StoneWalker.getRootNode(node).props;
+    /**
+     * 
+     * @param {StoneWalker} walker 
+     */
+    updateRootInfo(walker) {
+        let nodeProps = walker.root.props;
         let rootProperties = '';
         for (let key of ['FF','GM','AP','CA','ST','SZ']) {
             let propertyValue;
@@ -67,10 +79,14 @@ class KosumiNodeInfo {
         this.rootProperties.innerText = rootProperties;
     }
 
-    updateInfoPanel(node) {
-        this.updateInfo(node);
-        this.updateGameInfo(node);
-        this.updateRootInfo(node);
+    /**
+     * 
+     * @param {StoneWalker} walker 
+     */
+    updateInfoPanel(walker) {
+        this.updateInfo(walker);
+        this.updateGameInfo(walker);
+        this.updateRootInfo(walker);
     }
 
 }

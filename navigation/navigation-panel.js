@@ -55,30 +55,30 @@ class KosumiNavigation {
         nav.walker = walker;
         this.skipBackwardButton.addEventListener('click', function() {
             walker.rootNode();
-            nav.update(walker.currentNode);
+            nav.update(walker);
         });
         this.stepBackwardButton.addEventListener('click', function() {
             walker.parentNode();
-            nav.update(walker.currentNode);
+            nav.update(walker);
         });
         this.stepForewardButton.addEventListener('click', function() {
             walker.firstChild();
-            nav.update(walker.currentNode);
+            nav.update(walker);
         });
         this.skipForewardButton.addEventListener('click', function() {
             walker.terminalNode();
-            nav.update(walker.currentNode);
+            nav.update(walker);
         });
-        this.update(walker.currentNode);
+        this.update(walker);
     }
 
     /**
      * 
-     * @param {object} node 
+     * @param {StoneWalker} node 
      */
-    update(node) {
-        this.goban.updateCanvas(node.state);
-        this.info.updateInfoPanel(node);
+    update(walker) {
+        this.goban.updateCanvas(walker.currentNode.state);
+        this.info.updateInfoPanel(walker);
     }
 
 
