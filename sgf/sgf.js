@@ -154,6 +154,9 @@ class SGF {
         });
         if (application) {
             for (let gameTree of collection) {
+                if (!gameTree.hasOwnProperty('props')) {
+                    gameTree.props = {};
+                }
                 gameTree.props.AP = [application];
             }
         }

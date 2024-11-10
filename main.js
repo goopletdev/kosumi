@@ -3,7 +3,7 @@ import GobanCanvas from './goban/goban.js';
 import KosumiNavigation from './navigation/navigation-panel.js';
 import KosumiNodeInfo from './nodeInfo/node-info.js';
 import StoneWalker from './stone-walker.js';
-import SGF from './sgf/sgf-handler.js';
+import SGF from './sgf/sgf.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
 const goban = new GobanCanvas(document.getElementById('gobanParent'));

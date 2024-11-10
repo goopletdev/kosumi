@@ -3,7 +3,7 @@
  * @module parse-sgf
  */
 
-import SGF from "./sgf-handler.js";
+import SGF from "./sgf.js";
 import { propertyDefinitions } from "./sgfProperties.js";
 
 /**
