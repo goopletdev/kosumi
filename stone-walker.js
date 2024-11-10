@@ -17,6 +17,24 @@ class StoneWalker {
     }
 
     /**
+     * 
+     * @param {number} nodeId 
+     * @returns 
+     */
+    id(nodeId) {
+        if (this.currentNode.id === nodeId) {
+            return -1;
+        } else {
+            let that = this;
+            let node = StoneWalker.getNodeById(that.root, nodeId);
+            if (node !== -1) {
+                this.currentNode = node;
+            }
+            return node;
+        }
+    }
+
+    /**
      * Sets currentNode to node in current branch at moveNumber
      * @param {number} moveNumber 
      * @returns New currentNode, or -1 if the current node already
@@ -44,8 +62,13 @@ class StoneWalker {
     rootNode() {
         if (this.currentNode.hasOwnProperty('parent')) {
             let currentNode = this.currentNode;
-            this.currentNode = StoneWalker.getRootNode(currentNode);
-            return this.currentNode;
+            currentNode = StoneWalker.getRootNode(currentNode);
+            if (currentNode === -1) {
+                return -1;
+            } else {
+                this.currentNode = currentNode;
+                return this.currentNode;
+            }
         } else {
             return -1;
         }
@@ -128,12 +151,13 @@ class StoneWalker {
      * @returns New currentNode, or -1 if currentNode is childless
      */
     terminalNode() {
-        if (this.currentNode.hasOwnProperty('children')) {
+        if (!this.currentNode.hasOwnProperty('children')) {
+            return -1;
+        } else {
             let currentNode = this.currentNode;
             this.currentNode = StoneWalker.getTerminalNode(currentNode);
             return this.currentNode;
         }
-        return -1;
     }
 
     /**
@@ -157,14 +181,13 @@ class StoneWalker {
      * or -1 if id does not exist
      */
     static getNodeById(gameTree, id) { 
-        //THIS FUNCTION CURRENTLY NEVER REFERENCED
         if (gameTree.id === id) {
             return gameTree;
         } else if (!gameTree.hasOwnProperty('children')) {
             return -1;
         } else {
             for (let child of gameTree.children) {
-                let node = this.getNodeById(child);
+                let node = this.getNodeById(child, id);
                 if (node !== -1) {
                     return node;
                 }

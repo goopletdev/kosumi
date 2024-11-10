@@ -1,4 +1,5 @@
 import StoneWalker from "../stone-walker.js";
+import TextEditor from "../textEditor/text-editor.js";
 
 class KosumiNavigation {
     constructor (parent) {
@@ -20,9 +21,16 @@ class KosumiNavigation {
         this.stepBackwardButton.classList.add('kosumiNavigationButton');
         this.stepForewardButton.classList.add('kosumiNavigationButton');
         this.skipForewardButton.classList.add('kosumiNavigationButton');
+        this.moveNumber = document.createElement('input');
+        this.moveNumber.type = 'text';
+        this.moveNumber.id = 'kosumiMoveNumber';
+        this.moveNumber.classList.add('kosumiMoveNumber');
+        this.moveNumber.name = 'moveNumber';
+        this.moveNumber.min = '0';
         this.panel.append(
             this.skipBackwardButton,
             this.stepBackwardButton,
+            this.moveNumber,
             this.stepForewardButton,
             this.skipForewardButton,
         )
@@ -44,6 +52,7 @@ class KosumiNavigation {
      */
     setWalker(walker) {
         let nav = this;
+        nav.walker = walker;
         this.skipBackwardButton.addEventListener('click', function() {
             walker.rootNode();
             nav.update(walker.currentNode);
@@ -71,6 +80,8 @@ class KosumiNavigation {
         this.goban.updateCanvas(node.state);
         this.info.updateInfoPanel(node);
     }
+
+
 
 
 }

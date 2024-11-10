@@ -159,6 +159,17 @@ class SGF {
         }
         return collection;
     }
+
+    static stringify(gameTree) {
+        objectList=[];
+        return JSON.stringify(gameTree, (key, value) => {
+            if (objectList.includes(value)) {
+                return '[Circular Reference]';
+            } else {
+                objectList.push(value);
+            }
+        })
+    }
 }
 
 export default SGF;

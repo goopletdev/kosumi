@@ -9,6 +9,8 @@ class TextEditor {
      * @param {HTMLElement} parent TextEditor HTML parent element
      */
     constructor(parent) {
+        this.activeNode = -1;
+
         this.parent = parent;
 
         this.container = document.createElement('div');
@@ -151,11 +153,34 @@ class TextEditor {
         let beginSelect = this.textarea.selectionStart;
         let endSelect = this.textarea.selectionEnd;
         let selected = '';
-        let textToCursor = this.textarea.value.slice(0,beginSelect).split('\n');
-        let activeLineFirst = textToCursor.length;
-        let column = textToCursor[activeLineFirst-1].length+1;
-        let activeLineLast = this
-            .textarea.value.slice(0,endSelect).split('\n').length;
+        let textToCursor = this.textarea.value.slice(0,beginSelect);
+        let linesToCursor = textToCursor.split('\n');
+        let activeLineFirst = linesToCursor.length;
+        let column = linesToCursor[activeLineFirst-1].length+1;
+        let activeLineLast = this.textarea.value.slice(0,endSelect).split('\n').length;
+
+        // find number of nodes up to cursor
+        let nodeNumber = -1;
+        let inBrackets = false;
+        let escaped = false;
+        for (let i = 0; i < textToCursor.length; i++) {
+            if (escaped) {
+                escaped = false;
+            } else if (inBrackets) {
+                if (textToCursor[i] === ']') {
+                    inBrackets = false;
+                }
+            } else if (textToCursor[i] === '[') {
+                inBrackets = true;
+            } else if (textToCursor[i] === ';') {
+                nodeNumber++;
+            }
+        }
+        if (nodeNumber < 0) {
+            this.activeNode = 'none';
+        } else {
+            this.activeNode = nodeNumber;
+        }
     
         if (activeLineFirst === activeLineLast) {
             this.lines.childNodes.forEach((element,i) => {
@@ -190,8 +215,12 @@ class TextEditor {
                 element.classList.remove('activeLineNumber');
             }
         });
+
+        let activeInfo = `Node (${this.activeNode}) | Ln ${activeLineFirst}, Col ${column}${selected}`;
     
-        this.caret.innerText = `Ln ${activeLineFirst}, Col ${column}${selected}`;
+        if (this.caret.innerText !== activeInfo) {
+            this.caret.innerText = activeInfo;
+        }
     }
 
     syncScroll() {

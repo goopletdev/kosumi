@@ -73,6 +73,11 @@ splitBar.addEventListener('mousedown', function() {
 })
 document.addEventListener('mouseup', function () {
     mouseIsDown = false;
+    // handle moving caret
+    if (gameTree.currentNode.id !== texteditor.activeNode) {
+        gameTree.id(texteditor.activeNode);
+        navigationPanel.update(gameTree.currentNode);
+    }
 })
 document.addEventListener('mousemove', function (mousePosition) {
     if (!mouseIsDown) return;
