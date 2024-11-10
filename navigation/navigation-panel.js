@@ -65,20 +65,21 @@ class KosumiNavigation {
             walker.terminalNode();
             nav.update(walker);
         });
+        this.moveNumber.addEventListener('change', function() {
+            walker.move(parseInt(nav.moveNumber.value));
+            nav.update(walker);
+        })
         this.update(walker);
     }
 
     /**
-     * 
+     * Updates navPanel's move number and goban's canvas
      * @param {StoneWalker} node 
      */
     update(walker) {
         this.goban.updateCanvas(walker.currentNode.state);
+        this.moveNumber.value = walker.currentNode.moveNumber;
     }
-
-
-
-
 }
 
 export default KosumiNavigation;
