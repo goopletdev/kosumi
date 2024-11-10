@@ -3,6 +3,7 @@
  */
 
 import { initBoard, initStates } from "./game-logic.js";
+import * as priv from "./sw-private-functions.js";
 
 class StoneWalker {
     /**
@@ -11,7 +12,7 @@ class StoneWalker {
      * @param {number} currentNode sets currentNode to tree node w/ given id
      */
     constructor (gameObject, currentNode=0) {
-        this.currentNode = StoneWalker.getNodeById(gameObject, currentNode);
+        this.currentNode = priv.getNodeById(gameObject, currentNode);
         this.EMPTY = initBoard(gameObject);
         this.root = initStates(this.EMPTY, gameObject);
     }
@@ -25,8 +26,7 @@ class StoneWalker {
         if (this.currentNode.id === nodeId) {
             return -1;
         } else {
-            let that = this;
-            let node = StoneWalker.getNodeById(that.root, nodeId);
+            let node = priv.getNodeById(this.root, nodeId);
             if (node !== -1) {
                 this.currentNode = node;
             }
@@ -44,8 +44,7 @@ class StoneWalker {
         if (this.currentNode.moveNumber === moveNumber) {
             return -1;
         } else {
-            let currentNode = this.currentNode;
-            let newNode = StoneWalker.getNodeAtMove(currentNode);
+            let newNode = priv.getNodeAtMove(this.currentNode);
             if (newNode !== -1) {
                 this.currentNode = newNode;
                 return this.currentNode;
@@ -61,14 +60,8 @@ class StoneWalker {
      */
     rootNode() {
         if (this.currentNode.hasOwnProperty('parent')) {
-            let currentNode = this.currentNode;
-            currentNode = StoneWalker.getRootNode(currentNode);
-            if (currentNode === -1) {
-                return -1;
-            } else {
-                this.currentNode = currentNode;
-                return this.currentNode;
-            }
+            this.currentNode = priv.getRootNode(this.currentNode);
+            return this.currentNode;
         } else {
             return -1;
         }
@@ -154,80 +147,11 @@ class StoneWalker {
         if (!this.currentNode.hasOwnProperty('children')) {
             return -1;
         } else {
-            let currentNode = this.currentNode;
-            this.currentNode = StoneWalker.getTerminalNode(currentNode);
+            this.currentNode = priv.getTerminalNode(this.currentNode);
             return this.currentNode;
         }
     }
 
-    /**
-     * Searches down main branch from given node 
-     * for terminal node
-     * @param {*} node 
-     * @returns Final node in current branch
-     */
-    static getTerminalNode(node) {
-        if (node.hasOwnProperty('children')) {
-            return this.getTerminalNode(node.children[0]);
-        }
-        return node;
-    }
-
-    /**
-     * Searches game tree for node with given id
-     * @param {*} gameTree 
-     * @param {*} id 
-     * @returns First node in gameTree with given id,
-     * or -1 if id does not exist
-     */
-    static getNodeById(gameTree, id) { 
-        if (gameTree.id === id) {
-            return gameTree;
-        } else if (!gameTree.hasOwnProperty('children')) {
-            return -1;
-        } else {
-            for (let child of gameTree.children) {
-                let node = this.getNodeById(child, id);
-                if (node !== -1) {
-                    return node;
-                }
-            }
-            return -1;
-        }   
-    }
-
-    /**
-     * Searches up tree from node to get root node
-     * @param {*} node 
-     * @returns Root node
-     */
-    static getRootNode(node) {
-        if (!node.hasOwnProperty('parent')) {
-            return node;
-        } else {
-            return this.getRootNode(node.parent);
-        }
-    }
-
-    /**
-     * Searches up/down tree from given node
-     * to find node with moveNumber
-     * @param {*} node 
-     * @param {number} moveNumber 
-     * @returns First node in active branch with moveNumber
-     * or -1 if it doesn't exist.
-     */
-    static getNodeAtMove(node, moveNumber) {
-        if (node.moveNumber === moveNumber) {
-            return node;
-        } else if (node.moveNumber > moveNumber 
-            && node.hasOwnProperty('parent')) {
-            return this.getNodeAtMove(node.parent);
-        } else if (node.moveNumber < moveNumber 
-            && node.hasOwnProperty('children')) {
-            return this.getNodeAtMove(node.children[0]);
-        } else return -1;
-    }
 }
 
 export default StoneWalker;
