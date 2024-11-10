@@ -25,36 +25,9 @@
     overflow:hidden;
     font-size: 12px;
     font-family: monospace;
-}
-
-.lineNumbers {
-    border: none;
-    text-align:right;
-    min-width:2ch;
-    width:fit-content;
-    overflow:hidden;
-    height:100%;
-    padding-right:1ch;
-    padding-left:1ch;
-}
-
-.lineNumber {
-    width: 100%;
-    border: none;
-    padding: 0;
-    margin: 0;
     position:relative;
-}
-
-.editor {
-    position:relative;
-    display:flex;
-    padding:0;
-    margin:0;
-    text-align: left;
-    overflow:hidden;
     overflow-wrap:anywhere;
-    width:100%;
+    text-align:left;
 }
 
 .editorTextarea,
@@ -73,6 +46,7 @@
 }
 
 .editorTextarea {
+    padding: 0 0 0 5ch;
     z-index:2;
     vertical-align:top;
     background-color: transparent;
@@ -100,10 +74,25 @@
     margin-bottom:0;
 }
 
+.lines {
+    counter-reset: lineNumberBefore;
+}
+
+.line::before {
+    content: counter(lineNumberBefore) ' ';
+    counter-increment: lineNumberBefore;
+    width:4ch;
+    min-width:fit-content;
+    position: absolute;
+    text-align: right;
+    left: 0;
+    padding-left:1ch;
+}
+
 .line {
     position: relative;
-    width:100%;
-    padding:0;
+    width:calc(100% - 5ch);
+    padding: 0 0 0 5ch;
     margin:0;
     text-wrap:inherit;
     overflow:hidden;
@@ -154,7 +143,7 @@
     color:lightgray;
 }
 
-.lineNumber {
+.line::before {
     color:rgb(93, 93, 93);
 }
 
@@ -173,18 +162,12 @@
     color:white;
 }
 
-.activeLineFirst {
-    box-shadow: inset 0px 0.1em rgba(255, 255, 255, 0.433);
+.activeLine {
+    /*filter:brightness(150%);*/
+    background-color: rgb(40,40,40);
+    /*box-shadow: inset 0px 0.1em rgba(255, 255, 255, 0.433), inset 0px -0.1em rgba(255, 255, 255, 0.433);*/
 }
 
-.activeLineLast {
-    box-shadow: inset 0px -0.1em rgba(255, 255, 255, 0.433);
-}
-
-.activeLine  {
-    box-shadow: inset 0px 0.1em rgba(255, 255, 255, 0.433), inset 0px -0.1em rgba(255, 255, 255, 0.433);
-}
-
-.activeLineNumber {
+.activeLine::before {
     color: white;
 }

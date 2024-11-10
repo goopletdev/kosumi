@@ -26,25 +26,17 @@ class TextEditor {
         this.mainWrapper.classList.add('editorWrapper');
         this.container.appendChild(this.mainWrapper);
 
-        this.lineNumbers = document.createElement('div');
-        this.lineNumbers.classList.add('lineNumbers');
-        this.mainWrapper.appendChild(this.lineNumbers);
-
-        this.editor = document.createElement('div');
-        this.editor.classList.add('editor');
-        this.mainWrapper.appendChild(this.editor);
-
         this.textarea = document.createElement('textarea');
         this.textarea.classList.add('editorTextarea');
         this.textarea.spellcheck = false;
         this.textarea.autofocus;
         this.textarea.ariaHidden = true;
         this.textarea.placeholder = 'Paste SGF...'
-        this.editor.appendChild(this.textarea);
+        this.mainWrapper.appendChild(this.textarea);
 
         this.pre = document.createElement('pre');
         this.pre.classList.add('line-container');
-        this.editor.appendChild(this.pre);
+        this.mainWrapper.appendChild(this.pre);
 
         this.lines = document.createElement('code');
         this.lines.classList.add('lines');
@@ -117,7 +109,6 @@ class TextEditor {
 
         while (this.lines.childNodes.length > lines.length) {
             this.lines.removeChild(this.lines.childNodes[activeLine]);
-            this.lineNumbers.removeChild(this.lineNumbers.lastChild);
         }
         while (this.lines.childNodes.length < lines.length) {
             let newLine = document.createElement('div');
@@ -125,27 +116,12 @@ class TextEditor {
             this.lines.insertBefore(
                 newLine,this.lines.childNodes[activeLine+1]
             );
-    
-            let newLineNumber = document.createElement('div');
-            newLineNumber.classList.add('lineNumber');
-            newLineNumber.innerText = this.lineNumbers.childNodes.length + 1;
-            this.lineNumbers.appendChild(newLineNumber);
         }
     
         for (let i=0; i< lines.length; i++) {
             if (this.lines.childNodes[i].innerHTML !== lines[i]) {
                 this.lines.childNodes[i].innerHTML = lines[i];
             }
-
-            // find out whether this is faster than the following commented-out bit
-            let lineBounds = this.lines.childNodes[i].getBoundingClientRect();
-            let lineHeight = lineBounds.bottom-lineBounds.top;
-            this.lineNumbers.childNodes[i].style.height = `${lineHeight}px`
-            /*let lineNumberBounds = this.lineNumbers.childNodes[i].getBoundingClientRect();
-            let lineNumberHeight = lineNumberBounds.bottom-lineNumberBounds.top;
-            if (lineNumberHeight !== lineHeight) {
-                this.lineNumbers.childNodes[i].style.height = `${lineHeight}px`;
-            }*/
         }
     }
 
@@ -181,40 +157,14 @@ class TextEditor {
         } else {
             this.activeNode = nodeNumber;
         }
-    
-        if (activeLineFirst === activeLineLast) {
-            this.lines.childNodes.forEach((element,i) => {
-                element.classList.remove('activeLineFirst');
-                element.classList.remove('activeLineLast');
-                if (i+1 !== activeLineFirst) {
-                    element.classList.remove('activeLine');
-                } else {
-                    element.classList.add('activeLine');
-                }
-            })
-        } else {
-            selected = ` (${endSelect-beginSelect} selected)`;
-            this.lines.childNodes.forEach((element,i) => {
-                element.classList.remove('activeLine');
-                if (i+1 !== activeLineFirst) {
-                    element.classList.remove('activeLineFirst');
-                } else {
-                    element.classList.add('activeLineFirst');
-                }
-                if (i+1 !== activeLineLast) {
-                    element.classList.remove('activeLineLast');
-                } else {
-                    element.classList.add('activeLineLast')
-                }
-            });
-        }
-        this.lineNumbers.childNodes.forEach((element,i) => {
-            if (i+1 >= activeLineFirst && i+1 <= activeLineLast) {
-                element.classList.add('activeLineNumber');
+
+        this.lines.childNodes.forEach((element, i) => {
+            if (activeLineFirst <= i+1 && i+1 <= activeLineLast) {
+                element.classList.add('activeLine');
             } else {
-                element.classList.remove('activeLineNumber');
+                element.classList.remove('activeLine');
             }
-        });
+        })
 
         let activeInfo = `Node (${this.activeNode}) | Ln ${activeLineFirst}, Col ${column}${selected}`;
     
@@ -225,7 +175,6 @@ class TextEditor {
 
     syncScroll() {
         this.lines.scrollTop = this.textarea.scrollTop;
-        this.lineNumbers.scrollTop = this.textarea.scrollTop;
     }
 
     sync() {
