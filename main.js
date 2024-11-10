@@ -1,17 +1,14 @@
 import TextEditor from './textEditor/text-editor.js';
 import GobanCanvas from './goban/goban.js';
 import KosumiNavigation from './navigation/navigation-panel.js';
-import KosumiNodeInfo from './nodeInfo/node-info.js';
 import StoneWalker from './stoneWalker/stone-walker.js';
 import SGF from './sgf/sgf.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
 const goban = new GobanCanvas(document.getElementById('gobanParent'));
 const navigationPanel = new KosumiNavigation(document.getElementById('navigationParent'));
-const infoPanel = new KosumiNodeInfo(document.getElementById('infoParent'));
 
 navigationPanel.setGoban(goban);
-navigationPanel.setInfo(infoPanel);
 
 let oldSGF;
 let newSGF;

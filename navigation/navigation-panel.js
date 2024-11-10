@@ -42,10 +42,6 @@ class KosumiNavigation {
         this.goban = kosumiGobanObject; 
     }
 
-    setInfo(kosumiInfoObject) {
-        this.info = kosumiInfoObject;
-    }
-
     /**
      * 
      * @param {StoneWalker} walker 
@@ -78,7 +74,6 @@ class KosumiNavigation {
      */
     update(walker) {
         this.goban.updateCanvas(walker.currentNode.state);
-        this.info.updateInfoPanel(walker);
     }
 
 
