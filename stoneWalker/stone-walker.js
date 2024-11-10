@@ -18,9 +18,10 @@ class StoneWalker {
     }
 
     /**
-     * 
+     * Searches tree for node with given id and sets currentNode to that id
      * @param {number} nodeId 
-     * @returns 
+     * @returns New current node, or -1 if the node doesn't exist or the 
+     * currentNode already has that id
      */
     id(nodeId) {
         if (this.currentNode.id === nodeId) {
