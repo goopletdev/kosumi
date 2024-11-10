@@ -1,5 +1,5 @@
 import { propertyDefinitions } from "../sgf/sgfProperties.js";
-import StoneWalker from "../stone-walker.js";
+import StoneWalker from "../stoneWalker/stone-walker.js";
 
 class KosumiNodeInfo {
     constructor(parent) {

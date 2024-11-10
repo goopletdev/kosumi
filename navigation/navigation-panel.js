@@ -1,4 +1,4 @@
-import StoneWalker from "../stone-walker.js";
+import StoneWalker from "../stoneWalker/stone-walker.js";
 import TextEditor from "../textEditor/text-editor.js";
 
 class KosumiNavigation {

@@ -2,7 +2,7 @@ import TextEditor from './textEditor/text-editor.js';
 import GobanCanvas from './goban/goban.js';
 import KosumiNavigation from './navigation/navigation-panel.js';
 import KosumiNodeInfo from './nodeInfo/node-info.js';
-import StoneWalker from './stone-walker.js';
+import StoneWalker from './stoneWalker/stone-walker.js';
 import SGF from './sgf/sgf.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));

@@ -2,7 +2,7 @@
  * @module StoneWalker
  */
 
-import { initBoard, initStates } from "./sgf/game-logic.js";
+import { initBoard, initStates } from "../sgf/game-logic.js";
 
 class StoneWalker {
     /**
