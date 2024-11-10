@@ -62,6 +62,13 @@ const lezgooo = () => {
 document.getElementById('format').addEventListener('click',lezgooo);
 texteditor.textarea.addEventListener('change', updateDisplay);
 texteditor.textarea.addEventListener('input',updateDisplay);
+texteditor.textarea.addEventListener('keyup', function () {
+   // handle moving caret
+    if (gameTree.currentNode.id !== texteditor.activeNode) {
+        gameTree.id(texteditor.activeNode);
+        navigationPanel.update(gameTree.currentNode);
+    }
+})
 
 
 // splitBar resizer
