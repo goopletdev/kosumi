@@ -34,9 +34,6 @@ const updateDisplay = () => {
     collection = SGF.parse(texteditor.textarea.value);
     gameTree = new StoneWalker(collection[0], gameTree.currentNode.id);
     navigationPanel.setWalker(gameTree);
-
-    //navigationPanel.activeNode = StoneWalker.getTerminalNode(gameTree.root);
-    //navigationPanel.update();
 }
 
 const lezgooo = () => {
@@ -44,9 +41,6 @@ const lezgooo = () => {
     collection = SGF.parse(oldSGF);
     gameTree = new StoneWalker(collection[0], gameTree.currentNode.id);
     navigationPanel.setWalker(gameTree);
-    //navigationPanel.activeNode = gameTree.root;
-
-    //goban.updateCanvas(navigationPanel.activeNode.state);
 
     newSGF = SGF.encode(gameTree.root);
     texteditor.textarea.value = newSGF;

@@ -100,7 +100,7 @@ class SGF {
                 }
                 let values = [];
                 for (let val of node.props[key]) {
-                    // handle escaped characters in PropertyValues
+                    // handle escaped characters in PropertyValues and encode numeric coords
                     let newVal = val;
                     if (typeof val !== 'string') {
                         newVal = '';
