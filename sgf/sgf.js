@@ -71,7 +71,7 @@ class SGF {
      * @param {object} node Root node of game tree
      * @returns {string} SGF string
      */
-    static encode(node) {
+    static stringify(node) {
         // begin SGF node
         let sgf = ';';
         if (node.hasOwnProperty('props')) {
@@ -117,7 +117,7 @@ class SGF {
             // root node has trailing newline; add newline only to following nodes
             let newline = node.id > 0 ? '\n' : '';
             for (let child of node.children) {
-                sgf += newline + SGF.encode(child);
+                sgf += newline + SGF.stringify(child);
             }
         }
         if (!node.hasOwnProperty('parent')) {
@@ -134,7 +134,7 @@ class SGF {
     static encodeCollection(gameTrees) {
         let collection = [];
         for (let tree of gameTrees) {
-            collection.push(SGF.encode(tree));
+            collection.push(SGF.stringify(tree));
         }
         return collection.join('\n\n');
     }

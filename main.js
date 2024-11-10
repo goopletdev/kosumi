@@ -39,7 +39,7 @@ const lezgooo = () => {
     gameTree = new StoneWalker(collection[0], gameTree.currentNode.id);
     navigationPanel.setWalker(gameTree);
 
-    newSGF = SGF.encode(gameTree.root);
+    newSGF = SGF.stringify(gameTree.root);
     texteditor.textarea.value = newSGF;
     texteditor.update();
 
