@@ -1,5 +1,8 @@
+/**
+ * @module KosumiNavigation
+ */
+
 import StoneWalker from "../stoneWalker/stone-walker.js";
-import TextEditor from "../textEditor/text-editor.js";
 
 class KosumiNavigation {
     constructor (parent) {
