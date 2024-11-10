@@ -59,12 +59,10 @@ function getRootNode(node) {
 function getNodeAtMove(node, moveNumber) {
     if (node.moveNumber === moveNumber) {
         return node;
-    } else if (node.moveNumber > moveNumber 
-        && node.hasOwnProperty('parent')) {
-        return getNodeAtMove(node.parent);
-    } else if (node.moveNumber < moveNumber 
-        && node.hasOwnProperty('children')) {
-        return getNodeAtMove(node.children[0]);
+    } else if (node.moveNumber > moveNumber && node.hasOwnProperty('parent')) {
+        return getNodeAtMove(node.parent, moveNumber);
+    } else if (node.moveNumber < moveNumber && node.hasOwnProperty('children')) {
+        return getNodeAtMove(node.children[0], moveNumber);
     } else return -1;
 }
 

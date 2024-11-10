@@ -45,7 +45,7 @@ class StoneWalker {
         if (this.currentNode.moveNumber === moveNumber) {
             return -1;
         } else {
-            let newNode = priv.getNodeAtMove(this.currentNode);
+            let newNode = priv.getNodeAtMove(this.currentNode, moveNumber);
             if (newNode !== -1) {
                 this.currentNode = newNode;
                 return this.currentNode;
