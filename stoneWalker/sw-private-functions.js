@@ -1,3 +1,12 @@
+// NODE EDITING FUNCTIONS
+// create new node
+// insert node before
+// insert node as child
+// delete node
+// edit move (for node with single move)
+// invert colors
+
+// NODE NAVIGATION METHODS
 
 /**
  * Searches down main branch from given node 
