@@ -1,4 +1,5 @@
 import HighlightSGF from './sgf-syntax.js';
+import * as TEPriv from './te-private-functions.js'
 
 /**
  * @module TextEditor
@@ -64,6 +65,9 @@ class TextEditor {
 
         const object = this;
         TextEditor.observe(object)
+
+
+        TEPriv.addListeners(this);
 
    }
 
