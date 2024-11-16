@@ -41,13 +41,6 @@ class GobanCanvas {
 
         this.display.width = this.lineSpacing * (columns + 2);
         this.display.height = this.lineSpacing * (rows + 2);
-
-/*
-        this.bounds = this.container.getBoundingClientRect();
-        const height = this.bounds.bottom-this.bounds.top;
-        const width = this.bounds.right-this.bounds.left;
-        this.display.width = width < height? height : width;
-        this.display.height = this.display.width;*/
     }
 
     setCanvasUnits(columns,rows) {
