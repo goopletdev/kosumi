@@ -13,15 +13,14 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 - unit testing
 - jsdoc
 - map arrow keys to navigation panel buttons?
-- make line-highlighting instantaneous upon click/arrow
 - improve syntax highlighting (typing for propIdent/val pairs)
 - navigation: allow for variations
 - Allow compressing coords when generating SGF
+- resize observer for goban
 
 ## Known issues:
 - resizing using the middle dividing bar is slow
 - BIGBUG: canvas gets progressively smaller with different shaped boards, until refresh
-- smolbug: fix toggle display style button
 - BIGBUG: allow 'tt' for passes
 - smoler bug: allow for parsing of collections
 
