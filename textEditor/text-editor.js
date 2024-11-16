@@ -1,5 +1,6 @@
 import HighlightSGF from './sgf-syntax.js';
-import * as TEPriv from './te-private-functions.js'
+import * as lazy from '../lazy-dom.js';
+import SGF from '../sgf/sgf.js';
 
 /**
  * @module TextEditor
@@ -7,98 +8,103 @@ import * as TEPriv from './te-private-functions.js'
 class TextEditor {
     /**
      * Creates and appends the Kosumi TextEditor DOM element
-     * @param {HTMLElement} parent TextEditor HTML parent element
+     * @param {Node} parent TextEditor HTML parent element
      */
     constructor(parent) {
         this.activeNode = -1;
+        this.history = [];
+        this.currentText = '';
 
         this.parent = parent;
 
-        this.container = document.createElement('div');
-        this.container.classList.add('editorContainer');
-        this.parent.appendChild(this.container);
+        this.container = lazy.div(['editorContainer', 'teInput'], this.parent);
+        this.header = lazy.header(['editorHeader'], this.container, null, 'Kosumi 0.1.0');
 
-        this.header = document.createElement('header');
-        this.header.classList.add('editorHeader');
-        this.header.innerText = 'Kosumi 0.1.0'
-        this.container.appendChild(this.header);
-
-        this.mainWrapper = document.createElement('div');
-        this.mainWrapper.classList.add('editorWrapper');
-        this.container.appendChild(this.mainWrapper);
-
-        this.textarea = document.createElement('textarea');
-        this.textarea.classList.add('editorTextarea');
+        this.mainWrapper = lazy.div(['editorWrapper'], this.container);
+        this.textarea = lazy.textarea(['editorTextarea'],this.mainWrapper);
         this.textarea.spellcheck = false;
         this.textarea.autofocus;
         this.textarea.ariaHidden = true;
         this.textarea.placeholder = 'Paste SGF...'
-        this.mainWrapper.appendChild(this.textarea);
+        this.pre = lazy.pre(['line-container'],this.mainWrapper);
+        this.lines = lazy.code(['lines'],this.pre);
 
-        this.pre = document.createElement('pre');
-        this.pre.classList.add('line-container');
-        this.mainWrapper.appendChild(this.pre);
-
-        this.lines = document.createElement('code');
-        this.lines.classList.add('lines');
-        this.pre.appendChild(this.lines);
-
-        this.footer = document.createElement('footer');
-        this.footer.classList.add('editorFooter');
+        this.footer = lazy.footer(['editorFooter'], this.container);
         this.footer.style.paddingRight = '1em';
-        this.container.appendChild(this.footer);
 
-        this.toolbar = document.createElement('div');
-        this.toolbar.id = 'toolbar';
-        this.toolbar.classList.add('editorToolbar');
-        this.footer.appendChild(this.toolbar);
+        this.toolbar = lazy.div(['editorToolbar'],this.footer,'toolbar');
+        this.formatButton = lazy.button(['editorButton'],this.toolbar,'format','Format SGF');
+        lazy.listen(this.formatButton,'click', () => this.format());
+        
+        this.caret = lazy.div([],this.footer,'caretInfo');
+        /*this.toolbarMode = lazy.span('toolbarInfo', this.caret, null, '-- --');
+        this.toolbarNode = lazy.span('toolbarInfo', this.caret, null, 'Node ( )');
+        this.toolbarLine = lazy.span('toolbarInfo', this.caret, null, 'Ln  ,');
+        this.toolbarColumn = lazy.span('toolbarInfo', this.caret, null, 'Col  ');
+        this.toolbarSelected = lazy.span('toolbarInfo', this.caret, null, ' '); */
 
-        this.formatButton = document.createElement('button');
-        this.formatButton.id = 'format';
-        this.formatButton.classList.add('editorButton');
-        this.formatButton.innerText = 'Format SGF';
-        this.toolbar.appendChild(this.formatButton);
+        this.mode = 'INSERT';
+        this.vimCount = '';
+        this.vimCommand = '';
 
-        this.caret = document.createElement('div');
-        this.caret.id = 'caretInfo';
-        this.footer.appendChild(this.caret);
+        lazy.listen(this.textarea, 'selectionchange', () => this.caretPosition());
+        lazy.listen(this.textarea, 'scroll', () => this.syncScroll());
+        lazy.listen(this.textarea, 'change', () => this.sync());
+        lazy.listen(this.textarea, 'input', () => this.sync());
+        lazy.resizeObserve(this.textarea, () => this.sync());
 
-        const object = this;
-        TextEditor.observe(object)
+    }
 
+    format() {
+        this.history.push(this.textarea.value);
+        this._walker.collection = SGF.parse(this.history[this.history.length-1]);
+        this._walker.game = this._walker.collection[0];
 
-        TEPriv.addListeners(this);
+        this.currentText = SGF.stringify(this._walker.root);
+        this.textarea.value = this.currentText;
+        this.update();
 
-   }
+        if (!this.toggleButton) {
+            this.toggleButton = lazy.button('editorButton',this.toolbar,'toggleButton');
+            lazy.listen(this.toggleButton,'click',() => this.toggleSGF());
+        }
+        this.toggleButton.textContent = 'show old SGF';
+    }
 
-    static observe(object) {
-        object.resize = new ResizeObserver(function() {
-            object.sync()
+    toggleSGF() {
+        if (this.toggleButton.textContent === 'show old SGF') {
+            this.toggleButton.textContent = 'show new SGF';
+            this.textarea.value = this.history[this.history.length-1];
+        } else {
+            this.toggleButton.textContent = 'show old SGF';
+            this.textarea.value = this.currentText;
+        }
+        this.update();
+    }
+
+    /**
+     * @param {object} walkerObject
+     */
+    set walker(walkerObject) {
+        this._walker = walkerObject;
+        lazy.listen(this.textarea, 'change', () => {
+            let value = this.textarea.value;
+            walkerObject.collection = SGF.parse(value);
+            walkerObject.game = walkerObject.collection[0];
+            walkerObject.update();
         });
-        object.resize.observe(object.textarea);
-        object.textarea.addEventListener('mouseup',function() {
-            object.caretPosition()
+        lazy.listen(this.textarea, 'input', () => {
+            let value = this.textarea.value;
+            walkerObject.collection = SGF.parse(value);
+            walkerObject.game = walkerObject.collection[0];
+            walkerObject.update();
         });
-        object.textarea.addEventListener('mousedown',function() {
-            object.caretPosition()
-        });
-        object.textarea.addEventListener('keyup',function() {
-            object.caretPosition()
-        });
-        object.textarea.addEventListener('keydown',function() {
-            object.caretPosition()
-        });
-        object.textarea.addEventListener('mousemove',function() {
-            object.caretPosition()
-        });
-        object.textarea.addEventListener('scroll',function() {
-            object.syncScroll()
-        });
-        object.textarea.addEventListener('change',function() {
-            object.sync()
-        });
-        object.textarea.addEventListener('input',function() {
-            object.sync()
+        lazy.listen(this.textarea, 'selectionchange', () => {
+            // handle moving caret
+            if (walkerObject.currentNode.id !== this.activeNode) {
+                walkerObject.id(this.activeNode);
+                walkerObject.update();
+            }
         });
     }
 
@@ -170,11 +176,16 @@ class TextEditor {
             }
         })
 
-        let activeInfo = `Node (${this.activeNode}) | Ln ${activeLineFirst}, Col ${column}${selected}`;
+        this.caret.textContent = '';
+        lazy.text(this.caret,`--${this._mode}--\u00A0`);
+        lazy.text(this.caret,`\u00A0Node (${this.activeNode})\u00A0`);
+        lazy.text(this.caret,`\u00A0Ln ${activeLineFirst}, Col ${this.column}${selected}\u00A0`);
+
+        /*let activeInfo = `--${this._mode.toUpperCase()}-- Node (${this.activeNode}) | Ln ${activeLineFirst}, Col ${this.column}${selected} `;
     
-        if (this.caret.innerText !== activeInfo) {
-            this.caret.innerText = activeInfo;
-        }
+        if (this.caret.textContent !== activeInfo) {
+            this.caret.textContent = activeInfo;
+        }*/
     }
 
     syncScroll() {

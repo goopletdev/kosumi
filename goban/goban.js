@@ -1,17 +1,13 @@
 import SGF from '../sgf/sgf.js';
+import * as lazy from '../lazy-dom.js';
 
 class GobanCanvas {
     constructor(parent) {
         this.parent = parent;
 
-        this.container = document.createElement('div');
-        this.container.classList.add('gobanContainer');
-        this.parent.appendChild(this.container);
-
-        this.display = document.createElement('canvas');
-        this.display.id = 'kosumiCanvas';
-        this.display.classList.add('gobanCanvas');
-        this.container.appendChild(this.display);
+        this.container = lazy.div('gobanContainer',this.parent);
+        this.display = lazy.canvas('gobanCanvas',this.container,'kosumiCanvas');
+        lazy.listen(this.display,'click',(e) => this.onclick(e));
 
         this.setCanvasSize();
         this.context = this.display.getContext('2d');

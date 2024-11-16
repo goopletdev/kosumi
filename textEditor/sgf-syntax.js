@@ -2,6 +2,8 @@
  * @module sgf-syntax
  */
 
+import * as lazy from '../lazy-dom.js';
+
 /**
  * @private
  * @param {string} sgf SGF string to parse

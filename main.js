@@ -2,89 +2,23 @@ import TextEditor from './textEditor/text-editor.js';
 import GobanCanvas from './goban/goban.js';
 import KosumiNavigation from './navigation/navigation-panel.js';
 import StoneWalker from './stoneWalker/stone-walker.js';
-import SGF from './sgf/sgf.js';
+import * as lazy from './lazy-dom.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
 const goban = new GobanCanvas(document.getElementById('gobanParent'));
-const navigationPanel = new KosumiNavigation(document.getElementById('navigationParent'));
+const navPanel = new KosumiNavigation(document.getElementById('navigationParent'));
+const walker = new StoneWalker();
 
-navigationPanel.setGoban(goban);
-
-let oldSGF;
-let newSGF;
-let gameTree = {currentNode: {id: 0}};
-let collection;
-
-const toggleSGF = () => {
-    let toggleButton = document.getElementById('toggleButton');
-    if (toggleButton.innerText === 'show old SGF') {
-        toggleButton.innerText = 'show new SGF';
-        texteditor.textarea.value = oldSGF;
-    } else {
-        toggleButton.innerText = 'show old SGF';
-        texteditor.textarea.value = newSGF;
-    }
-    texteditor.update();
-}
-
-const updateDisplay = () => {
-    collection = SGF.parse(texteditor.textarea.value);
-    gameTree = new StoneWalker(collection[0], gameTree.currentNode.id);
-    navigationPanel.setWalker(gameTree);
-}
-
-const lezgooo = () => {
-    oldSGF = texteditor.textarea.value;
-    collection = SGF.parse(oldSGF);
-    gameTree = new StoneWalker(collection[0], gameTree.currentNode.id);
-    navigationPanel.setWalker(gameTree);
-
-    newSGF = SGF.stringify(gameTree.root);
-    texteditor.textarea.value = newSGF;
-    texteditor.update();
-
-    let toggleButton = document.getElementById('toggleButton');
-    if (!toggleButton) {
-        toggleButton = document.createElement('button');
-        toggleButton.id = 'toggleButton';
-        toggleButton.classList.add('editorButton');
-        toggleButton.addEventListener('click', toggleSGF);
-        texteditor.toolbar.appendChild(toggleButton);
-    }
-    toggleButton.innerText = 'show old SGF';
-
-}
-
-
-document.getElementById('format').addEventListener('click',lezgooo);
-texteditor.textarea.addEventListener('change', updateDisplay);
-texteditor.textarea.addEventListener('input',updateDisplay);
-texteditor.textarea.addEventListener('keyup', function () {
-   // handle moving caret
-    if (gameTree.currentNode.id !== texteditor.activeNode) {
-        gameTree.id(texteditor.activeNode);
-        navigationPanel.update(gameTree);
-    }
-})
-texteditor.textarea.addEventListener('mouseup', function () {
-    // handle moving caret
-     if (gameTree.currentNode.id !== texteditor.activeNode) {
-         gameTree.id(texteditor.activeNode);
-         navigationPanel.update(gameTree);
-     }
- })
-
+walker.drive(goban, navPanel);
+navPanel.walker = walker;
+texteditor.walker = walker;
 
 // splitBar resizer
 let splitBar = document.getElementById('splitBar');
 let mouseIsDown = false;
+lazy.listen(splitBar,'mousedown',() => mouseIsDown = true);
+lazy.listen(document,'mouseup',() => mouseIsDown = false);
 
-splitBar.addEventListener('mousedown', function() {
-    mouseIsDown = true;
-})
-document.addEventListener('mouseup', function () {
-    mouseIsDown = false;
-})
 document.addEventListener('mousemove', function (mousePosition) {
     if (!mouseIsDown) return;
     let splitBarStyle = splitBar.getBoundingClientRect()
