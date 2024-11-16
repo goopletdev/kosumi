@@ -7,7 +7,7 @@ class GobanCanvas {
 
         this.container = lazy.div('gobanContainer',this.parent);
         this.display = lazy.canvas('gobanCanvas',this.container,'kosumiCanvas');
-        lazy.listen(this.display,'click',(e) => this.onclick(e));
+        lazy.listen(this.display,'mousedown',(e) => this.onclick(e));
 
         this.setCanvasSize();
         this.context = this.display.getContext('2d');
