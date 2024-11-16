@@ -197,6 +197,27 @@ class TextEditor {
         this.caretPosition();
         this.syncScroll();
     }
+
+    /**
+     * @param {string} newMode
+     */
+    set mode(newMode) {
+        if (!TextEditor.modes.includes(newMode)) {
+            throw new Error(`${newMode} is not a valid BadText mode`);
+        } else {
+            this._mode = newMode;
+            this.container.classList.remove(
+                ...TextEditor.modes.map((c) => `bt${c}`)
+            );
+            this.container.classList.add(`bt${newMode}`);
+        }
+    }
+
+    static modes = [
+        'INSERT',
+        'VIMish',
+        'COMMAND',
+    ]
 }
 
 
