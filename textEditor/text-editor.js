@@ -30,7 +30,6 @@ class TextEditor {
         this.lines = lazy.code(['lines'],this.pre);
 
         this.footer = lazy.footer(['editorFooter'], this.container);
-        this.footer.style.paddingRight = '1em';
 
         this.toolbar = lazy.div(['editorToolbar'],this.footer,'toolbar');
         this.formatButton = lazy.button(['editorButton'],this.toolbar,'format','Format SGF');
@@ -138,12 +137,16 @@ class TextEditor {
     caretPosition() {
         this.beginSelect = this.textarea.selectionStart;
         let endSelect = this.textarea.selectionEnd;
-        let selected = '';
         let textToCursor = this.textarea.value.slice(0,this.beginSelect);
         let linesToCursor = textToCursor.split('\n');
         let activeLineFirst = linesToCursor.length;
         this.column = linesToCursor[activeLineFirst-1].length+1;
         let activeLineLast = this.textarea.value.slice(0,endSelect).split('\n').length;
+
+        let selected = '';
+        if (this.beginSelect !== endSelect) {
+            selected += ` (${endSelect-this.beginSelect} selected)`
+        }
 
         // find number of nodes up to cursor
         let nodeNumber = -1;
@@ -177,9 +180,9 @@ class TextEditor {
         })
 
         this.caret.textContent = '';
-        lazy.text(this.caret,`--${this._mode}--\u00A0`);
-        lazy.text(this.caret,`\u00A0Node (${this.activeNode})\u00A0`);
-        lazy.text(this.caret,`\u00A0Ln ${activeLineFirst}, Col ${this.column}${selected}\u00A0`);
+        lazy.text(this.caret,`--${this._mode}-- \u00A0`);
+        lazy.text(this.caret,`\u00A0 Node (${this.activeNode}) \u00A0`);
+        lazy.text(this.caret,`\u00A0 Ln ${activeLineFirst}, Col ${this.column}${selected}\u00A0`);
 
         /*let activeInfo = `--${this._mode.toUpperCase()}-- Node (${this.activeNode}) | Ln ${activeLineFirst}, Col ${this.column}${selected} `;
     
