@@ -43,7 +43,7 @@ class NavPanel {
         });
         lazy.listen(this.moveNumber,'change',() => {
             let newMoveNum = parseInt(this.moveNumber.value);
-            walker.getNodeAtMove(newMoveNum);
+            walker.move(newMoveNum);
             walker.update();
         });
     }
