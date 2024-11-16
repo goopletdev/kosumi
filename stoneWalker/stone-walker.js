@@ -3,16 +3,48 @@
  */
 
 import { initBoard, initStates } from "./game-logic.js";
-import * as priv from "./sw-private-functions.js";
+import * as mosey from "./sw-private-functions.js";
 
 class StoneWalker {
     /**
-     * Construct StoneWalker instance
-     * @param {object} gameObject Root node of parsed SGF
-     * @param {number} currentNode sets currentNode to tree node w/ given id
+     * Construct StoneWalker instance with default contents
      */
-    constructor (gameObject, currentNode=0) {
-        this.currentNode = priv.getNodeById(gameObject, currentNode);
+    constructor () {
+        this.currentNode = {
+            id: 0,
+            props: {
+                AP: 'Kosumi:0.1.0',
+            }
+        };
+
+        this.collection = [];
+
+        // array of objects to update;
+        this._updateObjects = []
+    }
+
+    update() {
+        for (let obj of this._updateObjects) {
+            obj.update = this;
+        }
+    }
+
+    /**
+     * @param {object} obj Object with .update setter
+     */
+    drive() {
+        [...arguments].forEach(arg => {
+            this._updateObjects.push(arg);
+        });
+        //this._updateObjects = this._updateObjects.concat(arguments);
+    }
+
+    /**
+     * @param {object} gameObject
+     */
+    set game(gameObject) {
+        let currentNodeId = this.currentNode.id;
+        this.currentNode = mosey.getNodeById(gameObject, currentNodeId)
         this.EMPTY = initBoard(gameObject);
         this.root = initStates(this.EMPTY, gameObject);
     }

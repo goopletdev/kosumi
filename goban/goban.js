@@ -169,7 +169,11 @@ class GobanCanvas {
         }
     }
 
-    updateCanvas(boardState) {
+    /**
+     * @param {object} walkerObject
+     */
+    set update(walkerObject) {
+        let boardState = walkerObject.currentNode.state;
         this.setCanvasSize(boardState[0].length,boardState.length);
         this.fillCanvas();
         this.drawBoundingRectangle();
