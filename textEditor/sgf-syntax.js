@@ -126,30 +126,55 @@ function tokenize(sgf,callback) {
  * @returns {HTMLElement[]} 
  */
 function syntaxHTML(tokens) {
-    let html = [];
-    let line = '';
+    let nodes = [];
+    let line = document.createElement('div');
+    line.classList.add('line');
     tokens.forEach((token,i) => {
-        if (token.type === "propertyValue") {
-            line += `<span class="token propertyValue ${token.characteristic}">${token.value}</span>`;
-        } else if (token.type === 'closeBracket') {
-            line += `<span class="token closeBracket">]</span>`;
-        } else if (token.type === 'newline') {
-            html.push(line);
-            line = '';
-        } else if (token.type === 'openBracket') {
-            line += `<span class="token openBracket">[</span>`;
-        } else if (token.type === 'propertyIdentifier') {
-            line += `<span class="token propertyIdentifier">${token.value}</span>`;
-        } else if (token.type === 'whitespace') {
-            line += `<span class="token whitespace">${token.value}</span>`;
-        } else if (token.type === 'error') {
-            line += `<span class="token error">${token.value}</span>`;
-        } else {
-            line += `<span class="token ${token.type}">${token.value}</span>`;
+        if (token.type === 'newline') {
+            nodes.push(line);
+            line = document.createElement('div');
+            line.classList.add('line');
+            return;
         }
+        let subLine;
+        if (line.lastChild) {
+            if (line.lastChild.classList.value.includes(token.type)) {
+                if (token.type !== 'propertyValue') {
+                    line.lastChild.textContent += token.value;
+                } else if (line.lastChild.classList.value.includes('normalCharacter')) {
+                    if (token.characteristic === 'normalCharacter') {
+                        line.lastChild.textContent+= token.value;
+                    } else {
+                        subLine = document.createElement('span');
+                        subLine.classList.add('token','propertyValue',token.characteristic);
+                        subLine.textContent = token.value;
+                        line.lastChild.appendChild(subLine);
+                    }
+                } else {
+                    if (token.characteristic === 'normalCharacter') {
+                        subLine = document.createElement('span');
+                        subLine.classList.add('token', 'propertyValue', token.characteristic);
+                        subLine.textContent = token.value;
+                        line.appendChild(subLine);
+                    }
+                }
+                return;
+            }
+        }
+
+        subLine = document.createElement('span');
+
+        if (token.type === "propertyValue") {
+            subLine.classList.add('token', 'propertyValue', token.characteristic);
+            subLine.textContent = token.value;
+        } else {
+            subLine.classList.add('token', token.type);
+            subLine.textContent = token.value;
+        }
+        line.appendChild(subLine);
     })
-    html.push(line);
-    return html;
+    nodes.push(line);
+    return nodes;
 }
 
 /**
