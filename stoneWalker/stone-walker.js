@@ -13,6 +13,7 @@ class StoneWalker {
         this.currentNode = {
             id: 0,
             props: {
+                FF: '4',
                 AP: 'Kosumi:0.1.0',
             }
         };
@@ -30,13 +31,22 @@ class StoneWalker {
     }
 
     /**
-     * @param {object} obj Object with .update setter
+     * Checks whether given intersection is currently occupied.
+     * @param {[number,number]} coordinates 
+     * @returns {boolean}
+     */
+    intersectionIsOccupied(coordinates) {
+        return this.currentNode.state[coordinates[1]][coordinates[0]] !== '.';
+    }
+
+    /**
+     * Takes any number of objects as arguments. 
+     * Each object must have a set update() function
      */
     drive() {
         [...arguments].forEach(arg => {
             this._updateObjects.push(arg);
         });
-        //this._updateObjects = this._updateObjects.concat(arguments);
     }
 
     /**
