@@ -63,7 +63,8 @@ class GobanCanvas {
 
     drawBoundingRectangle() {
         this.context.strokeStyle = this.lineColor;
-        this.context.lineWidth = 2;
+        let width = this.lineSpacing/13;
+        this.context.lineWidth = width > 2 ? width : 2;
         this.context.strokeRect(
             this.lineSpacing*1.5,
             this.lineSpacing*1.5,
