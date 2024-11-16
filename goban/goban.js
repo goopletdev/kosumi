@@ -57,7 +57,12 @@ class GobanCanvas {
     drawBoundingRectangle() {
         this.context.strokeStyle = this.lineColor;
         this.context.lineWidth = 2;
-        this.context.strokeRect(this.lineSpacing*1.5,this.lineSpacing*1.5,this.lineSpacing*(this.columns-1),this.lineSpacing*(this.rows-1));
+        this.context.strokeRect(
+            this.lineSpacing*1.5,
+            this.lineSpacing*1.5,
+            this.lineSpacing*(this.columns-1),
+            this.lineSpacing*(this.rows-1)
+        );
     }
 
     drawGrid() {
@@ -117,7 +122,13 @@ class GobanCanvas {
         this.context.fillStyle = this.lineColor;
         for (let star of this.stars) {
             this.context.beginPath();
-            this.context.arc(this.lineSpacing*(star[0]+1.5),this.lineSpacing*(star[1]+1.5),this.lineSpacing/7.6,0,Math.PI*2);
+            this.context.arc(
+                this.lineSpacing*(star[0]+1.5),
+                this.lineSpacing*(star[1]+1.5),
+                this.lineSpacing/7.6,
+                0,
+                Math.PI*2
+            );
             this.context.fill();
         }
     }
