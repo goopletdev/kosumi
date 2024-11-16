@@ -59,7 +59,7 @@ class StoneWalker {
         if (this.currentNode.id === nodeId) {
             return -1;
         } else {
-            let node = priv.getNodeById(this.root, nodeId);
+            let node = mosey.getNodeById(this.root, nodeId);
             if (node !== -1) {
                 this.currentNode = node;
             }
@@ -77,7 +77,7 @@ class StoneWalker {
         if (this.currentNode.moveNumber === moveNumber) {
             return -1;
         } else {
-            let newNode = priv.getNodeAtMove(this.currentNode, moveNumber);
+            let newNode = mosey.getNodeAtMove(this.currentNode, moveNumber);
             if (newNode !== -1) {
                 this.currentNode = newNode;
                 return this.currentNode;
@@ -93,7 +93,7 @@ class StoneWalker {
      */
     rootNode() {
         if (this.currentNode.hasOwnProperty('parent')) {
-            this.currentNode = priv.getRootNode(this.currentNode);
+            this.currentNode = mosey.getRootNode(this.currentNode);
             return this.currentNode;
         } else {
             return -1;
@@ -180,7 +180,7 @@ class StoneWalker {
         if (!this.currentNode.hasOwnProperty('children')) {
             return -1;
         } else {
-            this.currentNode = priv.getTerminalNode(this.currentNode);
+            this.currentNode = mosey.getTerminalNode(this.currentNode);
             return this.currentNode;
         }
     }
