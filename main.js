@@ -1,27 +1,29 @@
 import TextEditor from './textEditor/text-editor.js';
 import GobanCanvas from './goban/goban.js';
-import KosumiNavigation from './navigation/navigation-panel.js';
+import NavPanel from './navigation/navigation-panel.js';
 import StoneWalker from './stoneWalker/stone-walker.js';
-import * as lazy from './lazy-dom.js';
 
 const texteditor =  new TextEditor(document.getElementById('editorParent'));
 const goban = new GobanCanvas(document.getElementById('gobanParent'));
-const navPanel = new KosumiNavigation(document.getElementById('navigationParent'));
+const navigator = new NavPanel(document.getElementById('navigationParent'));
 const walker = new StoneWalker();
 
-walker.drive(goban, navPanel);
-navPanel.walker = walker;
+// connect display and StoneWalker objects
+walker.drive(goban, navigator);
+navigator.walker = walker;
 texteditor.walker = walker;
 
 // splitBar resizer
-let splitBar = document.getElementById('splitBar');
-let mouseIsDown = false;
-lazy.listen(splitBar,'mousedown',() => mouseIsDown = true);
-lazy.listen(document,'mouseup',() => mouseIsDown = false);
-
-document.addEventListener('mousemove', function (mousePosition) {
-    if (!mouseIsDown) return;
-    let splitBarStyle = splitBar.getBoundingClientRect()
-    let splitBarWidth = splitBarStyle.right-splitBarStyle.left;
-    texteditor.parent.style.width = `${mousePosition.clientX - texteditor.parent.getBoundingClientRect().left - (splitBarWidth/2)}px`;    
-})
+document.getElementById('splitBar').addEventListener('mousedown', () => {
+    function splitBarMove(cursor) {
+        let barStyle = splitBar.getBoundingClientRect();
+        let barWidth = barStyle.right-barStyle.left;
+        let leftEditorBounds = texteditor.parent.getBoundingClientRect().left;
+        let width = cursor.clientX - leftEditorBounds - (barWidth/2)
+        texteditor.parent.style.width = `${width}px`
+    }
+    document.addEventListener('mousemove', splitBarMove);
+    document.addEventListener('mouseup', () => {
+        document.removeEventListener('mousemove',splitBarMove)
+    })
+});
