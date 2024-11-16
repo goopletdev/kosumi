@@ -46,7 +46,7 @@
 }
 
 .editorTextarea {
-    padding: 0 0 0 5ch;
+    margin-left: 5ch;
     z-index:2;
     vertical-align:top;
     background-color: transparent;
@@ -54,6 +54,7 @@
     caret-color:lightgray;
     mix-blend-mode: lighten;
     user-select:auto;
+    outline: none;
 }
 
 .editorTextarea::-webkit-scrollbar,
