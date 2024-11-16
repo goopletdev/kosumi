@@ -30,11 +30,18 @@ class GobanCanvas {
     }
 
     setCanvasSize(columns=19,rows=19) {
+        let parentBounds = this.parent.getBoundingClientRect();
+        let parentHeight = parentBounds.bottom-parentBounds.top;
+        let parentWidth = parentBounds.right-parentBounds.left;
+        let length = parentHeight < parentWidth ? `${parentHeight}px` : `${parentWidth}px`;
+        this.container.style.height = length;
+        this.container.style.width = length;
+
         this.columns = columns;
         this.rows = rows;
         this.lineSpacing = this.display
 
-        this.bounds = this.parent.getBoundingClientRect();
+        this.bounds = this.container.getBoundingClientRect();
         let heightSpacing = (this.bounds.bottom-this.bounds.top)/(rows+2);
         let widthSpacing = (this.bounds.right-this.bounds.left)/(columns+2);
         this.lineSpacing = heightSpacing < widthSpacing ? heightSpacing : widthSpacing;
