@@ -19,6 +19,16 @@ class GobanCanvas {
         this.fillCanvas();
     }
 
+    onclick(event) {
+        console.log(this.mouseLocation(event.offsetX,event.offsetY));
+    }
+
+    mouseLocation(offsetX,offsetY) {
+        let x = Math.round(offsetX / this.lineSpacing - 1.5);
+        let y = Math.round(offsetY / this.lineSpacing - 1.5);
+        return [x,y]
+    }
+
     setCanvasSize(columns=19,rows=19) {
         this.columns = columns;
         this.rows = rows;
