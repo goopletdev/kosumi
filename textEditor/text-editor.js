@@ -121,43 +121,43 @@ class TextEditor {
             this.lines.removeChild(this.lines.childNodes[activeLine]);
         }
         while (this.lines.childNodes.length < lines.length) {
-            let newLine = document.createElement('div');
-            newLine.classList.add('line');
+            let newLine = lazy.div('line');
             this.lines.insertBefore(
                 newLine,this.lines.childNodes[activeLine+1]
             );
         }
     
         for (let i=0; i< lines.length; i++) {
-            if (this.lines.childNodes[i].innerHTML !== lines[i]) {
-                this.lines.childNodes[i].innerHTML = lines[i];
+            if (this.lines.childNodes[i].textContent !== lines[i].textContent) {
+                this.lines.removeChild(this.lines.childNodes[i]);
+                this.lines.insertBefore(lines[i], this.lines.childNodes[i])
             }
         }
     }
 
     caretPosition() {
-        let beginSelect = this.textarea.selectionStart;
+        this.beginSelect = this.textarea.selectionStart;
         let endSelect = this.textarea.selectionEnd;
         let selected = '';
-        let textToCursor = this.textarea.value.slice(0,beginSelect);
+        let textToCursor = this.textarea.value.slice(0,this.beginSelect);
         let linesToCursor = textToCursor.split('\n');
         let activeLineFirst = linesToCursor.length;
-        let column = linesToCursor[activeLineFirst-1].length+1;
+        this.column = linesToCursor[activeLineFirst-1].length+1;
         let activeLineLast = this.textarea.value.slice(0,endSelect).split('\n').length;
 
         // find number of nodes up to cursor
         let nodeNumber = -1;
-        let inBrackets = false;
+        this.inBrackets = false;
         let escaped = false;
         for (let i = 0; i < textToCursor.length; i++) {
             if (escaped) {
                 escaped = false;
-            } else if (inBrackets) {
+            } else if (this.inBrackets) {
                 if (textToCursor[i] === ']') {
-                    inBrackets = false;
+                    this.inBrackets = false;
                 }
             } else if (textToCursor[i] === '[') {
-                inBrackets = true;
+                this.inBrackets = true;
             } else if (textToCursor[i] === ';') {
                 nodeNumber++;
             }
