@@ -1,11 +1,11 @@
 /**
- * @module KosumiNavigation
+ * @module NavPanel
  */
 
 import StoneWalker from "../stoneWalker/stone-walker.js";
 import * as lazy from '../lazy-dom.js';
 
-class KosumiNavigation {
+class NavPanel {
     constructor (parent) {
         this.parent = parent;
 
@@ -57,4 +57,4 @@ class KosumiNavigation {
     }
 }
 
-export default KosumiNavigation;
+export default NavPanel;
