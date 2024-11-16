@@ -5,6 +5,7 @@
 // delete node
 // edit move (for node with single move)
 // invert colors
+// markup
 
 // NODE NAVIGATION METHODS
 
