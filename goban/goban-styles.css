@@ -15,6 +15,7 @@
     margin:auto;
     border-radius: 6px;
     overflow:hidden;
+    position:relative;
 }
 
 .gobanBoardState {
@@ -34,7 +35,7 @@
     margin-left:auto;
     margin-right:auto;
     position:absolute;
-    
+
 }
 
 .gobanPointEmpty {
