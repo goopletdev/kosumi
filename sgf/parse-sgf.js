@@ -145,11 +145,18 @@ function parseTokens(tokens,callback) {
                         for (let value of SGF.unzipCoords(tok.value)) {
                             node.props[propertyId].push(SGF.numericCoord(value));
                         }
-                } else if (propertyDefinitions[propertyId].value.includes('stone')
-                    || propertyDefinitions[propertyId].value.includes('point')
-                    || ['B','W'].includes(propertyId)) {
-                        node.props[propertyId].push(SGF.numericCoord(tok.value));
+                } else if (propertyDefinitions.hasOwnProperty(propertyId)) {
+                    // otherwise this is a private property
+                    if (propertyDefinitions[propertyId].value.includes('stone')
+                        || propertyDefinitions[propertyId].value.includes('point')
+                        || ['B','W'].includes(propertyId)) {
+                            node.props[propertyId].push(SGF.numericCoord(tok.value));
+                    } else {
+                        node.props[propertyId].push(tok.value);
+                    }
                 } else {
+                    // private property
+                    console.log('private property:',propertyId,tok.value);
                     node.props[propertyId].push(tok.value);
                 }
                 if ('();'.includes(tokens[i+1].type)) {
