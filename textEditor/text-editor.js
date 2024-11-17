@@ -63,7 +63,7 @@ class TextEditor {
 
         this.currentText = SGF.stringify(this._walker.root);
         this.textarea.value = this.currentText;
-        this.update();
+        this.updateLines();
 
         if (!this.toggleButton) {
             this.toggleButton = lazy.button('editorButton',this.toolbar,'toggleButton');
@@ -80,7 +80,7 @@ class TextEditor {
             this.toggleButton.textContent = 'show old SGF';
             this.textarea.value = this.currentText;
         }
-        this.update();
+        this.updateLines();
     }
 
     /**
@@ -102,6 +102,9 @@ class TextEditor {
         });
         lazy.listen(this.textarea, 'selectionchange', () => {
             // handle moving caret
+            if (document.activeElement !== this.textarea) {
+                return;
+            }
             if (walkerObject.currentNode.id !== this.activeNode) {
                 walkerObject.id(this.activeNode);
                 walkerObject.update();
@@ -109,7 +112,7 @@ class TextEditor {
         });
     }
 
-    update() {
+    updateLines() {
         let activeLine = this.textarea.value.slice(
             0,this.textarea.selectionStart
         ).split('\n').length-1;
@@ -198,7 +201,7 @@ class TextEditor {
     }
 
     sync() {
-        this.update();
+        this.updateLines();
         this.caretPosition();
         this.syncScroll();
     }
