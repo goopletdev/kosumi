@@ -130,7 +130,12 @@ function parseTokens(tokens,callback) {
             }
             if (tok.type === 'propId') {
                 propertyId = tok.value;
-                node.props[propertyId] = [];
+                if (node.props.hasOwnProperty(propertyId)) {
+                    // duplicate property
+                    console.log(`Node ${node.id} already includes ${propertyId}`)
+                } else {
+                    node.props[propertyId] = [];
+                }
                 if (tokens[i+1].type !== 'propVal') {
                     throw new Error(
                         `expected propVal after ${

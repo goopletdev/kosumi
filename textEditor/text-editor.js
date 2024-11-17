@@ -98,12 +98,12 @@ class TextEditor {
     set walker(walkerObject) {
         this._walker = walkerObject;
         this.textarea.addEventListener('change', (e) => {
-            walkerObject.collection = SGF.parse(e.target.value);
+            walkerObject.collection = SGF.parse(e.target.value, null);
             walkerObject.game = walkerObject.collection[0];
             walkerObject.update();
         });
         this.textarea.addEventListener('input', (e) => {
-            walkerObject.collection = SGF.parse(e.target.value);
+            walkerObject.collection = SGF.parse(e.target.value, null);
             walkerObject.game = walkerObject.collection[0];
             walkerObject.update();
         });

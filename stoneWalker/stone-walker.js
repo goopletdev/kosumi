@@ -4,6 +4,7 @@
 
 import { initBoard, initStates } from "./game-logic.js";
 import * as mosey from "./sw-private-functions.js";
+import { propertyDefinitions } from "../sgf/sgfProperties.js";
 
 class StoneWalker {
     /**
@@ -59,6 +60,11 @@ class StoneWalker {
         this.currentNode = mosey.getNodeById(gameObject, currentNodeId)
         this.EMPTY = initBoard(gameObject);
         this.root = initStates(this.EMPTY, gameObject);
+        if (this.root.props.hasOwnProperty('AP')) {
+            // log previous apps to help fix style errors 
+            this.previousApps = this.root.props.AP;
+        }
+        this.root.props.AP = [propertyDefinitions.AP.kosumiDefault];
     }
 
     /**
