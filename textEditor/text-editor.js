@@ -36,24 +36,30 @@ class TextEditor {
         lazy.listen(this.formatButton,'click', () => this.format());
         
         this.caret = lazy.div([],this.footer,'caretInfo');
-        /*this.toolbarMode = lazy.span('toolbarInfo', this.caret, null, '-- --');
-        this.toolbarNode = lazy.span('toolbarInfo', this.caret, null, 'Node ( )');
-        this.toolbarLine = lazy.span('toolbarInfo', this.caret, null, 'Ln  ,');
-        this.toolbarColumn = lazy.span('toolbarInfo', this.caret, null, 'Col  ');
-        this.toolbarSelected = lazy.span('toolbarInfo', this.caret, null, ' '); */
 
         this.mode = 'INSERT';
         this.vimCount = '';
         this.vimCommand = '';
 
-        lazy.listen(this.container, 'click', () => this.textarea.focus());
+        let that = this;
+        this.textarea.addEventListener('focus', (e) => {
+            function selectionobserver() {
+                that.caretPosition();
+                if (that.hasOwnProperty('_walker')) {
+                    that._walker.id(that.activeNode);
+                    that._walker.update();
+                }
+            }
+            e.target.addEventListener('selectionchange', selectionobserver);
+            e.target.addEventListener('blur', () => {
+                e.target.removeEventListener('selectionchange',selectionobserver);
+            })
+        })
 
-        lazy.listen(this.textarea, 'selectionchange', () => this.caretPosition());
         lazy.listen(this.textarea, 'scroll', () => this.syncScroll());
         lazy.listen(this.textarea, 'change', () => this.sync());
         lazy.listen(this.textarea, 'input', () => this.sync());
         lazy.resizeObserve(this.textarea, () => this.sync());
-
     }
 
     format() {
@@ -99,16 +105,6 @@ class TextEditor {
             walkerObject.collection = SGF.parse(value);
             walkerObject.game = walkerObject.collection[0];
             walkerObject.update();
-        });
-        lazy.listen(this.textarea, 'selectionchange', () => {
-            // handle moving caret
-            if (document.activeElement !== this.textarea) {
-                return;
-            }
-            if (walkerObject.currentNode.id !== this.activeNode) {
-                walkerObject.id(this.activeNode);
-                walkerObject.update();
-            }
         });
     }
 
@@ -188,12 +184,6 @@ class TextEditor {
         lazy.text(this.caret,`--${this._mode}-- \u00A0`);
         lazy.text(this.caret,`\u00A0 Node (${this.activeNode}) \u00A0`);
         lazy.text(this.caret,`\u00A0 Ln ${activeLineFirst}, Col ${this.column}${selected}\u00A0`);
-
-        /*let activeInfo = `--${this._mode.toUpperCase()}-- Node (${this.activeNode}) | Ln ${activeLineFirst}, Col ${this.column}${selected} `;
-    
-        if (this.caret.textContent !== activeInfo) {
-            this.caret.textContent = activeInfo;
-        }*/
     }
 
     syncScroll() {
@@ -225,8 +215,6 @@ class TextEditor {
      * @param {number} targetNodeNumber 
      */
     set newCaretPosition(targetNodeNumber) {
-        // this is for setting the caret position butttt it doesn't work
-        console.log('setting new caret position',targetNodeNumber);
         // find number of nodes up to cursor
         let nodeNumber = -1;
         this.inBrackets = false;
@@ -246,10 +234,6 @@ class TextEditor {
                 nodeNumber++;
             }
             if (nodeNumber === targetNodeNumber) {
-                console.log(position);
-                console.log(nodeNumber,targetNodeNumber);
-                this.textarea.setSelectionRange(position-1,position);
-                this.caretPosition();
                 this.textarea.setSelectionRange(position,position);
                 this.caretPosition();
                 break;
@@ -260,9 +244,8 @@ class TextEditor {
 
     update() {
         if (document.activeElement !== this.textarea) {
-            //this.newCaretPosition = this._walker.currentNode.id;
+            this.newCaretPosition = this._walker.currentNode.id;
         }
-        console.log('text-editor update() placeholder');
     }
 
     static modes = [
