@@ -3,11 +3,11 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 
 ## Features:
 - Syntax highlighting
-- Autocomplete for `[`,`]`,`(`,`)`,`;` inputs
 - Display the boardstate on a graphical goban
 - Correct SGF style errors in SGF files from OGS, and maximize compatibility by unzipping compressed coordinates
 
 ## To-do list:
+- reimplement: 'Autocomplete for `[`,`]`,`(`,`)`,`;` inputs'
 - highlighting multiple nodes: number them on display!!! yooo - note from fren
 - improve error handling for SGF parsing; explain common errors better
 - unit testing
@@ -16,7 +16,6 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 - improve syntax highlighting (typing for propIdent/val pairs)
 - navigation: allow for variations
 - Allow compressing coords when generating SGF
-- resize observer for goban
 
 ## Known issues:
 - resizing using the middle dividing bar is slow
