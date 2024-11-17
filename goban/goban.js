@@ -6,11 +6,16 @@ class GobanCanvas {
         this.parent = parent;
 
         this.container = lazy.div('gobanContainer',this.parent);
-        this.display = lazy.canvas('gobanCanvas',this.container,'kosumiCanvas');
-        lazy.listen(this.display,'mousedown',(e) => this.onclick(e));
+        this.goban = lazy.canvas('gobanCanvas',this.container);
+        this.stones = lazy.canvas('gobanCanvas',this.container);
+        this.annotations = lazy.canvas('gobanCanvas',this.container);
+
+        lazy.listen(this.annotations,'mousedown',(e) => this.onclick(e));
 
         this.setCanvasSize();
-        this.context = this.display.getContext('2d');
+        this.gobanContext = this.goban.getContext('2d');
+        this.stoneContext = this.stones.getContext('2d');
+        this.annotationsContext = this.annotations.getContext('2d');
         this.woodColor = 'burlywood';
         this.lineColor = 'black';
         this.blackColor = 'black';
@@ -20,7 +25,11 @@ class GobanCanvas {
     }
 
     onclick(event) {
-        console.log(this.mouseLocation(event.offsetX,event.offsetY));
+        let [x,y] = this.mouseLocation(event.offsetX,event.offsetY);
+        if (x < 0 || y < 0 || x > this.columns-1 || y > this.rows-1) {
+            return;
+        }
+        console.log(x,y);
     }
 
     mouseLocation(offsetX,offsetY) {
@@ -39,33 +48,37 @@ class GobanCanvas {
 
         this.columns = columns;
         this.rows = rows;
-        this.lineSpacing = this.display
+        this.lineSpacing = this.goban
 
         this.bounds = this.container.getBoundingClientRect();
         let heightSpacing = (this.bounds.bottom-this.bounds.top)/(rows+2);
         let widthSpacing = (this.bounds.right-this.bounds.left)/(columns+2);
         this.lineSpacing = heightSpacing < widthSpacing ? heightSpacing : widthSpacing;
 
-        this.display.width = this.lineSpacing * (columns + 2);
-        this.display.height = this.lineSpacing * (rows + 2);
+        this.goban.width = this.lineSpacing * (columns + 2);
+        this.goban.height = this.lineSpacing * (rows + 2);
+        this.stones.width = this.lineSpacing * (columns + 2);
+        this.stones.height = this.lineSpacing * (rows + 2);
+        this.annotations.width = this.lineSpacing * (columns + 2);
+        this.annotations.height = this.lineSpacing * (rows + 2);
     }
 
     setCanvasUnits(columns,rows) {
         this.columns = columns;
         this.rows = rows;
-        this.lineSpacing = this.display.width/(columns+2);
+        this.lineSpacing = this.goban.width/(columns+2);
     }
 
     fillCanvas() {
-        this.context.fillStyle = this.woodColor;
-        this.context.fillRect(0,0,this.display.width,this.display.height);
+        this.gobanContext.fillStyle = this.woodColor;
+        this.gobanContext.fillRect(0,0,this.goban.width,this.goban.height);
     }
 
     drawBoundingRectangle() {
-        this.context.strokeStyle = this.lineColor;
+        this.gobanContext.strokeStyle = this.lineColor;
         let width = this.lineSpacing/13;
-        this.context.lineWidth = width > 2 ? width : 2;
-        this.context.strokeRect(
+        this.gobanContext.lineWidth = width > 2 ? width : 2;
+        this.gobanContext.strokeRect(
             this.lineSpacing*1.5,
             this.lineSpacing*1.5,
             this.lineSpacing*(this.columns-1),
@@ -74,20 +87,20 @@ class GobanCanvas {
     }
 
     drawGrid() {
-        this.context.strokeStyle = this.lineColor;
+        this.gobanContext.strokeStyle = this.lineColor;
         let width = this.lineSpacing/25;
-        this.context.lineWidth = width > 1 ? width : 1;
+        this.gobanContext.lineWidth = width > 1 ? width : 1;
 
-        this.context.beginPath();
+        this.gobanContext.beginPath();
         for (let y=1; y<this.rows-1; y++) {
-            this.context.moveTo(this.lineSpacing*1.5,this.lineSpacing * (y+1.5));
-            this.context.lineTo(this.lineSpacing * (this.columns+0.5),this.lineSpacing * (y+1.5));
+            this.gobanContext.moveTo(this.lineSpacing*1.5,this.lineSpacing * (y+1.5));
+            this.gobanContext.lineTo(this.lineSpacing * (this.columns+0.5),this.lineSpacing * (y+1.5));
         }
         for (let x=1; x<this.columns-1; x++) {
-            this.context.moveTo(this.lineSpacing*(x+1.5),this.lineSpacing*1.5);
-            this.context.lineTo(this.lineSpacing*(x+1.5),this.lineSpacing*(this.rows+0.5));
+            this.gobanContext.moveTo(this.lineSpacing*(x+1.5),this.lineSpacing*1.5);
+            this.gobanContext.lineTo(this.lineSpacing*(x+1.5),this.lineSpacing*(this.rows+0.5));
         }
-        this.context.stroke();
+        this.gobanContext.stroke();
     }
 
     drawStars() {
@@ -127,33 +140,33 @@ class GobanCanvas {
         } else if (this.rows % 2 && this.columns % 2) {
             this.stars.push([Math.floor(this.columns/2),Math.floor(this.rows/2)]);
         }
-        this.context.fillStyle = this.lineColor;
+        this.gobanContext.fillStyle = this.lineColor;
         for (let star of this.stars) {
-            this.context.beginPath();
-            this.context.arc(
+            this.gobanContext.beginPath();
+            this.gobanContext.arc(
                 this.lineSpacing*(star[0]+1.5),
                 this.lineSpacing*(star[1]+1.5),
                 this.lineSpacing/7.6,
                 0,
                 Math.PI*2
             );
-            this.context.fill();
+            this.gobanContext.fill();
         }
     }
 
     drawCoordinates() {
         this.fontSize = this.lineSpacing-5;
-        this.context.font = `${this.fontSize}px ubuntu-condensed`;
-        this.context.textAlign = 'center';
-        this.context.textBaseline = 'middle';
-        this.context.fillStyle = this.lineColor;
+        this.gobanContext.font = `${this.fontSize}px ubuntu-condensed`;
+        this.gobanContext.textAlign = 'center';
+        this.gobanContext.textBaseline = 'middle';
+        this.gobanContext.fillStyle = this.lineColor;
         for (let i=0; i< this.columns; i++) {
-            this.context.fillText(SGF.coordinates[i],this.lineSpacing*(i+1.5),(this.lineSpacing*.5));
-            this.context.fillText(SGF.coordinates[i],this.lineSpacing*(i+1.5),this.lineSpacing*(this.rows+1.5))
+            this.gobanContext.fillText(SGF.coordinates[i],this.lineSpacing*(i+1.5),(this.lineSpacing*.5));
+            this.gobanContext.fillText(SGF.coordinates[i],this.lineSpacing*(i+1.5),this.lineSpacing*(this.rows+1.5))
         }
         for (let i=0; i< this.rows; i++) {
-            this.context.fillText(SGF.coordinates[i],this.lineSpacing*.5,this.lineSpacing*(i+1.5));
-            this.context.fillText(SGF.coordinates[i],this.lineSpacing*(this.columns+1.5),this.lineSpacing*(i+1.5));
+            this.gobanContext.fillText(SGF.coordinates[i],this.lineSpacing*.5,this.lineSpacing*(i+1.5));
+            this.gobanContext.fillText(SGF.coordinates[i],this.lineSpacing*(this.columns+1.5),this.lineSpacing*(i+1.5));
         }
     }
 
