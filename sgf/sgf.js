@@ -116,8 +116,14 @@ class SGF {
         if (node.hasOwnProperty('children')) {
             // root node has trailing newline; add newline only to following nodes
             let newline = node.id > 0 ? '\n' : '';
+            let open = '';
+            let close = '';
+            if (node.children.length > 1) {
+                open = '(';
+                close = ')';
+            }
             for (let child of node.children) {
-                sgf += newline + SGF.stringify(child);
+                sgf += newline + open + SGF.stringify(child) + close;
             }
         }
         if (!node.hasOwnProperty('parent')) {

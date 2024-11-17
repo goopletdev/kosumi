@@ -219,6 +219,7 @@ function makeTree(tokens, parent, move = 0) {
                         }
                     }
                 }
+                
             }
             if (tokens.length > 1) {
                 let childs = makeTree(
