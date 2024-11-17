@@ -46,6 +46,8 @@ class TextEditor {
         this.vimCount = '';
         this.vimCommand = '';
 
+        lazy.listen(this.container, 'click', () => this.textarea.focus());
+
         lazy.listen(this.textarea, 'selectionchange', () => this.caretPosition());
         lazy.listen(this.textarea, 'scroll', () => this.syncScroll());
         lazy.listen(this.textarea, 'change', () => this.sync());
