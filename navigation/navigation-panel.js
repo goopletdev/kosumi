@@ -15,8 +15,6 @@ class NavPanel {
         this.moveNumber = lazy.inputNum('moveNumber','0',null,'kosumiMoveNumber',this.panel,'kosumiMoveNumber');
         this.stepForewardButton = lazy.button('kosumiNavigationButton',this.panel,null,'>');
         this.skipForewardButton = lazy.button('kosumiNavigationButton',this.panel,null,'>>');
-
-        this.activeNode;
     }
 
     /**
