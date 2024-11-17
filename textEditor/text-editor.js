@@ -76,6 +76,8 @@ class TextEditor {
             lazy.listen(this.toggleButton,'click',() => this.toggleSGF());
         }
         this.toggleButton.textContent = 'show old SGF';
+
+        this.update();
     }
 
     toggleSGF() {
@@ -87,6 +89,7 @@ class TextEditor {
             this.textarea.value = this.currentText;
         }
         this.updateLines();
+        this.update();
     }
 
     /**
@@ -188,7 +191,6 @@ class TextEditor {
 
     syncScroll() {
         this.lines.scrollTop = this.textarea.scrollTop;
-        console.log(this.lines.scrollTop);
     }
 
     sync() {
@@ -246,17 +248,19 @@ class TextEditor {
     update() {
         if (document.activeElement !== this.textarea) {
             this.newCaretPosition = this._walker.currentNode.id;
+
+            // handle scrolling when active line is not visible
+            let linesTop = this.lines.getBoundingClientRect().top;
+            let linesBottom = this.lines.getBoundingClientRect().bottom;
             for (let child of this.lines.childNodes) {
-                // trying to figure out how to handle scrolling when active line is not visible
                 if (child.classList.contains('activeLine')) {
-                    console.log(
-                        'child top',
-                        child.getBoundingClientRect().top,
-                        'editor top',
-                        this.lines.getBoundingClientRect().top,
-                        'scrolltop',
-                        this.lines.scrollTop,
-                    );
+                    let childUpper = child.getBoundingClientRect().top;
+                    let childLower = child.getBoundingClientRect().bottom;
+                    if (childUpper < linesTop) {
+                        this.textarea.scrollTop = this.textarea.scrollTop - linesTop + childUpper;
+                    } else if (childLower > linesBottom) {
+                        this.textarea.scrollTop = this.textarea.scrollTop + childLower - linesBottom;
+                    }
                 }
             }
         }
