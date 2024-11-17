@@ -10,7 +10,7 @@ class GobanCanvas {
         this.stones = lazy.canvas('gobanCanvas',this.container);
         this.annotations = lazy.canvas('gobanCanvas',this.container);
 
-        lazy.listen(this.annotations,'mousedown',(e) => this.onclick(e));
+        this.annotations.addEventListener('mousedown',(e) => this.onclick(e));
         lazy.resizeObserve(this.parent, () => this.update());
 
         this.setCanvasSize();

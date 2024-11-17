@@ -172,16 +172,6 @@ function text(parent, textContents) {
 }
 
 /**
- * Lazily add an event listener
- * @param {Node} node 
- * @param {string} eventType 
- * @param {Function} func 
- */
-function listen(node, eventType, func) {
-    node.addEventListener(eventType, func);
-}
-
-/**
  * Lazily add/return a resize observer
  * @param {Node} node 
  * @param {Function} func 
@@ -208,6 +198,5 @@ export {
 
     inputNum,
     
-    listen,
     resizeObserve,
 };

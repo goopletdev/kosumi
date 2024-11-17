@@ -33,7 +33,7 @@ class TextEditor {
 
         this.toolbar = lazy.div(['editorToolbar'],this.footer,'toolbar');
         this.formatButton = lazy.button(['editorButton'],this.toolbar,'format','Format SGF');
-        lazy.listen(this.formatButton,'click', () => this.format());
+        this.formatButton.addEventListener('click', () => this.format());
         
         this.caret = lazy.div([],this.footer,'caretInfo');
 
@@ -56,9 +56,9 @@ class TextEditor {
             })
         })
 
-        lazy.listen(this.textarea, 'scroll', () => this.syncScroll());
-        lazy.listen(this.textarea, 'change', () => this.sync());
-        lazy.listen(this.textarea, 'input', () => this.sync());
+        this.textarea.addEventListener('scroll', () => this.syncScroll());
+        this.textarea.addEventListener('change', () => this.sync());
+        this.textarea.addEventListener('input', () => this.sync());
         lazy.resizeObserve(this.textarea, () => this.sync());
     }
 
@@ -73,7 +73,7 @@ class TextEditor {
 
         if (!this.toggleButton) {
             this.toggleButton = lazy.button('editorButton',this.toolbar,'toggleButton');
-            lazy.listen(this.toggleButton,'click',() => this.toggleSGF());
+            this.toggleButton.addEventListener('click',() => this.toggleSGF());
         }
         this.toggleButton.textContent = 'show old SGF';
 
@@ -97,15 +97,13 @@ class TextEditor {
      */
     set walker(walkerObject) {
         this._walker = walkerObject;
-        lazy.listen(this.textarea, 'change', () => {
-            let value = this.textarea.value;
-            walkerObject.collection = SGF.parse(value);
+        this.textarea.addEventListener('change', (e) => {
+            walkerObject.collection = SGF.parse(e.target.value);
             walkerObject.game = walkerObject.collection[0];
             walkerObject.update();
         });
-        lazy.listen(this.textarea, 'input', () => {
-            let value = this.textarea.value;
-            walkerObject.collection = SGF.parse(value);
+        this.textarea.addEventListener('input', (e) => {
+            walkerObject.collection = SGF.parse(e.target.value);
             walkerObject.game = walkerObject.collection[0];
             walkerObject.update();
         });

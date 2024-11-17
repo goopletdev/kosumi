@@ -25,25 +25,24 @@ class NavPanel {
      */
     set walker(walker) {
         this._walker = walker;
-        lazy.listen(this.skipBackwardButton,'click',() => {
+        this.skipBackwardButton.addEventListener('click',() => {
             walker.rootNode();
             walker.update();
         });
-        lazy.listen(this.stepBackwardButton,'click',() => {
+        this.stepBackwardButton.addEventListener('click',() => {
             walker.parentNode();
             walker.update();
         });
-        lazy.listen(this.stepForewardButton,'click',() => {
+        this.stepForewardButton.addEventListener('click',() => {
             walker.firstChild();
             walker.update();
         });
-        lazy.listen(this.skipForewardButton,'click',() => {
+        this.skipForewardButton.addEventListener('click',() => {
             walker.terminalNode();
             walker.update();
         });
-        lazy.listen(this.moveNumber,'change',() => {
-            let newMoveNum = parseInt(this.moveNumber.value);
-            walker.move(newMoveNum);
+        this.moveNumber.addEventListener('change',(e) => {
+            walker.move(parseInt(e.target.value));
             walker.update();
         });
     }
