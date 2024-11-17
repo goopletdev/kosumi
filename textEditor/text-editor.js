@@ -215,7 +215,7 @@ class TextEditor {
     /**
      * @param {number} targetNodeNumber 
      */
-    set newCaretPosition(targetNodeNumber) {
+    set caretToNode(targetNodeNumber) {
         // find number of nodes up to cursor
         let nodeNumber = -1;
         this.inBrackets = false;
@@ -245,7 +245,7 @@ class TextEditor {
 
     update() {
         if (document.activeElement !== this.textarea) {
-            this.newCaretPosition = this._walker.currentNode.id;
+            this.caretToNode = this._walker.currentNode.id;
 
             // handle scrolling when active line is not visible
             let linesTop = this.lines.getBoundingClientRect().top;
