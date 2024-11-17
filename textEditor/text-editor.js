@@ -221,6 +221,50 @@ class TextEditor {
         }
     }
 
+    /**
+     * @param {number} targetNodeNumber 
+     */
+    set newCaretPosition(targetNodeNumber) {
+        // this is for setting the caret position butttt it doesn't work
+        console.log('setting new caret position',targetNodeNumber);
+        // find number of nodes up to cursor
+        let nodeNumber = -1;
+        this.inBrackets = false;
+        let escaped = false;
+        let position = 0;
+        for (let char of this.textarea.value) {
+            position++;
+            if (escaped) {
+                escaped = false;
+            } else if (this.inBrackets) {
+                if (char === ']') {
+                    this.inBrackets = false;
+                }
+            } else if (char === '[') {
+                this.inBrackets = true;
+            } else if (char === ';') {
+                nodeNumber++;
+            }
+            if (nodeNumber === targetNodeNumber) {
+                console.log(position);
+                console.log(nodeNumber,targetNodeNumber);
+                this.textarea.setSelectionRange(position-1,position);
+                this.caretPosition();
+                this.textarea.setSelectionRange(position,position);
+                this.caretPosition();
+                break;
+            }
+        }
+        //this.caretPosition();
+    }
+
+    update() {
+        if (document.activeElement !== this.textarea) {
+            //this.newCaretPosition = this._walker.currentNode.id;
+        }
+        console.log('text-editor update() placeholder');
+    }
+
     static modes = [
         'INSERT',
         'VIMish',
