@@ -11,6 +11,7 @@ class GobanCanvas {
         this.annotations = lazy.canvas('gobanCanvas',this.container);
 
         lazy.listen(this.annotations,'mousedown',(e) => this.onclick(e));
+        lazy.resizeObserve(this.parent, () => this.update());
 
         this.setCanvasSize();
         this.gobanContext = this.goban.getContext('2d');
