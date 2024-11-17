@@ -26,7 +26,7 @@ class StoneWalker {
 
     update() {
         for (let obj of this._updateObjects) {
-            obj.update = this;
+            obj.update();
         }
     }
 
@@ -41,10 +41,12 @@ class StoneWalker {
 
     /**
      * Takes any number of objects as arguments. 
-     * Each object must have a set update() function
+     * Each object must have an update() function
+     * And a set walker() function
      */
-    drive() {
+    join() {
         [...arguments].forEach(arg => {
+            arg.walker = this;
             this._updateObjects.push(arg);
         });
     }

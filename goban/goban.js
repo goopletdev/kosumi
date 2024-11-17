@@ -176,36 +176,47 @@ class GobanCanvas {
                 let newMove = boardState[y][x];
                 switch (newMove.toUpperCase()) {
                     case 'W':
-                        this.context.fillStyle = 'white';
-                        this.context.strokeStyle = 'black';
+                        this.stoneContext.fillStyle = 'white';
+                        this.stoneContext.strokeStyle = 'black';
                         break;
                     case 'B':
-                        this.context.fillStyle = 'black';
-                        this.context.strokeStyle = 'white';
+                        this.stoneContext.fillStyle = 'black';
+                        this.stoneContext.strokeStyle = 'white';
                         break;
                     default:
                         continue;
                 }
-                this.context.beginPath();
-                this.context.arc(this.lineSpacing*(x+1.5),this.lineSpacing*(y+1.5),(this.lineSpacing/2)-0.5,0,Math.PI*2);
-                this.context.fill();
+                this.stoneContext.beginPath();
+                this.stoneContext.arc(this.lineSpacing*(x+1.5),this.lineSpacing*(y+1.5),(this.lineSpacing/2)-0.5,0,Math.PI*2);
+                this.stoneContext.fill();
 
                 // last move marker
                 if (newMove.toLowerCase() === newMove) {
-                    this.context.lineWidth = this.lineSpacing/12;
-                    this.context.beginPath();
-                    this.context.arc(this.lineSpacing*(x+1.5),this.lineSpacing*(y+1.5),this.lineSpacing/3.5,0,Math.PI*2);
-                    this.context.stroke();
+                    this.stoneContext.lineWidth = this.lineSpacing/12;
+                    this.stoneContext.beginPath();
+                    this.stoneContext.arc(this.lineSpacing*(x+1.5),this.lineSpacing*(y+1.5),this.lineSpacing/3.5,0,Math.PI*2);
+                    this.stoneContext.stroke();
                 }
             }
         }
     }
 
+    drawAnnotations() {
+
+    }
+
     /**
      * @param {object} walkerObject
      */
-    set update(walkerObject) {
-        let boardState = walkerObject.currentNode.state;
+    set walker(walkerObject) {
+        this._walker = walkerObject;
+    }
+
+    /**
+     * 
+     */
+    update() {
+        let boardState = this._walker.currentNode.state;
         this.setCanvasSize(boardState[0].length,boardState.length);
         this.fillCanvas();
         this.drawBoundingRectangle();

@@ -50,10 +50,9 @@ class NavPanel {
 
     /**
      * Updates navPanel's move number and goban's canvas
-     * @param {StoneWalker} walker 
      */
-    set update(walker) {
-        this.moveNumber.value = walker.currentNode.moveNumber;
+    update() {
+        this.moveNumber.value = this._walker.currentNode.moveNumber;
     }
 }
 

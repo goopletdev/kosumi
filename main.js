@@ -10,9 +10,7 @@ document.addEventListener('DOMContentLoaded',() => {
     const walker = new StoneWalker();
     
     // connect display and StoneWalker objects
-    walker.drive(goban, navigator);
-    navigator.walker = walker;
-    texteditor.walker = walker;
+    walker.join(goban, navigator, texteditor);
 
     // splitBar resizer
     document.getElementById('splitBar').addEventListener('mousedown', () => {
