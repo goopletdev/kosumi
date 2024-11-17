@@ -188,6 +188,7 @@ class TextEditor {
 
     syncScroll() {
         this.lines.scrollTop = this.textarea.scrollTop;
+        console.log(this.lines.scrollTop);
     }
 
     sync() {
@@ -245,6 +246,19 @@ class TextEditor {
     update() {
         if (document.activeElement !== this.textarea) {
             this.newCaretPosition = this._walker.currentNode.id;
+            for (let child of this.lines.childNodes) {
+                // trying to figure out how to handle scrolling when active line is not visible
+                if (child.classList.contains('activeLine')) {
+                    console.log(
+                        'child top',
+                        child.getBoundingClientRect().top,
+                        'editor top',
+                        this.lines.getBoundingClientRect().top,
+                        'scrolltop',
+                        this.lines.scrollTop,
+                    );
+                }
+            }
         }
     }
 
