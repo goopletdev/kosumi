@@ -100,13 +100,13 @@ class TextEditor {
         this.currentText = SGF.stringify(this._walker.root);
         this.textarea.value = this.currentText;
         this.updateLines();
-
+        /*
         if (!this.toggleButton) {
             this.toggleButton = lazy.button('editorButton',this.toolbar,'toggleButton');
             this.toggleButton.addEventListener('click',() => this.toggleSGF());
         }
         this.toggleButton.textContent = 'show old SGF';
-
+        */
         this.update();
     }
 
