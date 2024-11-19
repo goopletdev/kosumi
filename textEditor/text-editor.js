@@ -245,6 +245,10 @@ class TextEditor {
 
     update() {
         if (document.activeElement !== this.textarea) {
+            this.currentText = SGF.stringify(this._walker.root);
+            this.textarea.value = this.currentText;
+            this.updateLines();
+
             this.caretToNode = this._walker.currentNode.id;
 
             // handle scrolling when active line is not visible

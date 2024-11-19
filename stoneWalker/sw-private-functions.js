@@ -76,4 +76,58 @@ function getNodeAtMove(node, moveNumber) {
     } else return -1;
 }
 
-export { getNodeAtMove, getNodeById, getRootNode, getTerminalNode }
+/**
+ * Searches up tree for node in current branch w/ given coordinate
+ * @param {*} currentNode 
+ * @param {[number,number]} coordinates 
+ * @returns Closest node up tree w/ property that references given coord,
+ * or -1 if it encounters root node first.
+ */
+function getLastNodeAtCoordinate(currentNode, coordinates) {
+    let stringifiedCoordinate = JSON.stringify(coordinates);
+    if (currentNode.hasOwnProperty('props')) {
+        for (let key of ['B','W','AB','AW']) {
+            if (currentNode.props.hasOwnProperty(key)) {
+                for (let coord of currentNode.props[key]) {
+                    if (JSON.stringify(coord) === stringifiedCoordinate) {
+                        return currentNode;
+                    }
+                }
+            }
+        }
+    }
+    if (currentNode.hasOwnProperty('parent')) {
+        return getLastNodeAtCoordinate(currentNode.parent, coordinates);
+    } else {
+        return -1;
+    }
+}
+
+function getNextNodeAtCoordinate(currentNode, coordinate) {
+    let stringifiedCoordinate = JSON.stringify(coordinate);
+    if (currentNode.hasOwnProperty('props')) {
+        for (let key of ['B','W','AB','AW']) {
+            if (currentNode.props.hasOwnProperty(key)) {
+                for (let coord of currentNode.props[key]) {
+                    if (JSON.stringify(coord) === stringifiedCoordinate) {
+                        return currentNode;
+                    }
+                }
+            }
+        }
+    }
+    if (currentNode.hasOwnProperty('children')) {
+        return getNextNodeAtCoordinate(currentNode.children[0], coordinate);
+    } else {
+        return -1;
+    }
+}
+
+export {
+    getNodeAtMove,
+    getNodeById,
+    getRootNode,
+    getTerminalNode,
+    getLastNodeAtCoordinate,
+    getNextNodeAtCoordinate,
+}

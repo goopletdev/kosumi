@@ -10,7 +10,8 @@ class GobanCanvas {
         this.stones = lazy.canvas('gobanCanvas',this.container);
         this.annotations = lazy.canvas('gobanCanvas',this.container);
 
-        this.annotations.addEventListener('mousedown',(e) => this.onclick(e));
+        this.annotations.addEventListener('mousedown',(e) => this.onMouseDown(e));
+        this.annotations.addEventListener('mouseup',(e) => this.onMouseUp(e));
         lazy.resizeObserve(this.parent, () => this.update());
 
         this.setCanvasSize();
@@ -23,14 +24,42 @@ class GobanCanvas {
         this.whiteColor = 'white';
         this.backgroundColor = '#deb7ff';
         this.fillCanvas();
+
+        this.mouseDownLocation = [null,null]
     }
 
-    onclick(event) {
+    onMouseDown(event) {
         let [x,y] = this.mouseLocation(event.offsetX,event.offsetY);
         if (x < 0 || y < 0 || x > this.columns-1 || y > this.rows-1) {
             return;
+        } else {
+            this.mouseDownLocation = [x,y];
         }
-        console.log(x,y);
+    }
+
+    onMouseUp(event) {
+        let [x,y] = this.mouseLocation(event.offsetX,event.offsetY);
+        if (x < 0 || y < 0 || x > this.columns-1 || y > this.rows-1) {
+            return;
+        } 
+        if (JSON.stringify(this.mouseDownLocation) === JSON.stringify([x,y])) {
+            // mouse didn't move; simple click
+            console.log([x,y], this._walker.valueAtIntersection([x,y]));
+            if (event.shiftKey && this._walker.getNodeAtCoordinate([x,y]) !== -1) {
+                console.log('new node: node',this._walker.currentNode.id);
+                this._walker.update();
+            }
+        } else {
+            // mouse moved; click + drag
+            if (this._walker.intersectionIsOccupied(this.mouseDownLocation)) {
+                let stoneOrigin = this._walker.referenceNodeAtCoordinate(this.mouseDownLocation);
+                if (stoneOrigin !== -1) {
+                    this._walker.editCoordinate(stoneOrigin,this.mouseDownLocation,[x,y]);
+                    this._walker.update();
+                }
+            }
+        }
+        this.mouseDownLocation = [null,null];
     }
 
     mouseLocation(offsetX,offsetY) {

@@ -41,6 +41,65 @@ class StoneWalker {
     }
 
     /**
+     * Get value at intersection
+     * @param {[number,number]} coordinates 
+     * @returns {string}
+     */
+    valueAtIntersection(coordinates) {
+        return this.currentNode.state[coordinates[1]][coordinates[0]]
+    }
+
+
+    /**
+     * Find node in tree with given coordinate
+     * @param {[number,number]} coordinates 
+     * @returns {object | -1}
+     */
+    getNodeAtCoordinate(coordinates) {
+        let lastNodeWithCoord = mosey.getLastNodeAtCoordinate(this.currentNode, coordinates);
+        if (lastNodeWithCoord === this.currentNode) {
+            return -1;
+        } else if (lastNodeWithCoord === -1) {
+            let nextNodeWithCoord = mosey.getNextNodeAtCoordinate(this.currentNode, coordinates);
+            if (nextNodeWithCoord === -1) {
+                return -1;
+            } else {
+                this.currentNode = nextNodeWithCoord;
+                return this.currentNode;
+            }
+        } else {
+            this.currentNode = lastNodeWithCoord;
+            return this.currentNode;
+        }
+    }
+
+    referenceNodeAtCoordinate(coordinate) {
+        let lastNodeWithCoord = mosey.getLastNodeAtCoordinate(this.currentNode,coordinate);
+        if (lastNodeWithCoord === -1) {
+            let nextNodeWithCoord = mosey.getNextNodeAtCoordinate(this.currentNode,coordinate);
+            if (nextNodeWithCoord === -1) return -1;
+            else return nextNodeWithCoord;
+        } else return lastNodeWithCoord;
+    }
+
+    editCoordinate(referenceNode, startingCoord, targetCoord) {
+        let stringifiedCoordinate = JSON.stringify(startingCoord);
+        for (let key of ['B','W','AB','AW']) {
+            if (referenceNode.props.hasOwnProperty(key)) {
+                for (let coord of referenceNode.props[key]) {
+                    if (JSON.stringify(coord) === stringifiedCoordinate) {
+                        console.log(key,coord,stringifiedCoordinate)
+                        coord[0] = targetCoord[0];
+                        coord[1] = targetCoord[1];
+                        console.log(referenceNode);
+                    }
+                }
+            }
+        }
+        this.root = initStates(this.EMPTY,this.root);
+    } 
+
+    /**
      * Takes any number of objects as arguments. 
      * Each object must have an update() function
      * And a set walker() function
