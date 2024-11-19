@@ -21,12 +21,15 @@ class StoneWalker {
 
         this.collection = [];
 
-        // array of objects to update;
-        this._updateObjects = []
+        // array of joined objects;
+        this._joinedObjects = []
     }
 
+    /**
+     * Runs .update() for each joined object
+     */
     update() {
-        for (let obj of this._updateObjects) {
+        for (let obj of this._joinedObjects) {
             obj.update();
         }
     }
@@ -107,7 +110,7 @@ class StoneWalker {
     join() {
         [...arguments].forEach(arg => {
             arg.walker = this;
-            this._updateObjects.push(arg);
+            this._joinedObjects.push(arg);
         });
     }
 
