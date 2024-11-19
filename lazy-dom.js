@@ -159,6 +159,14 @@ function inputNum(name, min,max,classes, parent, id, textContent) {
     return element;
 }
 
+function inputFile(classes,parent,id,name,accept,textContent) {
+    let element = dom('input',classes,parent,id,textContent);
+    if (name) element.name = name;
+    if (accept) element.accept = accept;
+    element.type = 'file';
+    return element;
+}
+
 /**
  * Lazily make/append a text node
  * @param {Node} parent 
@@ -197,6 +205,7 @@ export {
     text,
 
     inputNum,
+    inputFile,
     
     resizeObserve,
 };

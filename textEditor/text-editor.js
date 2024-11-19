@@ -34,6 +34,13 @@ class TextEditor {
         this.toolbar = lazy.div(['editorToolbar'],this.footer,'toolbar');
         this.formatButton = lazy.button(['editorButton'],this.toolbar,'format','Format SGF');
         this.formatButton.addEventListener('click', () => this.format());
+        this.formatMode = true;
+
+        this.downloadButton = lazy.button('editorButton',this.toolbar,'download','Download SGF');
+        this.downloadButton.addEventListener('click', () => this.downloadFile());
+        
+        this.fileInput = lazy.inputFile('editorButton',this.toolbar,'fileUpload','fileUpload','.sgf','Upload SGF');
+        this.fileInput.addEventListener('change',() => this.openFile());
         
         this.caret = lazy.div([],this.footer,'caretInfo');
 
@@ -62,7 +69,30 @@ class TextEditor {
         lazy.resizeObserve(this.textarea, () => this.sync());
     }
 
+    openFile() {
+        console.log(this.fileInput.files[0]);
+        let reader = new FileReader;
+        let that=this;
+        reader.onload = (e) => {
+            that.textarea.value = e.target.result;
+            that._walker.collection = SGF.parse(e.target.result, null);
+            that._walker.game = that._walker.collection[0];
+            that._walker.update();
+        }
+        reader.readAsText(this.fileInput.files[0]);
+    }
+
+    downloadFile() {
+        let blob = new Blob([this.textarea.value], {type: 'text/plain'});
+        let anchor = document.createElement('a');
+
+        anchor.download = 'newSGF.sgf';
+        anchor.href = window.URL.createObjectURL(blob);
+        anchor.click();
+    }
+
     format() {
+        this.formatMode = true;
         this.history.push(this.textarea.value);
         this._walker.collection = SGF.parse(this.history[this.history.length-1]);
         this._walker.game = this._walker.collection[0];
