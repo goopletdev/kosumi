@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded',() => {
     const texteditor =  new TextEditor(document.getElementById('editorParent'));
     const navigator = new NavPanel(document.getElementById('navigationParent'));
     const goban = new GobanCanvas(document.getElementById('gobanParent'));
-    const walker = new StoneWalker();
+    window.walker = new StoneWalker();
     
     // connect display and StoneWalker objects
-    walker.join(goban, navigator, texteditor);
+    window.walker.join(goban, navigator, texteditor);
 
     // splitBar resizer
     document.getElementById('splitBar').addEventListener('mousedown', () => {
