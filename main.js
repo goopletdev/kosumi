@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded',() => {
     const goban = new GobanCanvas(document.getElementById('gobanParent'));
     window.walker = new StoneWalker();
     
-    // connect display and StoneWalker objects
+    // connect the display objects and StoneWalker objects
     window.walker.join(goban, navigator, texteditor);
 
     // splitBar resizer
