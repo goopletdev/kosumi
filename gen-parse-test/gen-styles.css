@@ -1,0 +1,28 @@
+pre {
+    background-color: rgb(48, 48, 48);
+    color:antiquewhite
+}
+
+code {
+    width: 100%;
+}
+
+.sgf-node {
+    color:rgb(153, 121, 195)
+}
+
+.sgf-property-value {
+    color: #eb8056;
+}
+
+.sgf-escaped {
+    color: #D7BA5E;
+}
+
+.sgf-property-identifier {
+    color: rgb(91,213,213);
+}
+
+.sgf-error {
+    color: red;
+}
