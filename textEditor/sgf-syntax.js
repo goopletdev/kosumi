@@ -16,7 +16,7 @@ import * as lazy from '../lazy-dom.js';
  * }[]} array of token objects
  */
 function tokenize(sgf,callback) {
-    let tokens = []; 
+    const tokens = []; 
 
     let inBrackets = false;
     let escaped = false;
@@ -24,58 +24,67 @@ function tokenize(sgf,callback) {
     for (let i = 0; i < sgf.length; i++) {
 
         // handle square bracket contents (property value)
-        let sanitizedValue = sgf[i].replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
+        let char = sgf[i];
+        if (inBrackets) {
+            if (escaped) {
+                escaped = false;
+                tokens.push({
+                    type: 'propVal',
+                    value: `\\${char}`,
+                    characteristic: 'escapedCharacter'
+                })
+            } else if (char === '\\') {
+                escaped = true;
+            } else if (char === ']') {
+                inBrackets = false;
+            }
+        }
         if (inBrackets && escaped) {
-            escaped = false;
-            tokens.push({
-                type: 'propVal',
-                value: `\\${sanitizedValue}`,
-                characteristic: 'escapedCharacter'
-            })
-        } else if (inBrackets && sanitizedValue === '\\' && sgf[i+1] !== '\n') {
+
+        } else if (inBrackets && char === '\\' && sgf[i+1] !== '\n') {
             // not sure about that last check for sgf[i+1]; should 
             // get opinions
             escaped = true;
-        } else if (inBrackets && sanitizedValue === ']') {
+        } else if (inBrackets && char === ']') {
             inBrackets = false;
             tokens.push({
                 type: 'closeBracket',
                 value: ']'
             })
-        } else if (inBrackets && sanitizedValue === '\n') {
+        } else if (inBrackets && char === '\n') {
             tokens.push({
                 type: 'newline',
-                value: sanitizedValue,
+                value: char,
             })
         } else if (inBrackets && i < sgf.length - 1) {
             tokens.push({
                 type: 'propertyValue',
-                value: `${sanitizedValue}`,
+                value: `${char}`,
                 characteristic: 'normalCharacter'
             })
         } else if (inBrackets) {
             tokens.push({
                 type: 'propertyValue',
-                value: sanitizedValue,
+                value: char,
                 characteristic: 'normalCharacter',
                 error: 'missingClose'
             })
-        } else if (sanitizedValue === '[') {
+        } else if (char === '[') {
             inBrackets = true;
             tokens.push({
                 type: 'openBracket',
                 value: '['
             })
         // handle property identifier
-        } else if (/[A-Z]/.test(sanitizedValue)) {
+        } else if (/[A-Z]/.test(char)) {
             tokens.push({
                 type: 'propertyIdentifier',
-                value: sanitizedValue
+                value: char
             })
         // non-bracket terminal symbols
-        } else if ('();'.includes(sanitizedValue)) {
+        } else if ('();'.includes(char)) {
             let punctuationType;
-            switch (sanitizedValue) {
+            switch (char) {
                 case '(': 
                     punctuationType = 'openParenthesis';
                     break;
@@ -88,24 +97,24 @@ function tokenize(sgf,callback) {
             }
             tokens.push({
                 type: punctuationType,
-                value: sanitizedValue
+                value: char
             })
         // whitespace
-        } else if (sanitizedValue === '\n') {
+        } else if (char === '\n') {
             tokens.push({
                 type: 'newline',
-                value: sanitizedValue
+                value: char
             })
-        } else if (' \t'.includes(sanitizedValue)){
+        } else if (' \t'.includes(char)){
             tokens.push({
                 type: 'whitespace',
-                value: sanitizedValue
+                value: char
             })
         // erroneous character
         } else {
             tokens.push({
                 type: 'error',
-                value: sanitizedValue
+                value: char
             })
         }
     }
