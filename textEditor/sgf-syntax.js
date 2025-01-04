@@ -41,7 +41,7 @@ function tokenize(sgf,callback) {
         }
         if (inBrackets && escaped) {
 
-        } else if (inBrackets && char === '\\' && sgf[i+1] !== '\n') {
+        } else if (inBrackets && char === '\\' && sgf?.[i+1] !== '\n') {
             // not sure about that last check for sgf[i+1]; should 
             // get opinions
             escaped = true;
