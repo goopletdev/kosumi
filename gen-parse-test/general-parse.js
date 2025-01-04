@@ -56,7 +56,7 @@ const tokenize = async (sgf) => {
                     escaped
                 });
                 escaped = false;
-            } else if (character === '\\') {
+            } else if (character === '\\' && sgf?.[i+1] !== '\n') {
                 clearValue();
                 escaped = true;
             } else if (character === ']') {
@@ -272,5 +272,83 @@ const syntaxTest = async () => {
     //.then(nodes => visualTest(nodes));
 }
 
-document.querySelector('button').addEventListener('click',syntaxTest);
+const makeLines = async () => {
+    return document.querySelector('textarea').value.split('\n').map((line) => {
+        const element = document.createElement('div');
+        element.classList.add('bt-line');
+        element.append(line);
+        return element;
+    });
+}
+
+const scroll = async () => {
+    const code = document.querySelector('code');
+    const lineHeight = document.querySelector('.bt-line').getBoundingClientRect().height | 20;
+    const btContainer = document.querySelector('.bt-vertical-scroll');
+
+    const editorHeight = btContainer.getBoundingClientRect().height;
+    const numberLinesAbove = Math.floor(btContainer.scrollTop / lineHeight);
+
+    const numberLinesBelow = Math.floor((code.offsetHeight-editorHeight-btContainer.scrollTop)/lineHeight);
+
+    if (numberLinesAbove > 10) {
+        if (code.firstChild !== window.spacerTop) code.insertBefore(window.spacerTop, code.firstChild);
+        while (window.spacerTop.offsetHeight < (numberLinesAbove-11) * lineHeight) {
+            window.spacerTop.style.height = `${window.spacerTop.offsetHeight + lineHeight}px`;
+            window.linesAbove.push(code.removeChild(code.childNodes[1]));
+        }
+        while (window.spacerTop.offsetHeight > (numberLinesAbove-10) * lineHeight) {
+            code.insertBefore(window.linesAbove.pop(), code.childNodes[1]);
+            window.spacerTop.style.height = `${window.spacerTop.offsetHeight - lineHeight}px`;
+        }
+    } else {
+        if (code.firstChild === window.spacerTop) code.removeChild(window.spacerTop);
+        while (window.linesAbove.length) {
+            code.insertBefore(window.linesAbove.pop(),code.firstChild);
+        }
+    }
+
+    if (numberLinesBelow > 10) {
+        if (code.lastChild !== window.spacerBottom) code.append(window.spacerBottom);
+        while (window.spacerBottom.offsetHeight < (numberLinesBelow - 11) * lineHeight) {
+            window.spacerBottom.style.height = `${window.spacerBottom.offsetHeight + lineHeight}px`;
+            window.linesBelow.push(code.removeChild(code.childNodes[code.childNodes.length-2]));
+        }
+        while (window.spacerBottom.offsetHeight > (numberLinesBelow - 10) * lineHeight) {
+            code.insertBefore(window.linesBelow.pop(), code.lastChild);
+            window.spacerBottom.style.height = `${window.spacerBottom.offsetHeight - lineHeight}px`;
+        }
+    } else {
+        if ([...code.childNodes].includes(window.spacerTop)) code.removeChild(window.spacerTop);
+        while (window.linesBelow.length) {
+            code.append(window.linesBelow.pop());
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', e => {
+    window.spacerTop = document.createElement('div');
+    window.spacerTop.classList.add('bt-spacer');
+    window.spacerBottom = document.createElement('div');
+    window.spacerBottom.classList.add('bt-spacer');
+
+    document.querySelector('.bt-vertical-scroll').addEventListener('scroll',scroll);
+    document.querySelector('button').addEventListener('click', e => {
+        const code = document.querySelector('code');
+        code.textContent = '';
+        makeLines()
+        .then(lines => {
+            window.linesAbove = [...lines];
+            window.linesBelow = [];
+            const lineHeight = lines[0].offsetHeight;
+            window.spacerTop.style.height = `${window.spacerTop.offsetHeight + lineHeight*window.linesAbove.length}px`;
+            code.append(window.spacerTop,lines[lines.length-1],window.spacerBottom);
+            return;
+        })
+        .then(e => {
+            scroll();
+        });
+    });
+})
+
 //export default syntaxTest;

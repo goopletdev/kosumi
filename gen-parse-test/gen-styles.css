@@ -1,6 +1,20 @@
+.bt-vertical-scroll {
+    overflow-y: auto;
+    overflow-x:hidden;
+    max-height:80vh;
+}
+
+pre,
+code {
+    margin: 0;
+    padding: 0;
+}
+
 pre {
     background-color: rgb(48, 48, 48);
-    color:antiquewhite
+    color:antiquewhite;
+    text-wrap:wrap;
+    word-break: break-all;
 }
 
 code {
