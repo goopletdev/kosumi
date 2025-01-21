@@ -281,6 +281,10 @@ const makeLines = async () => {
     });
 }
 
+const initLines = async (lines) => {
+
+}
+
 const scroll = async () => {
     const code = document.querySelector('code');
     const lineHeight = document.querySelector('.bt-line').getBoundingClientRect().height | 20;
@@ -340,12 +344,16 @@ document.addEventListener('DOMContentLoaded', e => {
         .then(lines => {
             window.linesAbove = [...lines];
             window.linesBelow = [];
-            const lineHeight = lines[0].offsetHeight;
+            const lineHeight = code.appendChild(lines[0]).offsetHeight;
+            code.removeChild(lines[0]);
+            console.log(lineHeight);
             window.spacerTop.style.height = `${window.spacerTop.offsetHeight + lineHeight*window.linesAbove.length}px`;
-            code.append(window.spacerTop,lines[lines.length-1],window.spacerBottom);
+            code.append(window.spacerTop,lines[lines.length-1]);
             return;
         })
-        .then(e => {
+        .then(() => {
+            scroll();
+            code.scrollTop = code.scrollHeight;
             scroll();
         });
     });

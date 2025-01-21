@@ -1,13 +1,25 @@
-.bt-vertical-scroll {
+.bt-editor {
     overflow-y: auto;
     overflow-x:hidden;
-    max-height:80vh;
+    height:100%;
+    position:absolute;
+    font-family:'Courier New', Courier, monospace;
 }
 
-pre,
-code {
-    margin: 0;
-    padding: 0;
+.bt-vertical-scroll {
+    display:flex;
+    flex-direction: row;
+    height:fit-content;
+    min-height: 100%;
+}
+
+.bt-line-numbers {
+    width:fit-content;
+    padding-left: 1ch;
+}
+
+.bt-divider {
+    width: 1ch;
 }
 
 pre {

@@ -16,6 +16,7 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 - improve syntax highlighting (typing for propIdent/val pairs)
 - navigation: allow for variations
 - Allow compressing coords when generating SGF
+- implement DT.value.get() function properly in sgfProperties
 
 ## Known issues:
 - resizing using the middle dividing bar is slow
