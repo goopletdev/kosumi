@@ -1,7 +1,7 @@
 /**
  * @module SGF
  */
-import { tokenize, parseTokens, makeTree } from "./parse-sgf.js";
+import { tokenize, parseTokens, buildGameObject } from "./parse-sgf.js";
 import { sgfPropOrder, propertyDefinitions } from "./sgfProperties.js";
 const propOrder = sgfPropOrder.flat();
 const blackInfo = ['PB','BR','BT'];
@@ -34,36 +34,36 @@ class SGF {
     /**
      * Converts single SGF coordinate string into single numeric coordinate
      * @param {string} sgfCoord Alpha SGF coordinate string
-     * @returns {[number,number]} Numeric coordinate
+     * @returns {number[]} Numeric coordinate
      */
-    static numericCoord(sgfCoord) {
-        let numCoord = [];
-        for (let i=0; i < sgfCoord.length; i++) {
-            numCoord.push(this.coordinates.indexOf(sgfCoord[i]));
-        }
-        return numCoord;
+    static numCoord(sgfCoord) {
+        return Array.from(sgfCoord).map(char => SGF.coordinates.indexOf(char));
     }
 
     /**
-     * Unzips 'ab:bc' coords into array ['ab','bb','ac','cc']
-     * @param {string} zippedCoords Compressed SGF coordinates [xy:xy]
-     * @returns {string[]} Array of uncompressed SGF coordinates [xy]
+     * Unzips 'ab:bc' coords into array [[0,1],[1,1],[0,2],[2,2]]
+     * @param {string} zipped Compressed SGF coordinates 'wx:yz'
+     * @returns {string[]} Array of uncompressed SGF coordinates [n,n]
      */
-    static unzipCoords(zippedCoords) {
-        let coords = [];
+    static unzipCoords(zipped) {
+        let coords = zipped.split(':').map(coord => SGF.numCoord(coord));
         let unzipped = [];
-
-        for (let coord of zippedCoords.split(':')) {
-            coords.push(this.numericCoord(coord));
-        }
 
         for (let x = coords[0][0]; x <= coords[1][0]; x++) {
             for (let y = coords[0][1]; y <= coords[1][1]; y++) {
-                unzipped.push(this.coordinates[x] + this.coordinates[y]);
+                unzipped.push([x,y]);
             }
         }
 
         return unzipped;
+    }
+
+    static parseCoord(sgfCoord) {
+
+    }
+
+    static parseValue(propIdent,propVal) {
+        return propertyDefinitions[propIdent].parse(propVal);
     }
 
     /**
@@ -151,13 +151,11 @@ class SGF {
      * @param {string} application Name of SGF editor
      * @returns {object[]} Array of game node trees
      */
-    static parse(sgf, application=propertyDefinitions.AP.kosumiDefault) {
-        let collection;
-        tokenize(sgf, (result) => {
-            parseTokens(result, (result) => {
-                collection = makeTree(result);
-            });
-        });
+    static async parse(sgf, application=propertyDefinitions.AP.kosumiDefault) {
+        const collection = tokenize(sgf)
+        .then(tokens => parseTokens(tokens))
+        .then(nodes => buildGameObject(nodes));
+
         if (application) {
             for (let gameTree of collection) {
                 if (!gameTree.hasOwnProperty('props')) {
@@ -167,6 +165,10 @@ class SGF {
             }
         }
         return collection;
+    }
+
+    static evaluate(node) {
+
     }
 }
 
