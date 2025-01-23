@@ -1,4 +1,4 @@
-import SGF from "./sgf.js";
+import { numCoord } from "./sgfUtils.js";
 
 /**
  * Returns a parsed number if it is in the expected range, or throws and error
@@ -95,7 +95,7 @@ const move = (propVal, propIdent) => {
     // this also only allows only one move per turn, 
     // and doesn't allow empty propvals for passing
     if (/[A-Za-z]/.test(propVal) && propVal.length === 2) {
-        return SGF.numCoord(propVal);
+        return numCoord(propVal);
     }
     throw new Error(`${propIdent}[${propVal}] is not allowed`);
 }
