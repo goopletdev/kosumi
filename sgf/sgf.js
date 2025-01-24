@@ -3,13 +3,13 @@
  */
 import { tokenize, parseTokens, buildGameObject } from "./parse-sgf.js";
 import { sgfPropOrder, propertyDefinitions } from "./sgfProperties.js";
+import { COORDINATES, numCoord } from "./sgfUtils.js";
 const propOrder = sgfPropOrder.flat();
 const blackInfo = ['PB','BR','BT'];
 const whiteInfo = ['PW','WR','WT'];
 const timeInfo = ['TM','OT'];
 
 class SGF {
-    static coordinates = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     static zippableProperties = [
         'AB',
         'AE',
@@ -32,21 +32,12 @@ class SGF {
     ]
 
     /**
-     * Converts single SGF coordinate string into single numeric coordinate
-     * @param {string} sgfCoord Alpha SGF coordinate string
-     * @returns {number[]} Numeric coordinate
-     */
-    static numCoord(sgfCoord) {
-        return Array.from(sgfCoord).map(char => SGF.coordinates.indexOf(char));
-    }
-
-    /**
      * Unzips 'ab:bc' coords into array [[0,1],[1,1],[0,2],[2,2]]
      * @param {string} zipped Compressed SGF coordinates 'wx:yz'
      * @returns {string[]} Array of uncompressed SGF coordinates [n,n]
      */
     static unzipCoords(zipped) {
-        let coords = zipped.split(':').map(coord => SGF.numCoord(coord));
+        let coords = zipped.split(':').map(coord => numCoord(coord));
         let unzipped = [];
 
         for (let x = coords[0][0]; x <= coords[1][0]; x++) {
@@ -105,7 +96,7 @@ class SGF {
                     if (typeof val !== 'string') {
                         newVal = '';
                         for (let number of val) {
-                            newVal += SGF.coordinates[number];
+                            newVal += COORDINATES[number];
                         }
                     } 
                     values.push(newVal.replaceAll('\\','\\\\').replaceAll(']','\\]'));
