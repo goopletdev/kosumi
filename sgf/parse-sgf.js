@@ -3,7 +3,7 @@
  * @module parse-sgf
  */
 
-import { propertyDefinitions } from './sgfProperties.js';
+import { parseProperty } from './parse-properties.js';
 
 /**
  * @private
@@ -83,9 +83,9 @@ const parseTokens = async (tokens) => {
     }
 
     const handlePropVal = (propVal) => {
-        const def = propertyDefinitions[propId];
-        if (def) node.props[propId].push(...def.parse(propVal));
-        else {
+        if (parseProperty[propId]) {
+            node.props[propId].push(parseProperty[propId](propVal));
+        } else {
             console.log('private property');
             node.props[propId].push(propVal);
         }
