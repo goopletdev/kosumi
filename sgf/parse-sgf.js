@@ -13,7 +13,7 @@ import { parseProperty } from './parse-properties.js';
  * value: string;
  * }[]} array of token objects
  */
-const tokenize = async (sgf) => {
+const tokenize = (sgf, callback) => {
     let tokens = [];
 
     let inBrackets = false;
@@ -41,15 +41,15 @@ const tokenize = async (sgf) => {
         else if (sgf[i] === '[') {
             if (value) pushToken('propId');
             inBrackets = true;
-        } else if (/[A-Z]/.test(sgf[i])) {
-            value += sgf[i];
-        } else if (value) throw new Error('expecting propVal after propId');
+        } else if (/[A-Z]/.test(sgf[i])) value += sgf[i];
+        else if (value) throw new Error('expecting propVal after propId');
         else if ('();'.includes(sgf[i])) tokens.push({ type: 'terminal', value: sgf[i] });
     }
 
     if (inBrackets) throw new Error("missing ']'");
 
-    return tokens;
+    if (typeof callback === 'function') callback(tokens);
+    else return tokens;
 }
 
 /**
@@ -63,7 +63,7 @@ const tokenize = async (sgf) => {
  * props?: {};
  * }[]} Condensed token array
  */
-const parseTokens = async (tokens) => {
+const parseTokens = (tokens, callback) => {
     let nodes = [];
     let node = null;
     let propId = '';
@@ -101,10 +101,11 @@ const parseTokens = async (tokens) => {
         else if (tok.type === 'propVal') handlePropVal(tok.value);
     }
 
-    return nodes;
+    if (typeof callback === 'function') callback(nodes);
+    else return nodes;
 }
 
-const buildGameObject = async (tokens) => {
+const buildGameObject = (tokens) => {
     let position = 0;
     let depth = 0;
     
