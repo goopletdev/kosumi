@@ -1,169 +1,3 @@
-import { numCoord } from "./sgfUtils.js";
-
-/**
- * Returns a parsed number if it is in the expected range, or throws and error
- * @param {string} propIdent 
- * @param {string} propVal 
- * @param {number} min 
- * @param {number} max 
- * @returns {number} Property value parsed to integer
- */
-const range = (propVal, propIdent, min, max) => {
-    const val = parseInt(propVal);
-    if (val <= max && val >= min) return val;
-    const errorMessage = `${propIdent}[${propVal}] is not allowed`;
-    if (val !== val) throw new TypeError(errorMessage);
-    throw new RangeError(errorMessage);
-}
-
-/**
- * Tries parsing property value to integer
- * @param {string} propVal 
- * @param {string} propIdent 
- * @returns {number} Property value parsed to integer
- */
-const number = (propVal, propIdent) => {
-    // currently expectInt and expectFloat will allow for erroneous characters;
-    // this should still throw an error. add error handling for this later
-    const val = parseInt(propVal);
-    if (val===val) return val;
-    throw new TypeError(`${propIdent}[${propVal}] is not allowed`);
-}
-
-/**
- * Tries parsing property value to float
- * @param {string} propVal 
- * @param {string} propIdent 
- * @returns {number} Property value parsed to float
- */
-const real = (propVal, propIdent) => {
-    const val = parseFloat(propVal);
-    if (val===val) return val;
-    throw new TypeError(`${propIdent}[${propVal}] is not allowed`);
-}
-
-/**
- * Replaces non-linebreak whitespace with ' ' and restores escaped colons
- * @param {string} propVal 
- * @returns {string} Correctly-formatted SGF text
- */
-const text = (propVal) => {
-    return propVal.replaceAll('<ESCAPEDCOLON>',':')
-        .replaceAll('\r','\n')
-        .replaceAll(new RegExp(/[\t\f\v]/, 'g'),' ');
-}
-
-/**
- * Replaces whitespace (including linebreaks) with ' ' 
- * @param {string} propVal 
- * @returns {string} Correctly-formatted SGF simpletext
- */
-const simpleText = (propVal) => text(propVal).replaceAll('\n',' ');
-
-/**
- * Returns a parsed 'double', which is a 1 or a 2
- * @param {string} propVal 
- * @param {string} propIdent 
- * @returns {number} Integer
- */
-const double = (propVal, propIdent) => {
-    if (/[12]/.test(propVal) && propVal.length === 1) return parseInt(propVal);
-    throw new Error(`${propIdent}[${propVal}] is not allowed`);
-}
-
-/**
- * Checks whether property value is empty
- * @param {''} propVal Empty string
- * @param {string} propIdent uppercase SGF property identifier
- * @returns {[]} Empty array
- * @throws {Error} if propVal is not an empty string
- */
-const none = (propVal, propIdent) => {
-    if (propVal) throw new Error(`${propIdent}[${propVal}] is not allowed`);
-    return [];
-}
-
-/**
- * Checks whether move is allowed by SGF specifications, parses to num array
- * @param {string} propVal SGF coordinate
- * @param {string} propIdent uppercase SGF property identifier
- * @returns {[number,number]} SGF move coordinate parsed to numeric coordinates
- */
-const move = (propVal, propIdent) => {
-    // currently this requires 2 dimensions exactly
-    // this should be updated to check for compatibility with board dimensions
-    // this also only allows only one move per turn, 
-    // and doesn't allow empty propvals for passing
-    if (/[A-Za-z]/.test(propVal) && propVal.length === 2) {
-        return numCoord(propVal);
-    }
-    throw new Error(`${propIdent}[${propVal}] is not allowed`);
-}
-
-/**
- * Parses compressed and regular SGF coordinates into numeric coordinates
- * @param {string} propVal SGF coordinate or compressed coordinate e.g. wx:yz
- * @param {string} propIdent uppercase SGF property identifier
- * @returns {Array.<[number,number]>} 2d array of numeric coordinates
- */
-const point = (propVal, propIdent) => {
-    const coords =  propVal.split(':').map(val => move(val,propIdent));
-    if (coords.length === 1) return [coords];
-    let unzipped = [];
-
-    for (let x = coords[0][0]; x <= coords[1][0]; x++) {
-        for (let y = coords[0][1]; y <= coords[1][1]; y++) {
-            unzipped.push([x,y]);
-        }
-    }
-
-    return unzipped;
-}
-
-/**
- * Checks whether string is an allowed SGF color property
- * @param {'B' | 'W'} propVal SGF color name
- * @param {string} propIdent uppercase SGF property identifier
- * @returns {'B' | 'W'} SGF color name
- * @throws Will throw an error if called with a disallowed color name
- */
-const color = (propVal, propIdent) => {
-    // consider adding support for other colors like URG (blue red green)
-    if (/[BW]/.test(propVal) && propVal.length === 1) return propVal;
-    throw new Error(`${propIdent}[${propVal}] is not allowed`);
-}
-
-/**
- * Splits a composed value into an array, and runs the corresponding function
- * on each item. If there are fewer functions than items, it will call the 
- * last function on each remaining item. 
- * @param {string} propVal Composed value < value ':' value >
- * @param {string} propIdent uppercase SGF property identifier
- * @param  {...function} funcs Callback functions
- * @returns {Array.<any>} Parsed SGF property values
- * @throws {RangeError} if the split value has fewer items than funcs
- */
-const composed = (propVal, propIdent, ...funcs) => {
-    const vals = propVal.split(':');
-    if (vals.length < funcs.length) throw new RangeError(`${propIdent}[${propVal}] is not allowed`);
-    return vals.map((val,index) => {
-        const func = funcs?.[index] ? funcs[index] : funcs[-1];
-        return func(val, propIdent);
-    }) 
-}
-
-/**
- * Like point() but allows for an empty property value
- * @param {'' | string} propVal Empty string or zipped/unzipped SGF coords
- * @param {string} propIdent uppercase SGF property identifier
- * @returns {[] | Array.<[number,number]>} Array of parsed SGF coord/coords
- * or empty array
- */
-const eList = (propVal, propIdent) => {
-    // always eList of point
-    return propVal ? point(propVal,propIdent) : [propVal];
-}
-
 const gameName= [ //default = 1 'Go'
     null,
     'Go', 
@@ -212,7 +46,6 @@ const propertyDefinitions = {
     AP: {
         name: 'application',
         value: 'composed simpletext:simpletext',
-        parse: (propVal) => propVal.split(':').map(val => simpleText(val)),
         type: 'root',
         kosumiDefault: 'Kosumi:0.1.0',
         redBeanDefault: null,
@@ -220,7 +53,6 @@ const propertyDefinitions = {
     CA: {
         name: 'charset',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'root',
         kosumiDefault: 'UTF-8',
         redBeanDefault: 'ISO-8859-1',
@@ -228,7 +60,6 @@ const propertyDefinitions = {
     FF: {
         name:'file format',
         value: 'number (range: 1-4)',
-        parse: (propVal) => [range(propVal,'FF',1,4)],
         type: 'root',
         kosumiDefault: 4,
         redBeanDefault: 1,
@@ -236,7 +67,6 @@ const propertyDefinitions = {
     GM: {
         name: 'game',
         value: 'number (range: 1-16)[sic]',
-        parse: (propVal) => [range(propVal,'GM',1,1)],
         type: 'root',
         kosumiDefault: 1,
         redBeanDefault: 1,
@@ -244,7 +74,6 @@ const propertyDefinitions = {
     ST: { // I really don't understand this one
         name: 'variation style',
         value: 'number (range: 0-3)',
-        parse: (propVal) => [range(propVal,'ST',0,3)],
         type: 'root',
         kosumiDefault: 0,
         redBeanDefault: 0,
@@ -252,7 +81,6 @@ const propertyDefinitions = {
     SZ: {
         name: 'board size',
         value: 'number | composed number ":" number',
-        parse:(propVal) => propVal.split(':').map(num => number(num,'SZ')),
         type: 'root',
         kosumiDefault: 19,
         redBeanDefault: 19,
@@ -261,7 +89,6 @@ const propertyDefinitions = {
     AN: {
         name: 'annotator',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -269,7 +96,6 @@ const propertyDefinitions = {
     BR: {
         name: 'black rank',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -277,7 +103,6 @@ const propertyDefinitions = {
     BT: {
         name: 'black team',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -285,7 +110,6 @@ const propertyDefinitions = {
     CP: {
         name: 'copyright',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -293,11 +117,6 @@ const propertyDefinitions = {
     DT: {
         name: 'date played',
         value: 'simpletext (YYYY-MM-DD)',
-        parse: (propVal) => {
-            // this is way more complicated than i thought.
-            // check red-bean for specifications and shortcuts, implement eventually
-            return [simpleText(propVal)];
-        },
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -305,7 +124,6 @@ const propertyDefinitions = {
     EV: {
         name: 'event name',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -313,7 +131,6 @@ const propertyDefinitions = {
     GN: {
         name: 'game name',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -321,7 +138,6 @@ const propertyDefinitions = {
     GC: {
         name: 'extra game info',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -329,7 +145,6 @@ const propertyDefinitions = {
     ON: {
         name: 'opening',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -337,7 +152,6 @@ const propertyDefinitions = {
     OT: {
         name: 'overtime',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -345,7 +159,6 @@ const propertyDefinitions = {
     PB: {
         name: 'black player name',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -353,7 +166,6 @@ const propertyDefinitions = {
     PC: {
         name: 'game location',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -361,7 +173,6 @@ const propertyDefinitions = {
     PW: {
         name: 'white player name',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -369,7 +180,6 @@ const propertyDefinitions = {
     RE: {
         name: 'result',
         value: 'simpletext (0/"Draw","B+"[score],"W+"[score], "B+R"/"B+Resign", "B+T"/"B+Time","B+F","B+Forfeit","Void" no result/suspended play, "?" unknown)',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: '?',
         redBeanDefault: null,
@@ -377,7 +187,6 @@ const propertyDefinitions = {
     RO: {
         name: 'round number/round type',
         value: 'simpletext RO[xx (tt)] round number, type (final, playoff, league)',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -385,7 +194,6 @@ const propertyDefinitions = {
     RU: {
         name: 'ruleset',
         value: 'simpletext ("AGA","GOE","Japanese","NZ")',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: 'AGA',
         redBeanDefault: null,
@@ -393,7 +201,6 @@ const propertyDefinitions = {
     SO: {
         name: 'game record source',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -401,7 +208,6 @@ const propertyDefinitions = {
     TM: {
         name: 'time limits',
         value: 'real', // Number ["." Digit { Digit }]
-        parse: (propVal) => [real(propVal,'TM')],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -409,7 +215,6 @@ const propertyDefinitions = {
     US: {
         name: 'user who entered game',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -417,7 +222,6 @@ const propertyDefinitions = {
     WR: {
         name: 'white rank',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -425,7 +229,6 @@ const propertyDefinitions = {
     WT: {
         name: 'white team',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -434,7 +237,6 @@ const propertyDefinitions = {
     B: {
         name: 'black move',
         value: 'move',
-        parse: (propVal) => [move(propVal,'B')],
         type: 'move',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -442,7 +244,6 @@ const propertyDefinitions = {
     KO: {
         name: 'execute illegal move',
         value: 'none',
-        parse: (propVal) => none(propVal,'KO'),
         type: 'move',
         kosumiDefault: '',
         redBeanDefault: null,
@@ -450,7 +251,6 @@ const propertyDefinitions = {
     MN: {
         name: 'set move number',
         value: 'number',
-        parse: (propVal) => [number(propVal,'MN')],
         type: 'move',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -458,7 +258,6 @@ const propertyDefinitions = {
     W: {
         name: 'white move',
         value: 'move',
-        parse: (propVal) => [move(propVal,'W')],
         type: 'move',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -467,7 +266,6 @@ const propertyDefinitions = {
     AB: {
         name: 'add black',
         value: 'list of stone',
-        parse: (propVal) => point(propVal,'AB'),
         type: 'setup',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -475,7 +273,6 @@ const propertyDefinitions = {
     AE: {
         name: 'add empty',
         value: 'list of point',
-        parse: (propVal) => point(propVal,'AE'),
         type: 'setup',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -483,7 +280,6 @@ const propertyDefinitions = {
     AW: {
         name: 'add white',
         value: 'list of stone',
-        parse: (propVal) => point(propVal,'AW'),
         type: 'setup',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -491,7 +287,6 @@ const propertyDefinitions = {
     PL: {
         name: 'color to play',
         value: 'color',
-        parse: (propVal) => [color(propVal,'PL')],
         type: 'setup',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -500,7 +295,6 @@ const propertyDefinitions = {
     C: {
         name: 'comment',
         value: 'text',
-        parse: (propVal) => [text(propVal)],
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -508,7 +302,6 @@ const propertyDefinitions = {
     DM: {
         name: 'position is even',
         value: 'double',
-        parse: (propVal) => [double(propVal,'DM')],
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -516,7 +309,6 @@ const propertyDefinitions = {
     GB: {
         name: 'good for black',
         value: 'double',
-        parse: (propVal) => [double(propVal,'GB')],
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -524,7 +316,6 @@ const propertyDefinitions = {
     GW: {
         name: 'good for white',
         value: 'double',
-        parse: (propVal) => [double(propVal,'GW')],
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -532,7 +323,6 @@ const propertyDefinitions = {
     HO: {
         name: 'hotspot',
         value: 'double',
-        parse: (propVal) => [double(propVal,'HO')],
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -540,7 +330,6 @@ const propertyDefinitions = {
     N: {
         name: 'node name',
         value: 'simpletext',
-        parse: (propVal) => [simpleText(propVal)],
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -548,7 +337,6 @@ const propertyDefinitions = {
     UC: {
         name: 'position unclear',
         value: 'double',
-        parse: (propVal) => [double(propVal,'UC')],
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -556,7 +344,6 @@ const propertyDefinitions = {
     V: {
         name: 'node value',
         value: 'real', //positive: good for black; negative: good for white (estimated score)
-        parse: (propVal) => [real(propVal,'V')],
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -565,7 +352,6 @@ const propertyDefinitions = {
     BM: {
         name: 'bad move',
         value: 'double',
-        parse: (propVal) => [double(propVal,'BM')],
         type: 'move',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -573,7 +359,6 @@ const propertyDefinitions = {
     DO: {
         name: 'doubtful move',
         value: 'none',
-        parse: (propVal) => none(propVal,'DO'),
         type: 'move',
         kosumiDefault: '',
         redBeanDefault: null,
@@ -581,7 +366,6 @@ const propertyDefinitions = {
     IT: {
         name: 'interesting move',
         value: 'none',
-        parse: (propVal) => none(propVal,'IT'),
         type: 'move',
         kosumiDefault: '',
         redBeanDefault: null,
@@ -589,7 +373,6 @@ const propertyDefinitions = {
     TE: {
         name: 'tesuji',
         value: 'double',
-        parse: (propVal) => [double(propVal,'TE')],
         type: 'move',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -598,7 +381,6 @@ const propertyDefinitions = {
     BL: {
         name: 'black time left',
         value: 'real',
-        parse: (propVal) => [real(propVal,'BL')],
         type: 'move',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -606,7 +388,6 @@ const propertyDefinitions = {
     OB: {
         name: 'black overtime',
         value: 'number',
-        parse: (propVal) => [number(propVal,'OB')],
         type: 'move',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -614,7 +395,6 @@ const propertyDefinitions = {
     OW: {
         name: 'white overtime',
         value: 'number',
-        parse: (propVal) => [number(propVal,'OW')],
         type: 'move',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -622,7 +402,6 @@ const propertyDefinitions = {
     WL: {
         name: 'white time left',
         value: 'real',
-        parse: (propVal) => [real(propVal,'WL')],
         type: 'move',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -631,7 +410,6 @@ const propertyDefinitions = {
     AR: {
         name: 'arrow',
         value: 'list of composed point ":" point',
-        parse: (propVal) => composed(propVal,'AR',point,point),
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -639,7 +417,6 @@ const propertyDefinitions = {
     CR: {
         name: 'circle',
         value: 'list of point',
-        parse: (propVal) => point(propVal,'CR'),
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -647,7 +424,6 @@ const propertyDefinitions = {
     DD: {
         name: 'dim/grey out',
         value: 'elist of point',
-        parse: (propVal) => eList(propVal,'DD'),
         type: 'inherit', // affects all subsequent node
         kosumiDefault: null,
         redBeanDefault: null,
@@ -655,7 +431,6 @@ const propertyDefinitions = {
     LB: {
         name: 'text',
         value: 'list of composed point ":" simpletext',
-        parse: (propVal) => composed(propVal,'LB',point,simpleText),
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -663,7 +438,6 @@ const propertyDefinitions = {
     LN: {
         name: 'line',
         value: 'list of composed point ":" point',
-        parse: (propVal) => composed(propVal,'LN',point,point),
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -671,7 +445,6 @@ const propertyDefinitions = {
     MA: {
         name: 'mark with X',
         value: 'list of point',
-        parse: (propVal) => point(propVal,'MA'),
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -679,7 +452,6 @@ const propertyDefinitions = {
     SL: {
         name: 'selected points', // 'type of markup unknown' - red-bean.com. ???? nani??
         value: 'list of point',
-        parse: (propVal) => point(propVal,'SL'),
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -687,7 +459,6 @@ const propertyDefinitions = {
     SQ: {
         name: 'mark with square',
         value: 'list of point',
-        parse: (propVal) => point(propVal,'SQ'),
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -695,7 +466,6 @@ const propertyDefinitions = {
     TR: {
         name: 'mark with triangle',
         value: 'list of point',
-        parse: (propVal) => point(propVal,'TR'),
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -704,7 +474,6 @@ const propertyDefinitions = {
     FG: {
         name: 'figure',
         value: 'none | composition of number ":" simpletext',
-        parse: (propVal) => propVal ? composed(propVal,'FG',number,simpleText) : [propVal],
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -712,7 +481,6 @@ const propertyDefinitions = {
     PM: {
         name: 'move number printing style',
         value: 'number',
-        parse: (propVal) => [number(propVal,'PM')],
         type: 'inherit',
         kosumiDefault: 1,
         redBeanDefault: 1,
@@ -720,7 +488,6 @@ const propertyDefinitions = {
     VW: {
         name: 'view part of board',
         value: 'elist of point',
-        parse: (propVal) => eList(propVal,'VW'),
         type: 'inherit',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -729,7 +496,6 @@ const propertyDefinitions = {
     HA: {
         name: 'handicap',
         value: 'number',
-        parse: (propVal) => [number(propVal,'HA')],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -737,7 +503,6 @@ const propertyDefinitions = {
     KM: {
         name: 'komi',
         value: 'real',
-        parse: (propVal) => [real(propVal,'KM')],
         type: 'game-info',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -745,7 +510,6 @@ const propertyDefinitions = {
     TB: {
         name: 'black territory',
         value: 'elist of point',
-        parse: (propVal) => eList(propVal,'TB'),
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
@@ -753,13 +517,11 @@ const propertyDefinitions = {
     TW: {
         name: 'white territory',
         value: 'elist of point',
-        parse: (propVal) => eList(propVal,'TW'),
         type: '-',
         kosumiDefault: null,
         redBeanDefault: null,
     }
 }
-
 
 const rootProperties = [
     'FF', // file format (1,3,4)
