@@ -28,12 +28,12 @@ and a colon\:])`;
 
   test('should throw an error for missing closing bracket', () => {
     const sgf = '(;C[Missing closing bracket)';
-    expect(tokenize(sgf)).toThrow("missing ']'");
+    expect(() => tokenize(sgf)).toThrow("missing ']'");
   });
 
   test('should throw an error for property ID without value', () => {
     const sgf = '(;FF)';
-    expect(tokenize(sgf)).toThrow('expecting propVal after propId');
+    expect(() => tokenize(sgf)).toThrow('expecting propVal after propId');
   });
 });
 
