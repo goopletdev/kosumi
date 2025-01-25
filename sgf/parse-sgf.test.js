@@ -1,7 +1,7 @@
-import { tokenize } from './parse-sgf';
+import { tokenize } from './parse-sgf.js';
 
 describe('tokenize function', () => {
-  test('should tokenize a simple SGF string with a single property', async () => {
+  test('should tokenize a simple SGF string with a single property', () => {
     const sgf = '(;FF[4])';
     const expectedTokens = [
       { type: 'terminal', value: '(' },
@@ -10,10 +10,10 @@ describe('tokenize function', () => {
       { type: 'propVal', value: '4' },
       { type: 'terminal', value: ')' },
     ];
-    await expect(tokenize(sgf)).resolves.toEqual(expectedTokens);
+    expect(tokenize(sgf)).toEqual(expectedTokens);
   });
 
-  test('should handle escaped characters within property values', async () => {
+  test('should handle escaped characters within property values', () => {
     const sgf = String.raw`(;C[This is a comment with an escaped newline\
 and a colon\:])`;
     const expectedTokens = [
@@ -23,17 +23,17 @@ and a colon\:])`;
       { type: 'propVal', value: 'This is a comment with an escaped newlineand a colon<ESCAPEDCOLON>' },
       { type: 'terminal', value: ')' },
     ];
-    await expect(tokenize(sgf)).resolves.toEqual(expectedTokens);
+    expect(tokenize(sgf)).toEqual(expectedTokens);
   });
 
-  test('should throw an error for missing closing bracket', async () => {
+  test('should throw an error for missing closing bracket', () => {
     const sgf = '(;C[Missing closing bracket)';
-    await expect(tokenize(sgf)).rejects.toThrow("missing ']'");
+    expect(tokenize(sgf)).toThrow("missing ']'");
   });
 
-  test('should throw an error for property ID without value', async () => {
+  test('should throw an error for property ID without value', () => {
     const sgf = '(;FF)';
-    await expect(tokenize(sgf)).rejects.toThrow('expecting propVal after propId');
+    expect(tokenize(sgf)).toThrow('expecting propVal after propId');
   });
 });
 
