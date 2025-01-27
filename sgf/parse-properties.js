@@ -235,4 +235,18 @@ const parseProperty = {
 
 export {
     parseProperty,
+    // the rest of these are for testing only:
+    range,
+    number,
+    real,
+    text,
+    simpleText,
+    double,
+    none,
+    move,
+    point,
+    color,
+    composed,
+    eList,
+    parseDates,
 }
