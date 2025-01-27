@@ -32,27 +32,29 @@ function unzipCoords(zipped) {
     return unzipped;
 }
 
-/*
-function recurseZippedCoords(zipped) {
-    //idk how to make this work but imma figure it out eventually
-    // unzipCoords() limits us to 2d grids
-    const [start,end] = zipped.split(':').map(parseCoord);
-    const dimensions = min.length;
+/**
+ * Unzips composed n-dimensional coords 'coord:coord' 
+ * into array of n-dimensional coordinate tuples
+ * @param {string} zipped Compressed SGF coordinates 'coord:coord'
+ * @returns {number[][]} Array of uncompressed coordinate tuples
+ */
+function decompress(zipped) {
+    const [min,max] = zipped.split(':').map(parseCoord);
 
-    const unzip = (pos = 0) => {
-        const [min, max] = [start[pos],end[pos]];
-        const coords = Array.from({length: max-min}, (_,i) => i+min).reduce((acc,curr) => {
-            pos < dimensions - 1 ? acc.push(curr, ...unzip(pos+1)) : acc.push(curr);
+    const unzip = (pos=0) => {
+        let nextPos = pos + 1 < min.length ? unzip(pos + 1) : null;
+        return Array.from({ length: max[pos] - min[pos] + 1}).flatMap((_,i) => {
+            return nextPos ? nextPos.map(x => [i+min[pos], ...x]) : [[i+min[pos]]];
         });
     }
 
     return unzip();
 }
-*/
 
 export {
     COORDINATES, 
     parseCoord, 
     encodeCoord,
     unzipCoords,
+    decompress,
 }; 
