@@ -2,26 +2,22 @@ const COORDINATES = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 /**
  * Converts single SGF coordinate string into single coordinate tuple
- * @param {string} sgfCoord alpha SGF coordinate
+ * @param {string} coord alpha SGF coordinate
  * @returns {number[]} coordinate tuple
  */
-function parseCoord(sgfCoord) {
-    return Array.from(sgfCoord).map(char => COORDINATES.indexOf(char));
-}
+const parseCoord = (coord) => Array.from(coord).map(char => COORDINATES.indexOf(char));
 
 /**
  * Converts coordinate tuple into an SGF point
- * @param {number[]} coords Tuple indicating a specific point on the board
+ * @param {number[]} coord coordinate tuple
  * @returns {string} alpha SGF coordinate
  */
-function encodeCoord(coords) {
-    return coords.map(coord => COORDINATES[coord]).join('');
-} 
+const encodeCoord = (coord) => coord.map(coord => COORDINATES[coord]).join('');
 
 /**
- * Unzips 'ab:bc' coords into array of tuples [[0,1],[1,1],[0,2],[2,2]]
+ * Unzips 'ab:bc' coords into array of tuples [[0,1],[0,2],[1,1],[1,2]]
  * @param {string} zipped Compressed SGF coordinates 'wx:yz'
- * @returns {string[]} Array of uncompressed coordinate tuples [n,n]
+ * @returns {Array.<[number,number]>} Array of uncompressed coordinate tuples
  */
 function unzipCoords(zipped) {
     const [min,max] = zipped.split(':').map(parseCoord);
