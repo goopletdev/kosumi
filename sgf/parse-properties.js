@@ -99,7 +99,7 @@ const move = (val) => {
  */
 const point = (val) => {
     const coords =  val.split(':').map(x => move(x)[0]);
-    if (coords.length === 1) return [coords];
+    if (coords.length === 1) return coords;
     let unzipped = [];
 
     for (let x = coords[0][0]; x <= coords[1][0]; x++) {
@@ -135,10 +135,10 @@ const color = (val) => {
 const composed = (val, ...funcs) => {
     const vals = val.split(':');
     if (vals.length < funcs.length) throw new RangeError(`[${val}] is not allowed`);
-    return [vals.flatMap((val,index) => {
+    return vals.flatMap((val,index) => {
         const func = funcs?.[index] ? funcs[index] : funcs[-1];
-        return func(val).flat();
-    })];
+        return func(val);
+    });
 }
 
 /**
@@ -153,16 +153,14 @@ const eList = (val) => {
 }
 
 /**
- * 
- * @param {string} val 
- * @returns 
+ * Parses comma-separated list of ISO-standard dates
+ * @param {string} val ISO-standard date string; YYYY-MM-DD,MM-DD,DD
+ * @returns {Array.<number>[]} array of [YYYY,MM,DD] tuples
  */
 const parseDates = (val) => {
     let YYYY,MM,DD;
     return val.split(',').map(date => {
-        console.log(date);
         date = date.split('-');
-        console.log(date);
         if (date[0].length === 4) [YYYY,MM,DD] = date;
         else if (date.length === 2 || !DD) [MM,DD] = date;
         else [DD] = date;

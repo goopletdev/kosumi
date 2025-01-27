@@ -36,7 +36,7 @@ function unzipCoords(zipped) {
  * Unzips composed n-dimensional coords 'coord:coord' 
  * into array of n-dimensional coordinate tuples
  * @param {string} zipped Compressed SGF coordinates 'coord:coord'
- * @returns {number[][]} Array of uncompressed coordinate tuples
+ * @returns {Array.<number>[]} Array of uncompressed coordinate tuples
  */
 function decompress(zipped) {
     const [min,max] = zipped.split(':').map(parseCoord);

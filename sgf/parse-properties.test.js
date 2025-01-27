@@ -68,7 +68,7 @@ describe('private parsing properties', () => {
     });
 
     test('composed', () => {
-        expect(composed('ab:cd',point,point)).toEqual([[[0,1],[2,3]]]);
+        expect(composed('ab:cd',point,point)).toEqual([[0,1],[2,3]]);
     });
 
     test('eList', () => {
