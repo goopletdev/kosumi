@@ -1,4 +1,4 @@
-import { tokenize } from './parse-sgf.js';
+import { buildGameObject, parseTokens, tokenize } from './parse-sgf.js';
 
 describe('tokenize function', () => {
   test('should tokenize a simple SGF string with a single property', () => {

@@ -105,7 +105,7 @@ const parseTokens = (tokens, callback) => {
     else return nodes;
 }
 
-const buildGameObject = (tokens) => {
+const buildGameObject = (tokens, circular=true) => {
     let position = 0;
     let depth = 0;
     
@@ -126,7 +126,7 @@ const buildGameObject = (tokens) => {
             return branches;
         }
         const node = { ...tok, moveNumber, parent };
-        node.children = makeTree(node, moveNumber+1) || [];
+        node.children = makeTree(circular ? node : node.id, moveNumber+1) || [];
         return [node];
     }
 
