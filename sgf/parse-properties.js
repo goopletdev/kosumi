@@ -5,57 +5,57 @@ import { parseCoord } from "./sgfUtils";
  * @param {string} val 
  * @param {number} min 
  * @param {number} max 
- * @returns {number} Property value parsed to integer
+ * @returns {[number]} Property value parsed to integer
  */
 const range = (val, min, max) => {
-    val = parseInt(val);
-    if (val <= max && val >= min) return val;
+    const num = parseInt(val);
+    if (num <= max && num >= min) return [num];
     const errorMessage = `[${val}] is not allowed`;
-    if (val !== val) throw new TypeError(errorMessage);
+    if (num !== num) throw new TypeError(errorMessage);
     throw new RangeError(errorMessage);
 }
 
 /**
  * Tries parsing property value to integer
  * @param {string} val 
- * @returns {number} Property value parsed to integer
+ * @returns {[number]} Property value parsed to integer
  */
 const number = (val) => {
     // currently expectInt and expectFloat will allow for erroneous characters;
     // this should still throw an error. add error handling for this later
-    val = parseInt(val);
-    if (val===val) return val;
+    const num =  parseInt(val);
+    if (num===num) return [num];
     throw new TypeError(`[${val}] is not allowed`);
 }
 
 /**
  * Tries parsing property value to float
  * @param {string} val 
- * @returns {number} Property value parsed to float
+ * @returns {[number]} Property value parsed to float
  */
 const real = (val) => {
-    val = parseFloat(val);
-    if (val===val) return val;
+    const num = parseFloat(val);
+    if (num===num) return [num];
     throw new TypeError(`[${val}] is not allowed`);
 }
 
 /**
  * Replaces non-linebreak whitespace with ' ' and restores escaped colons
  * @param {string} val 
- * @returns {string} Correctly-formatted SGF text
+ * @returns {[string]} Correctly-formatted SGF text
  */
 const text = (val) => {
-    return val.replaceAll('<ESCAPEDCOLON>',':')
+    return [val.replaceAll('<ESCAPEDCOLON>',':')
         .replaceAll('\r','\n')
-        .replaceAll(new RegExp(/[\t\f\v]/, 'g'),' ');
+        .replaceAll(new RegExp(/[\t\f\v]/, 'g'),' ')];
 }
 
 /**
  * Replaces whitespace (including linebreaks) with ' ' 
  * @param {string} val 
- * @returns {string} Correctly-formatted SGF simpletext
+ * @returns {[string]} Correctly-formatted SGF simpletext
  */
-const simpleText = (val) => text(val).replaceAll('\n',' ');
+const simpleText = (val) => [text(val)[0].replaceAll('\n',' ')];
 
 /**
  * Returns a parsed 'double', which is a 1 or a 2
@@ -63,7 +63,7 @@ const simpleText = (val) => text(val).replaceAll('\n',' ');
  * @returns {number} Integer
  */
 const double = (val) => {
-    if (/[12]/.test(val) && val.length === 1) return parseInt(val);
+    if (/[12]/.test(val) && val.length === 1) return [parseInt(val)];
     throw new Error(`[${val}] is not allowed`);
 }
 
@@ -75,20 +75,20 @@ const double = (val) => {
  */
 const none = (val) => {
     if (val) throw new Error(`[${val}] is not allowed`);
-    return null;
+    return [];
 }
 
 /**
  * Checks whether move is allowed by SGF specifications, parses to num array
  * @param {string} val SGF coordinate
- * @returns {[number,number]} coordinate tuple
+ * @returns {[[number,number]]} coordinate tuple
  */
 const move = (val) => {
     // currently this requires 2 dimensions exactly
     // this should be updated to check for compatibility with board dimensions
     // this also only allows only one move per turn, 
     // and doesn't allow empty propvals for passing
-    if (/[A-Za-z]/.test(val) && val.length === 2) return parseCoord(val);
+    if (/[A-Za-z]/.test(val) && val.length === 2) return [parseCoord(val)];
     throw new Error(`[${val}] is not allowed`);
 }
 
@@ -98,7 +98,7 @@ const move = (val) => {
  * @returns {Array.<[number,number]>} 2d array of numeric coordinates
  */
 const point = (val) => {
-    const coords =  val.split(':').map(move);
+    const coords =  val.split(':').map(x => move(x)[0]);
     if (coords.length === 1) return [coords];
     let unzipped = [];
 
@@ -114,12 +114,12 @@ const point = (val) => {
 /**
  * Checks whether string is an allowed SGF color property
  * @param {'B' | 'W'} val SGF color name
- * @returns {'B' | 'W'} SGF color name
+ * @returns {['B' | 'W']} SGF color name
  * @throws Will throw an error if called with a disallowed color name
  */
 const color = (val) => {
     // consider adding support for other colors like URG (blue red green)
-    if (/[BW]/.test(val) && val.length === 1) return val;
+    if (/[BW]/.test(val) && val.length === 1) return [val];
     throw new Error(`[${val}] is not allowed`);
 }
 
@@ -129,37 +129,44 @@ const color = (val) => {
  * last function on each remaining item. 
  * @param {string} val Composed value < value ':' value >
  * @param  {...function} funcs Callback functions
- * @returns {Array.<any>} Parsed SGF property values
+ * @returns {[Array.<any>]} Parsed SGF property values
  * @throws {RangeError} if the split value has fewer items than funcs
  */
 const composed = (val, ...funcs) => {
     const vals = val.split(':');
     if (vals.length < funcs.length) throw new RangeError(`[${val}] is not allowed`);
-    return vals.map((val,index) => {
+    return [vals.flatMap((val,index) => {
         const func = funcs?.[index] ? funcs[index] : funcs[-1];
-        return func(val);
-    }) 
+        return func(val).flat();
+    })];
 }
 
 /**
  * Like point() but allows for an empty property value
  * @param {'' | string} val Empty string or zipped/unzipped SGF coords
- * @returns {[] | Array.<[number,number]>} Array of parsed SGF coord/coords
+ * @returns {[] | Array.<[number,number]>[]} Array of parsed SGF coord/coords
  * or empty array
  */
 const eList = (val) => {
     // always eList of point
-    return val ? point(val) : [val];
+    return val ? point(val) : [];
 }
 
+/**
+ * 
+ * @param {string} val 
+ * @returns 
+ */
 const parseDates = (val) => {
     let YYYY,MM,DD;
     return val.split(',').map(date => {
+        console.log(date);
         date = date.split('-');
+        console.log(date);
         if (date[0].length === 4) [YYYY,MM,DD] = date;
         else if (date.length === 2 || !DD) [MM,DD] = date;
         else [DD] = date;
-        return [YYYY,MM,DD].filter(Boolean);
+        return [YYYY,MM,DD].filter(Boolean).map(x => parseInt(x));
     });
 }
 

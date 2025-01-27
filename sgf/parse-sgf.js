@@ -84,7 +84,7 @@ const parseTokens = (tokens, callback) => {
 
     const handlePropVal = (propVal) => {
         if (parseProperty[propId]) {
-            node.props[propId].push(parseProperty[propId](propVal));
+            node.props[propId].push(...parseProperty[propId](propVal));
         } else {
             console.log('private property');
             node.props[propId].push(propVal);
