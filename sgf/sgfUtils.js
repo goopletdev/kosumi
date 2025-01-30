@@ -41,11 +41,14 @@ function unzipCoords(zipped) {
 function decompress(zipped) {
     const [min,max] = zipped.split(':').map(parseCoord);
 
-    const unzip = (pos=0) => {
-        let nextPos = pos + 1 < min.length ? unzip(pos + 1) : null;
-        return Array.from({ length: max[pos] - min[pos] + 1}).flatMap((_,i) => {
-            return nextPos ? nextPos.map(x => [i+min[pos], ...x]) : [[i+min[pos]]];
-        });
+    const unzip = (dimension=0) => {
+        if (dimension >= min.length) return [[]];
+        const coordinates = [];
+        const subCoordinates = unzip(dimension+1);
+        for (let i = min[dimension]; i <= max[dimension]; i++) {
+            coordinates.push(...subCoordinates.map(x => [i, ...x]));
+        }
+        return coordinates;
     }
 
     return unzip();
