@@ -65,4 +65,56 @@ describe('Goban methods on 5x5', () => {
         expect(board.getChain(20)).toEqual([]);
         expect(board.getChain(10)).toEqual([10]);
     });
+
+    it('should return all liberties of a given coord\'s chain', () => {
+        expect(board.getLiberties(2)).toEqual([1,4,6,11,17]);
+        expect(board.getLiberties(24)).toEqual([19,23]);
+        expect(board.getLiberties(6)).toEqual([]);
+    });
+
+    it('should allow non-capturing moves to behave like setup moves', () => {
+        expect(board.move(1,0,6)).toEqual([,]);
+        expect(board.state).toEqual([
+            1,0,1,1,0,
+            0,1,1,2,2,
+            2,0,1,2,0,
+            0,0,0,0,0,
+            0,0,0,0,1,
+        ]);
+    });
+
+    it('should allow suicide moves', () => {
+        expect(board.move(2,1).map(x => [...x])).toEqual([,,[1]]);
+        expect(board.state).toEqual([
+            1,0,1,1,0,
+            0,1,1,2,2,
+            2,0,1,2,0,
+            0,0,0,0,0,
+            0,0,0,0,1,
+        ]);
+    });
+
+    it('should handle captures correctly', () => {
+        expect(board.move(2,1,5).map(x=>[...x])).toEqual([,[0]]);
+        expect(board.state).toEqual([
+            0,2,1,1,0,
+            2,1,1,2,2,
+            2,0,1,2,0,
+            0,0,0,0,0,
+            0,0,0,0,1,
+        ]);
+        expect(board.move(2,11,17,4).map(a => [...a].sort((a,b) => a-b))).toEqual([,[2,3,6,7,12]]);
+        expect(board.state).toEqual([
+            0,2,0,0,2,
+            2,0,0,2,2,
+            2,2,0,2,0,
+            0,0,2,0,0,
+            0,0,0,0,1,
+        ]);
+        expect(board.move(1,0,2,6).map(a=>[...a])).toEqual([,,[1]]);
+    });
+
+    it('should throw if attempt to place stone on occupied intersection', () => {
+        expect(() => board.move(1,5)).toThrow();
+    });
 });
