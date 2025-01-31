@@ -61,15 +61,15 @@ describe('Goban methods on 5x5', () => {
     });
 
     it('should return all points in the same chain as the given fcoord', () => {
-        expect(board.getChain(7).sort((a,b) => a-b)).toEqual([2,3,7,12]);
-        expect(board.getChain(20)).toEqual([]);
-        expect(board.getChain(10)).toEqual([10]);
+        expect(Array.from(board.chain(7)).sort((a,b) => a-b)).toEqual([2,3,7,12]);
+        expect([...board.chain(20)]).toEqual([]);
+        expect([...board.chain(10)]).toEqual([10]);
     });
 
     it('should return all liberties of a given coord\'s chain', () => {
-        expect(board.getLiberties(2)).toEqual([1,4,6,11,17]);
-        expect(board.getLiberties(24)).toEqual([19,23]);
-        expect(board.getLiberties(6)).toEqual([]);
+        expect([...board.liberties(2)]).toEqual([1,4,6,11,17]);
+        expect([...board.liberties(24)]).toEqual([19,23]);
+        expect([...board.liberties(6)]).toEqual([]);
     });
 
     it('should allow non-capturing moves to behave like setup moves', () => {
