@@ -72,13 +72,13 @@ class Goban {
      * @param {number} fCoord Flattened coordinate
      * @returns {Array.<number>} All the stones in a chain of stones
      */
-    getChain (fCoord) {
-        const coords=[];
+    chain (fCoord) {
+        const coords = new Set();
 
         const search = (coord) => {
-            coords.push(coord);
+            coords.add(coord);
             this.links(coord).forEach(link => {
-                if (!coords.includes(link)) search(link);
+                if (!coords.has(link)) search(link);
             });
         }
 
@@ -92,18 +92,18 @@ class Goban {
      * @param {number} fCoord Flattened coordinate
      * @returns {Array.<number>} Chain's liberties
      */
-    getLiberties (fCoord) {
-        const dame = []; // array of chain's liberties
-        if (!this.state[fCoord]) return dame;
+    liberties (fCoord) {
+        const coords = new Set(); // set of chain's liberties
+        if (!this.state[fCoord]) return coords;
         
-        this.getChain(fCoord).forEach(link => {
+        this.chain(fCoord).forEach(link => {
             this.neighbors(link).forEach(neighbor => {
-                if (dame.includes(neighbor) || this.state[neighbor]) return;
-                dame.push(neighbor);
+                if (coords.has(neighbor) || this.state[neighbor]) return;
+                coords.add(neighbor);
             });
         });
 
-        return dame;
+        return coords;
     }
 
     /**
@@ -141,12 +141,12 @@ class Goban {
             this.neighbors(move).forEach(neighbor => {
                 const color = this.state[neighbor];
                 if (!color || color === value) return;
-                if (this.getLiberties(neighbor).length) return;
+                if (this.liberties(neighbor).size) return;
                 if (!captures[color]) {
                     captures[color] = new Set();
                 } else if (captures[color].has(neighbor)) return;
                 
-                this.getChain(neighbor).forEach(link => {
+                this.chain(neighbor).forEach(link => {
                     console.log(link);
                     captures[color].add(link);
                 });
@@ -161,9 +161,9 @@ class Goban {
 
         // check for self-captured stones
         fCoords.forEach(stone => {
-            if (this.getLiberties(stone).length) return;
+            if (this.liberties(stone).size) return;
             if (!captures[value]) captures[value] = new Set();
-            this.getChain(stone).forEach(link => captures[value].add(link));
+            this.chain(stone).forEach(link => captures[value].add(link));
         });
 
         // remove self-captures from board
