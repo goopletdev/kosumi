@@ -1,16 +1,51 @@
 /**
- * @module Goban
+ * @module GameEngine
  */
 
-class Goban {
+class GameEngine {
     /**
      * Sets goban width and initializes a flattened board state with 0's
      * @param {number} width X; number of columns
      * @param {number} height Y; number of 
      */
     constructor (width=19, height=width) {
-        this.width = width;
+        this.dimensions = [width,height];
+    }
+
+    set width (width) {
+        this._width = width;
         this.state = Array(width * height).fill(0);
+    }
+
+    get width () {
+        return this._width;
+    }
+
+    set height (height) {
+        this._height = height;
+        this.state = Array(width * height).fill(0);
+    }
+
+    get height () {
+        return this._height;
+    }
+
+    set dimensions ([width,height]) {
+        this._width = width;
+        this._height = height;
+        this.state = Array(width * height).fill(0);
+    }
+
+    get dimensions () {
+        return [this.width, this.height];
+    }
+
+    /**
+     * Clears boardstate
+     * @returns {Array.<0>} sets all elements of state to 0
+     */
+    clear() {
+        return this.state.fill(0);
     }
 
     /**
@@ -19,7 +54,7 @@ class Goban {
      * @returns {number} flattened coordinate
      */
     flatten ([x,y]) {
-        return x + y * this.width;
+        return x + y * this._width;
     }
 
     /**
@@ -28,7 +63,7 @@ class Goban {
      * @returns {[number,number]} Unflattened 2-d coordinate
      */
     deepen (fCoord) {
-        return [fCoord % this.width, Math.floor(fCoord / this.width)];
+        return [fCoord % this._width, Math.floor(fCoord / this._width)];
     }
 
     /**
@@ -38,7 +73,7 @@ class Goban {
      */
     neighbors (fCoord) {
         const adjacent = [];
-        const [width,size] = [this.width,this.state.length];
+        const [width,size] = [this._width,this.state.length];
 
         if (fCoord-width >= 0 && fCoord-width < size) {
             adjacent.push(fCoord-width);
@@ -70,7 +105,7 @@ class Goban {
     /**
      * Finds all stones in a chain
      * @param {number} fCoord Flattened coordinate
-     * @returns {Array.<number>} All the stones in a chain of stones
+     * @returns {Set.<number>} All the stones in a chain of stones
      */
     chain (fCoord) {
         const coords = new Set();
@@ -90,7 +125,7 @@ class Goban {
     /**
      * Find chain's unoccupied adjacent intersections 
      * @param {number} fCoord Flattened coordinate
-     * @returns {Array.<number>} Chain's liberties
+     * @returns {Set<number>} Chain's liberties
      */
     liberties (fCoord) {
         const coords = new Set(); // set of chain's liberties
@@ -113,7 +148,13 @@ class Goban {
      * @returns {Array.<number>} this.state
      */
     setup (value, ...fCoords) {
-        fCoords.forEach(coord => this.state[coord] = value);
+        fCoords.forEach(coord => {
+            if (this.state[coord] === value) {
+                this.state[coord] = 0;
+            } else {
+                this.state[coord] = value;
+            }
+        });
         return this.state;
     }
 
@@ -121,9 +162,9 @@ class Goban {
      * Mutates game state by placing stones, then removes captures.
      * Allows for suicide moves, and notably for multiple simultaneous
      * moves (for variants).
-     * @param {1 | 2} value Color/player number
+     * @param {number} value Color/player number
      * @param  {...number} fCoords 
-     * @returns {(Array.<number> | undefined)[]} captured stones
+     * @returns {(Set.<number> | undefined)[]} captured stones
      * @throws on an attempt to place a stone on an occupied intersection
      */
     move (value, ...fCoords) {
@@ -147,7 +188,6 @@ class Goban {
                 } else if (captures[color].has(neighbor)) return;
                 
                 this.chain(neighbor).forEach(link => {
-                    console.log(link);
                     captures[color].add(link);
                 });
             });
@@ -155,8 +195,7 @@ class Goban {
 
         // remove captures from board
         captures.forEach(color => {
-            if (!color) return;
-            color.forEach(stone => this.state[stone] = 0);
+            if (color) color.forEach(stone => this.state[stone] = 0);
         });
 
         // check for self-captured stones
@@ -188,14 +227,14 @@ class Goban {
     /**
      * Sets given state to new Goban object and returns Goban
      * @param {Array.<number>} state Flat square array
-     * @returns {Goban} Goban object with the given state
+     * @returns {GameEngine} Goban object with the given state
      */
     static from (state) {
-        const board = new Goban;
+        const board = new GameEngine;
         board.state = state;
-        board.width = Math.sqrt(state.length);
+        board._width = Math.sqrt(state.length);
         return board;
     }
 }
 
-export default Goban;
+export default GameEngine;
