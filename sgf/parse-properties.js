@@ -1,4 +1,4 @@
-import { parseCoord } from "./sgfUtils";
+import { parseCoord } from "./sgfUtils.js";
 
 /**
  * Returns a parsed number if it is in the expected range, or throws and error

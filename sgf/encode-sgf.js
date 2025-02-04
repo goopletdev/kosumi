@@ -1,5 +1,5 @@
 import { sgfPropOrder } from "./sgfProperties.js";
-import { encodeProperty } from './property-encode.js';
+import { encodeProperty } from './encode-properties.js';
 const propOrder = sgfPropOrder.flat();
 const blackInfo = ['PB','BR','BT'];
 const whiteInfo = ['PW','WR','WT'];

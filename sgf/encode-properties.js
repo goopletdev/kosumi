@@ -1,4 +1,4 @@
-import { encodeCoord } from "./sgfUtils";
+import { encodeCoord } from "./sgfUtils.js";
 
 const escape = (vals) => vals.map(val => val.replaceAll('\\','\\\\').replaceAll(']','\\]'));
 
