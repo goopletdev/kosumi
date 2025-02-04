@@ -1,29 +1,28 @@
 import TextEditor from './textEditor/text-editor.js';
-import GobanCanvas from './goban/goban.js';
+import GobanCanvas from './goban/goban-canvas.js';
 import NavPanel from './navigation/navigation-panel.js';
 import StoneWalker from './stoneWalker/stone-walker.js';
 
 document.addEventListener('DOMContentLoaded',() => {
-    const texteditor =  new TextEditor(document.getElementById('editorParent'));
-    const navigator = new NavPanel(document.getElementById('navigationParent'));
-    const goban = new GobanCanvas(document.getElementById('gobanParent'));
-    window.walker = new StoneWalker();
-    
-    // connect the display objects and StoneWalker objects
-    window.walker.join(goban, navigator, texteditor);
+    document.fonts.ready.then(() => {
+        const goban = new GobanCanvas(19,19,document.getElementById('gobanParent'));
+        goban.toolPanel = document.getElementById('navigationParent');    
+    });
 
     // splitBar resizer
     document.getElementById('splitBar').addEventListener('mousedown', () => {
         function splitBarMove(cursor) {
-            let barStyle = splitBar.getBoundingClientRect();
-            let barWidth = barStyle.right-barStyle.left;
-            let leftEditorBounds = texteditor.parent.getBoundingClientRect().left;
-            let width = cursor.clientX - leftEditorBounds - (barWidth/2)
-            texteditor.parent.style.width = `${width}px`
+            const textEditorParent = document.getElementById('editorParent');
+            const barStyle = splitBar.getBoundingClientRect();
+            const barWidth = barStyle.right-barStyle.left;
+
+            const leftEditorBounds = textEditorParent.getBoundingClientRect().left;
+            const width = cursor.clientX - leftEditorBounds - (barWidth/2)
+            textEditorParent.style.width = `${width}px`;
         }
         document.addEventListener('mousemove', splitBarMove);
         document.addEventListener('mouseup', () => {
             document.removeEventListener('mousemove',splitBarMove)
-        })
+        });
     });
 })
