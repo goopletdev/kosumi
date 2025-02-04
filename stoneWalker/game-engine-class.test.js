@@ -1,8 +1,8 @@
-import Goban from "./game-engine-class";
+import GameEngine from "./game-engine-class";
 
 describe('Goban static methods', () => {
     it('should make a Goban object from a flat square array', () => {
-        let board = Goban.from([0,0,1,0,0,0,1,1,1]);
+        let board = GameEngine.from([0,0,1,0,0,0,1,1,1]);
         expect(board.width).toBe(3);
         expect(board.state).toEqual([0,0,1,0,0,0,1,1,1]);
     });
@@ -14,7 +14,7 @@ describe('Goban methods on 5x5', () => {
         board = new Goban(5);
     });*/
 
-    let board = new Goban(5);
+    let board = new GameEngine(5);
 
     it('should make an empty array of length 25', () => {
         expect(board.state.length).toEqual(25);
