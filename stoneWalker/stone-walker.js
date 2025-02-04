@@ -2,7 +2,7 @@
  * @module StoneWalker
  */
 
-import { initBoard, initStates } from "./game-logic.js";
+import GameEngine from './game-engine-class.js';
 import * as mosey from "./sw-private-functions.js";
 import { propertyDefinitions } from "../sgf/sgfProperties.js";
 
@@ -10,19 +10,8 @@ class StoneWalker {
     /**
      * Construct StoneWalker instance with default contents
      */
-    constructor () {
-        this.currentNode = {
-            id: 0,
-            props: {
-                FF: '4',
-                AP: 'Kosumi:0.1.0',
-            }
-        };
-
-        this.collection = [];
-
-        // array of joined objects;
-        this._joinedObjects = []
+    constructor (goban = new GameEngine()) {
+        Object.assign(this,goban);
     }
 
     /**
