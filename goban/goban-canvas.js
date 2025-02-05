@@ -221,6 +221,7 @@ class GobanCanvas extends GameEngine {
         this.annotations.addEventListener('mousedown', e => this.mouseDown(e));
         this.annotations.addEventListener('mouseup', e => this.mouseUp(e));
         this.annotations.addEventListener('mousemove', e => this.mouseMove(e));
+        this.annotations.addEventListener('mouseleave', (e) => this.mouseMove(e));
 
         document.defaultView.addEventListener('keydown', e => {
             if (e.key === 'Shift' 
