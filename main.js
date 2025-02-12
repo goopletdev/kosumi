@@ -1,12 +1,19 @@
 import TextEditor from './textEditor/text-editor.js';
-import GobanCanvas from './goban/goban-canvas.js';
+import GobanViewer from './goban/goban-viewer.js';
 import NavPanel from './navigation/navigation-panel.js';
 import StoneWalker from './stoneWalker/stone-walker.js';
+import GameEngine from './stoneWalker/game-engine-class.js';
+import GobanPlayer from './goban/goban-player.js';
 
 document.addEventListener('DOMContentLoaded',() => {
+    const engine = new GameEngine(19,19);
     document.fonts.ready.then(() => {
-        const goban = new GobanCanvas(19,19,document.getElementById('gobanParent'));
-        goban.toolPanel = document.getElementById('navigationParent');    
+        const goban = new GobanViewer(19,19,'A1',3,3);
+        document.getElementById('gobanParent').append(goban.domElement);
+        goban.resize.observe(goban.domElement.parentElement);
+
+        const player = new GobanPlayer(goban,engine);
+        player.toolPanel = document.getElementById('navigationParent');
     });
 
     // splitBar resizer
