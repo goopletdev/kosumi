@@ -3,41 +3,26 @@
  */
 
 class GameEngine {
+    #width;
+    #height;
     /**
      * Sets goban width and initializes a flattened board state with 0's
      * @param {number} width X; number of columns
      * @param {number} height Y; number of 
      */
     constructor (width=19, height=width) {
-        this.dimensions = [width,height];
-    }
-
-    set width (width) {
-        this._width = width;
+        // initialize blank goban
         this.state = Array(width * height).fill(0);
+        this.#width = width;
+        this.#height = height;
     }
 
     get width () {
-        return this._width;
-    }
-
-    set height (height) {
-        this._height = height;
-        this.state = Array(width * height).fill(0);
+        return this.#width;
     }
 
     get height () {
-        return this._height;
-    }
-
-    set dimensions ([width,height]) {
-        this._width = width;
-        this._height = height;
-        this.state = Array(width * height).fill(0);
-    }
-
-    get dimensions () {
-        return [this.width, this.height];
+        return this.#height;
     }
 
     /**
@@ -54,7 +39,7 @@ class GameEngine {
      * @returns {number} flattened coordinate
      */
     flatten ([x,y]) {
-        return x + y * this._width;
+        return x + y * this.#width;
     }
 
     /**
@@ -63,7 +48,7 @@ class GameEngine {
      * @returns {[number,number]} Unflattened 2-d coordinate
      */
     deepen (fCoord) {
-        return [fCoord % this._width, Math.floor(fCoord / this._width)];
+        return [fCoord % this.#width, Math.floor(fCoord / this.#width)];
     }
 
     /**
@@ -73,7 +58,7 @@ class GameEngine {
      */
     neighbors (fCoord) {
         const adjacent = [];
-        const [width,size] = [this._width,this.state.length];
+        const [width,size] = [this.#width,this.state.length];
 
         if (fCoord-width >= 0 && fCoord-width < size) {
             adjacent.push(fCoord-width);
