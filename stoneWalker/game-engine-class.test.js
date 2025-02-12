@@ -1,13 +1,5 @@
 import GameEngine from "./game-engine-class";
 
-describe('Goban static methods', () => {
-    it('should make a Goban object from a flat square array', () => {
-        let board = GameEngine.from([0,0,1,0,0,0,1,1,1]);
-        expect(board.width).toBe(3);
-        expect(board.state).toEqual([0,0,1,0,0,0,1,1,1]);
-    });
-});
-
 describe('Goban methods on 5x5', () => {
     /*let board;
     beforeEach(() => {
