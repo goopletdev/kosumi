@@ -195,31 +195,6 @@ class GameEngine {
 
         return captures;
     }
-
-    /**
-     * Stringifies boardstate for display
-     * @returns {string} consisting of '.','B','W','\n'
-     */
-    prettify () {
-        let pretty = '';
-        this.state.forEach((value, i) => {
-            pretty += ['.','B','W'][value];
-            if (i < this.state.length - 1 && !((i+1) % width)) pretty += '\n';
-        });
-        return pretty;
-    }
-
-    /**
-     * Sets given state to new Goban object and returns Goban
-     * @param {Array.<number>} state Flat square array
-     * @returns {GameEngine} Goban object with the given state
-     */
-    static from (state) {
-        const board = new GameEngine;
-        board.state = state;
-        board._width = Math.sqrt(state.length);
-        return board;
-    }
 }
 
 export default GameEngine;
