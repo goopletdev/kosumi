@@ -2,16 +2,15 @@
 Text-based SGF editor. It's a work in progress as I learn the basics of JavaScript and programming in general. 
 
 ## Features:
-- Syntax highlighting
 - Display the boardstate on a graphical goban
+- Interactable canvas element
 - Correct SGF style errors in SGF files from OGS, and maximize compatibility by unzipping compressed coordinates
 
 ## To-do list:
+- reimplement: syntax highlighting
 - reimplement: 'Autocomplete for `[`,`]`,`(`,`)`,`;` inputs'
 - highlighting multiple nodes: number them on display!!! yooo - note from fren
 - improve error handling for SGF parsing; explain common errors better
-- unit testing
-- jsdoc
 - map arrow keys to navigation panel buttons?
 - improve syntax highlighting (typing for propIdent/val pairs)
 - navigation: allow for variations
@@ -19,21 +18,13 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 - implement DT.value.get() function properly in sgfProperties
 
 ## Known issues:
-- resizing using the middle dividing bar is slow
-- BIGBUG: canvas gets progressively smaller with different shaped boards, until refresh
 - BIGBUG: allow 'tt' for passes
 - smoler bug: allow for parsing of collections
-
-## Learning goals:
-- actually understand how to use jsdoc
-- figure out unit testing
 
 ## Credits:
 the lovely, helpful, experienced, encouraging, friendly folks in the OGS forums for answering my endless questions about SGF and ebb'neffing
 
 Discord friends for answering my similarly endless JavaScript questions, especially  purxiz the Patient 
-
-This project is currently using SVG files from font-awesome.
 
 ## Bonus: 
 Here are some pictures of my cats Denna and Kvothe
