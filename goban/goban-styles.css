@@ -1,61 +1,10 @@
-@font-face {
-    font-family: 'ubuntu-condensed';
-    src: url('../fonts/Ubuntu_Condensed/UbuntuCondensed-Regular.ttf');
-}
-
-.gobanContainer {
-    aspect-ratio: 1/1;
-    background-color: red;
-    vertical-align:middle;
-    font-size:16px;
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin:auto;
+/*.gobanDomElement {
     border-radius: 6px;
+    overflow: hidden;
+    border-collapse: separate;
     overflow:hidden;
-    position:relative;
-    width:100%;
-    font-family: monospace;
-}
+}*/
 
-.gobanBoardState {
-    background-color: burlywood;
-    margin-left:auto;
-    margin-right:auto;
-    text-align:center;
-    width:fit-content;
-    padding:1ch;
-    text-wrap:nowrap;
-}
-
-.gobanCanvas {
-    /*background-color: rgb(202, 178, 117);
-    height: 20em;
-    width: 20em;*/
-    margin-left:auto;
-    margin-right:auto;
-    position:absolute;
-    width: 100%;
-    height:100%;
-
-}
-
-.gobanPointEmpty {
-    color:transparent;
-}
-
-.gobanPointWhite {
-    color:white;
-}
-
-.gobanPointBlack {
-    color:black;
-}
-
-.gobanPointBlack,
-.gobanPointWhite,
-.gobanPointEmpty {
-    font-size: 16px;
+.goban-dom-element {
+    border-radius: 6px;
 }
