@@ -5,6 +5,7 @@ class GobanViewer {
     #annotationState;
     #width;
     #height;
+    #lastMoves = new Set();
     constructor (width=19, height=width, coordStyle='A1', horizontalCoords = 3, verticalCoords = 3) {
         //for storing and manipulating board state
         this.#width = width;
@@ -42,6 +43,49 @@ class GobanViewer {
 
         this.totalWidth = this.width + this.leftPadding + this.rightPadding;
         this.totalHeight = this.height + this.topPadding + this.bottomPadding;
+    }
+
+    drawLastMoveMarker (fcoord) {
+        const stoneColor = this.colors.player[this.state[fcoord]];
+        const color = stoneColor === 'black' ? 'white' : 'black';
+        const [x,y] = this.deepen(fcoord);
+        this.stones.strokeStyle = color;
+        this.stones.lineWidth = Math.max(this.lineSpace/13,1.5);
+        this.stones.beginPath();
+        this.stones.arc(
+            this.lineSpace*(x+this.leftPadding+.5),
+            this.lineSpace*(y+this.topPadding+.5),
+            this.lineSpace/3.5,0,Math.PI*2
+        );
+        this.stones.stroke();
+        this.updateDomCanvas(x,y,this.stones.canvas);
+    }
+
+    set lastMoves (fcoords) {
+        // remove lastmove indicator from previous lastmoves
+        for (const fcoord of this.#lastMoves) {
+            this.draw(this.deepen(fcoord),this.state[fcoord],1);
+            this.#lastMoves.delete(fcoord);
+        }
+
+        if (typeof fcoords === 'number') {
+            fcoords = [fcoords];
+        } else if (!fcoords) return;
+
+        for (const fcoord of fcoords) {
+            this.drawLastMoveMarker(fcoord);
+            this.#lastMoves.add(fcoord);
+        }
+    }
+
+    get lastMoves () {
+        return this.#lastMoves;
+    }
+
+    resetLastMoveMarkers () {
+        for (const fcoord of this.#lastMoves) {
+            this.drawLastMoveMarker(fcoord);
+        }
     }
 
     /**
@@ -304,6 +348,8 @@ class GobanViewer {
         this.setCanvasSize();
         this.initGoban();
         this.reDrawState();
+        this.resetLastMoveMarkers();
+
     }
 }
 

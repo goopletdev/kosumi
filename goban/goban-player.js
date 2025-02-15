@@ -1,5 +1,4 @@
 class GobanPlayer {
-    #lastMoves = [];
     constructor (gobanDisplay,engine) {
         this.viewer = gobanDisplay;
         this.engine = engine;
@@ -13,38 +12,6 @@ class GobanPlayer {
 
         this.listen();
     }
-
-    set lastMoves (fcoords) {
-        // remove lastMove indicator from previous lastmoves
-        for (const fcoord of this.#lastMoves) {
-            this.viewer.draw(
-                this.viewer.deepen(fcoord),this.viewer.state[fcoord],1
-            );
-        }
-
-        this.#lastMoves = [];
-
-        for (const fcoord of fcoords) {
-            console.log('last move:',fcoord);
-            const color = this.nextPlayer(this.viewer.state[fcoord]);
-            const [x,y] = this.viewer.deepen(fcoord);
-            this.viewer.domCanvas.strokeStyle = this.viewer.colors.player[color];
-            this.viewer.domCanvas.lineWidth = Math.max(this.viewer.lineSpace/13,1.5);
-            this.viewer.domCanvas.beginPath();
-            this.viewer.domCanvas.arc(
-                this.viewer.lineSpace*(x+this.viewer.leftPadding+.5),
-                this.viewer.lineSpace*(y+this.viewer.topPadding+.5),
-                (this.viewer.lineSpace/3.5),0,Math.PI*2
-            );
-            this.viewer.domCanvas.stroke();
-            this.#lastMoves.push(fcoord);
-        }
-    }
-
-    get lastMoves () {
-        return this.#lastMoves;
-    }
-
 
     /**
      * Finds next player in turn order after given color
@@ -129,7 +96,7 @@ class GobanPlayer {
         this.activePlayer = this.nextPlayer();
         this.viewer.state = this.engine.state;
         this.mouseOverTool = this.activePlayer;
-        this.lastMoves = [this.viewer.flatten([x,y])]
+        this.viewer.lastMoves = [this.viewer.flatten([x,y])]
     }
 
     /**
@@ -152,6 +119,8 @@ class GobanPlayer {
             const targetColor = this.shiftKey ? alt : placementColor;
             this.engine.setup(targetColor,flat);
             this.viewer.state = this.engine.state;
+            // remove last move markers
+            this.viewer.lastMoves = [];
         }
     }
 
@@ -193,6 +162,7 @@ class GobanPlayer {
         this.tools.play.addEventListener('click', () => {
             this.tool = this.play;
             this.toolType = 'play';
+            this.mouseOverTool = this.activePlayer;
         });
         this.tools.play.textContent = 'Play';
 
