@@ -25,6 +25,17 @@ class GobanViewer {
 
         const update = () => this.update();
         this.resize = new ResizeObserver(update);
+
+        const font = new FontFace(
+            'ubuntu-condensed',
+            'url(../fonts/Ubuntu_Condensed/UbuntuCondensed-Regular.ttf)'
+        )
+
+        font.load().then(result => {
+            document.fonts.add(font);
+            update();
+            console.log('fontloaded hrmmmm?? ',result);
+        });
     }
 
     /**
