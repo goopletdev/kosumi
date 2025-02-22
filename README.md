@@ -6,6 +6,12 @@ Text-based SGF editor. It's a work in progress as I learn the basics of JavaScri
 - Interactable canvas element
 - Correct SGF style errors in SGF files from OGS, and maximize compatibility by unzipping compressed coordinates
 
+# modern to-do list:
+- tree editing Features: 
+    - Insert mode (i before, a after)
+    - v - new child variation; s - new sibling variation
+    - retractively update stone locations
+
 ## To-do list:
 - reimplement: syntax highlighting
 - reimplement: 'Autocomplete for `[`,`]`,`(`,`)`,`;` inputs'
