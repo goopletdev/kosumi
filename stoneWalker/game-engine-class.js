@@ -48,30 +48,22 @@ class GameEngine {
      * @returns {[number,number]} Unflattened 2-d coordinate
      */
     deepen (fCoord) {
-        return [fCoord % this.#width, Math.floor(fCoord / this.#width)];
+        const x = fCoord % this.#width;
+        return [x, (fCoord - x) / this.#width];
     }
 
     /**
-     * Finds all orthogonally adjacent points to a given point
+     * Finds all orthogonally adjacent intersections to a given point
      * @param {number} fCoord Flattened coordinate
      * @returns {Array.<number>} Orthogonally adjacent intersections
      */
     neighbors (fCoord) {
         const adjacent = [];
-        const [width,size] = [this.#width,this.state.length];
-
-        if (fCoord-width >= 0 && fCoord-width < size) {
-            adjacent.push(fCoord-width);
-        }
-        if (fCoord % width) {
-            adjacent.push(fCoord - 1);
-        }
-        if ((fCoord + 1) % width) {
-            adjacent.push(fCoord + 1);
-        }
-        if (fCoord+width >= 0 && fCoord+width < size) {
-            adjacent.push(fCoord+width);
-        }
+        const [x,y] = this.deepen(fCoord);
+        if (y > 0) adjacent.push(this.flatten([x,y-1]));
+        if (x > 0) adjacent.push(this.flatten([x-1,y]));
+        if (x < this.#width - 1) adjacent.push(this.flatten([x+1,y]));
+        if (y < this.#height - 1) adjacent.push(this.flatten([x,y+1]));
 
         return adjacent;
     }
@@ -164,17 +156,13 @@ class GameEngine {
 
         // check for opponent captures
         fCoords.forEach(move => {
-            this.neighbors(move).forEach(neighbor => {
-                const color = this.state[neighbor];
-                if (!color || color === value) return;
-                if (this.liberties(neighbor).size) return;
-                if (!captures[color]) {
-                    captures[color] = new Set();
-                } else if (captures[color].has(neighbor)) return;
+            this.neighbors(move).forEach(n => {
+                const color = this.state[n];
+                if (!color || color === value || this.liberties(n).size) return;
+                if (!captures[color]) captures[color] = new Set();
+                else if (captures[color].has(n)) return;
                 
-                this.chain(neighbor).forEach(link => {
-                    captures[color].add(link);
-                });
+                this.chain(n).forEach(link => captures[color].add(link));
             });
         });
 
