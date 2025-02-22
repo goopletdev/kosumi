@@ -6,6 +6,7 @@ class GobanViewer {
     #width;
     #height;
     #lastMoves = new Set();
+    #cursor;
     constructor (width=19, height=width, coordStyle='A1', horizontalCoords = 3, verticalCoords = 3) {
         //for storing and manipulating board state
         this.#width = width;
@@ -36,6 +37,19 @@ class GobanViewer {
             update();
             console.log('fontloaded hrmmmm?? ',result);
         });
+    }
+
+    set cursor (e) {
+        const x = Math.round(e.offsetX/this.lineSpace - this.leftPadding - .5);
+        const y = Math.round(e.offsetY/this.lineSpace - this.topPadding - .5);
+        if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+            this.#cursor = [x,y];
+        } else this.#cursor = null;
+        
+    }
+
+    get cursor () {
+        return this.#cursor;
     }
 
     /**
