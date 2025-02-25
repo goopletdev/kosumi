@@ -1,6 +1,5 @@
 import TextEditor from './textEditor/text-editor.js';
 import GobanViewer from './goban/goban-viewer.js';
-import NavPanel from './navigation/navigation-panel.js';
 import StoneWalker from './stoneWalker/stone-walker.js';
 import GameEngine from './stoneWalker/game-engine-class.js';
 import GobanPlayer from './goban/goban-player.js';
