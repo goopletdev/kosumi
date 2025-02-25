@@ -40,6 +40,9 @@ const COLORS = { // default color values
         ,
         'black',
         'white',
+        // bonus colors for variants:
+        '#5586DB',// blueish
+        '#A3395B',// reddish
     ],
     background: '#deb7ff',
 }

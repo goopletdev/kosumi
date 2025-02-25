@@ -1,9 +1,9 @@
 class GobanPlayer {
-    constructor (gobanDisplay,engine) {
+    constructor (gobanDisplay,engine,numberPlayers=2) {
         this.viewer = gobanDisplay;
         this.engine = engine;
 
-        this.numberPlayers = 2;
+        this.numberPlayers = numberPlayers;
         this.activePlayer = 1;
         this.mouseOverTool = 1;
 
