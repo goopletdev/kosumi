@@ -1,0 +1,25 @@
+.kosumiNavigationPanel {
+    min-width:fit-content;
+    margin-top: .5em;
+    user-select: none;
+}
+
+.kosumiNavigationButton {
+    margin: 0 5px;
+    height: fit-content;
+    width: fit-content;
+    min-width:6ch;
+    min-height:2em;
+    font-size:medium;
+    border:0;
+    border-radius: 3px;
+    background-color: rgb(55, 55, 55);
+    color: rgb(130,130,130);
+}
+
+.kosumiMoveNumber {
+    width:6ch;
+    font-size:12px;
+    text-align: right;
+    font-family: monospace;
+}
