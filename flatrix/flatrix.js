@@ -50,7 +50,7 @@ export default class Flatrix {
      * @type {number}
      */
     get height () {
-        return this.arr.length / this.#width;
+        return this.size / this.width;
     }
 
     /**
@@ -206,5 +206,3 @@ export default class Flatrix {
         }
     }
 }
-
-export default Flatrix;
