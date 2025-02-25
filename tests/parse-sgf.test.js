@@ -1,4 +1,4 @@
-import { buildGameObject, parseTokens, tokenize } from '../sgf/parse-sgf.js';
+import { buildGameObject, parseTokens, tokenize, buildGnodeTree } from '../sgf/parse-sgf.js';
 
 describe('tokenize function', () => {
   test('should tokenize a simple SGF string with a single property', () => {
@@ -560,5 +560,12 @@ PW[White]PB[Black]
 
   test('buildGameObject', () => {
     expect(buildGameObject(nodes, false)).toEqual(tree);
+  });
+
+  test('buildGnodeTree', () => {
+    const gnodeTree = buildGnodeTree(nodes);
+
+    expect(gnodeTree[0].root.id).toEqual(0);
+    expect(gnodeTree[0].terminal().id).toEqual(15);
   });
 });

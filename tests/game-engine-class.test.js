@@ -11,8 +11,8 @@ describe('Goban methods on 5x5', () => {
     let board = new GameEngine(5);
 
     it('should make an empty array of length 25', () => {
-        expect(board.state.length).toEqual(25);
-        expect(board.state.every(v => v === 0)).toBe(true);
+        expect(board.arr.length).toEqual(25);
+        expect(board.arr.every(v => v === 0)).toBe(true);
         expect(board.width).toBe(5);
     });
 
@@ -21,7 +21,7 @@ describe('Goban methods on 5x5', () => {
     });
 
     it('should unflatten fCoord to 2d coordinate', () => {
-        expect(board.deepen(17)).toEqual([2,3]);
+        expect(board.unflatten(17)).toEqual([2,3]);
     });
 
     it('should return 2-4 neighbors for a given point', () => {
@@ -68,7 +68,7 @@ describe('Goban methods on 5x5', () => {
 
     it('should allow non-capturing moves to behave like setup moves', () => {
         expect(board.move(1,0,6)).toEqual([,]);
-        expect(board.state).toEqual([
+        expect(board.arr).toEqual([
             1,0,1,1,0,
             0,1,1,2,2,
             2,0,1,2,0,
@@ -79,7 +79,7 @@ describe('Goban methods on 5x5', () => {
 
     it('should allow suicide moves', () => {
         expect(board.move(2,1).map(x => [...x])).toEqual([,,[1]]);
-        expect(board.state).toEqual([
+        expect(board.arr).toEqual([
             1,0,1,1,0,
             0,1,1,2,2,
             2,0,1,2,0,
@@ -90,7 +90,7 @@ describe('Goban methods on 5x5', () => {
 
     it('should handle captures correctly', () => {
         expect(board.move(2,1,5).map(x=>[...x])).toEqual([,[0]]);
-        expect(board.state).toEqual([
+        expect(board.arr).toEqual([
             0,2,1,1,0,
             2,1,1,2,2,
             2,0,1,2,0,
@@ -98,7 +98,7 @@ describe('Goban methods on 5x5', () => {
             0,0,0,0,1,
         ]);
         expect(board.move(2,11,17,4).map(a => [...a].sort((a,b) => a-b))).toEqual([,[2,3,6,7,12]]);
-        expect(board.state).toEqual([
+        expect(board.arr).toEqual([
             0,2,0,0,2,
             2,0,0,2,2,
             2,2,0,2,0,

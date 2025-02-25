@@ -1,28 +1,24 @@
 /**
  * @module GameEngine
  */
+import Flatrix from "../flatrix/flatrix.js";
 
-class GameEngine {
-    #width;
-    #height;
+class GameEngine extends Flatrix {
     /**
      * Sets goban width and initializes a flattened board state with 0's
      * @param {number} width X; number of columns
-     * @param {number} height Y; number of 
+     * @param {number} height Y; number of rows
      */
     constructor (width=19, height=width) {
-        // initialize blank goban
-        this.state = Array(width * height).fill(0);
-        this.#width = width;
-        this.#height = height;
+        super(Array(width * height).fill(0), width);
     }
 
-    get width () {
-        return this.#width;
-    }
-
-    get height () {
-        return this.#height;
+    /**
+     * @readonly alias for this.arr
+     * @type {Array.<any>}
+     */
+    get state () {
+        return this.arr;
     }
 
     /**
@@ -34,36 +30,17 @@ class GameEngine {
     }
 
     /**
-     * Flattens 2-d coordinates to a single number
-     * @param {[number,number]} coordinate
-     * @returns {number} flattened coordinate
-     */
-    flatten ([x,y]) {
-        return x + y * this.#width;
-    }
-
-    /**
-     * Unflattens coordinate
-     * @param {number} fCoord flattened coordinate
-     * @returns {[number,number]} Unflattened 2-d coordinate
-     */
-    deepen (fCoord) {
-        const x = fCoord % this.#width;
-        return [x, (fCoord - x) / this.#width];
-    }
-
-    /**
      * Finds all orthogonally adjacent intersections to a given point
      * @param {number} fCoord Flattened coordinate
      * @returns {Array.<number>} Orthogonally adjacent intersections
      */
     neighbors (fCoord) {
         const adjacent = [];
-        const [x,y] = this.deepen(fCoord);
+        const [x,y] = this.unflatten(fCoord);
         if (y > 0) adjacent.push(this.flatten([x,y-1]));
         if (x > 0) adjacent.push(this.flatten([x-1,y]));
-        if (x < this.#width - 1) adjacent.push(this.flatten([x+1,y]));
-        if (y < this.#height - 1) adjacent.push(this.flatten([x,y+1]));
+        if (x < this.width - 1) adjacent.push(this.flatten([x+1,y]));
+        if (y < this.height - 1) adjacent.push(this.flatten([x,y+1]));
 
         return adjacent;
     }

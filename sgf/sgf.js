@@ -2,7 +2,7 @@
  * @module SGF
  */
 import { stringify } from "./encode-sgf.js";
-import { tokenize, parseTokens, buildGameObject } from "./parse-sgf.js";
+import { tokenize, parseTokens, buildGameObject, buildGnodeTree } from "./parse-sgf.js";
 
 class SGF {
     /**
@@ -24,7 +24,7 @@ class SGF {
      * @param {string} sgf SGF/SGF collection string
      * @returns {object[]} Array of game node trees
      */
-    static parse(sgf) {
+    static parse (sgf) {
         let gameTree;
         tokenize(sgf, tokens => {
             parseTokens(tokens, nodes => {
@@ -33,6 +33,22 @@ class SGF {
         })
         return gameTree;
     }
+
+    /**
+     * Returns array of Game objects from an SGF
+     * @param {string} sgf SGF/SGF collection string
+     * @returns {object[]} Array of game node trees
+     */
+    static gParse (sgf) {
+        let gameTree;
+        tokenize(sgf, tokens => {
+            parseTokens(tokens, nodes => {
+                gameTree = buildGnodeTree(nodes);
+            })
+        })
+        return gameTree;
+    }
+
 }
 
 export default SGF;

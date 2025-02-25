@@ -4,6 +4,7 @@
  */
 
 import { parseProperty } from './parse-properties.js';
+import Gnode from '../gnode/gnode-class.js';
 
 /**
  * @private
@@ -118,10 +119,9 @@ const buildGameObject = (tokens, circular=true) => {
         } else if (tok === '(') {
             const surface = depth++;
             const branches = [];
-            while (position < tokens.length) {
+            while (position < tokens.length && depth >= surface) {
                 const branch = makeTree(parent,moveNumber);
                 if (branch) branches.push(...branch);
-                if (depth < surface) break;
             }
             return branches;
         }
@@ -133,6 +133,37 @@ const buildGameObject = (tokens, circular=true) => {
     return makeTree();
 }
 
+const buildGnodeTree = (tokens) => {
+    let position = 0;
+    let depth = 0;
+
+    const makeTree = (parent, moveNumber = 0) => {
+        const tok = tokens[position++];
+
+        if (tok === ')') {
+            depth --;
+            return null;
+        } else if (tok === '(') {
+            const surface = depth++;
+            const branches = [];
+            while (position < tokens.length && depth >= surface) {
+                const branch = makeTree(parent,moveNumber);
+                if (branch) branches.push(...branch);
+            }
+            return branches;
+        }
+        const node = new Gnode({...tok, moveNumber},parent);
+        node.addChilds(...makeTree(node,moveNumber+1) || []);
+        return [node];
+    }
+
+    return makeTree();
+}
 
 
-export { tokenize, parseTokens, buildGameObject };
+export {
+    tokenize,
+    parseTokens,
+    buildGameObject,
+    buildGnodeTree,
+};
