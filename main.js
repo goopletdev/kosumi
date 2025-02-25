@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded',() => {
         document.getElementById('gobanParent').append(goban.domElement);
         goban.resize.observe(goban.domElement.parentElement);
 
-        const player = new GobanPlayer(goban,engine);
+        const player = new GobanPlayer(goban,engine,4);
         player.toolPanel = document.getElementById('navigationParent');
     });
 
