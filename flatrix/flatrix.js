@@ -1,6 +1,17 @@
-class Flatrix {
+/**
+ * @module Flatrix common flat matrix rotation methods
+ */
+
+export default class Flatrix {
     #width;
-    #arr
+    #arr;
+
+    /**
+     * Initialize width and array of Flatrix object
+     * @param {any[]} array Flattened array
+     * @param {number} width number of columns
+     * @throws If width doesn't allow for positive integer height
+     */
     constructor (array, width = Math.sqrt(array.length)) {
         if (width < 1 || width % 1 || array % width) {
             throw new Error(`width ${width} is not allowed`);
@@ -12,7 +23,7 @@ class Flatrix {
     /**
      * Convert a 2-d matrix into a Flatrix object
      * @param {Array.<any[]>} matrix 2-dimensional matrix
-     * @returns {Flatrix}
+     * @returns {Flatrix} New Flatrix object
      */
     from (matrix) {
         return new Flatrix(matrix.flat(), matrix[0].length);
