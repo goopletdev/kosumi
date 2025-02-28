@@ -1,5 +1,5 @@
 /**
- * @module Gnode the G is silent
+ * @module Gnode (the G is silent)
  */
 export default class Gnode { // the G is silent
     #children
@@ -40,6 +40,14 @@ export default class Gnode { // the G is silent
     }
 
     /**
+     * 
+     */
+    set parent (node) {
+        if (!(node instanceof Gnode)) throw new Error(`${node} not Gnode`)
+        this.#parent = node;
+    }
+
+    /**
      * Returns array of Gnodes that share a parent, an empty array if
      * no Gnodes share a parent, or null if this does not have a parent.
      * @type {Array.<Gnode>}
@@ -53,18 +61,36 @@ export default class Gnode { // the G is silent
         } else return null;
     }
 
+    /**
+     * Pushes any number of Gnodes to this.children as new branches
+     * @param  {...Gnode} childs 
+     * @returns {Gnode} this
+     */
     addChilds = (...childs) => {
         childs.forEach(child => {
-            if (child instanceof Gnode) this.children.push(child);
+            if (child instanceof Gnode) {
+                this.children.push(child);
+                if (child.parent !== this) child.parent = this;
+            }
             else throw new Error(`${child} not instanceof Gnode`);
         });
-        return this.children;
+        return this;
     }
 
-    addChild = (child) => {
-        if (child instanceof Gnode) this.children.push(child);
-        else throw new Error(`${child} not instanceof Gnode`);
-        return child;
+    /**
+     * Removes this from gnode tree, optionally replacing itself in
+     * this.parent with this.children
+     * @param {boolean} branch 
+     * @returns {Gnode} this.parent
+     */
+    delete = (branch = false) => {
+        const childs = this.parent.children;
+        const index = childs.indexOf(this);
+        if (!branch) {
+            this.children.forEach(child => child.parent = this.parent);
+            childs.splice(index,1,...this.children);
+        } else this.parent.children.splice(index);
+        return this.parent;
     }
 
     /**
@@ -98,7 +124,7 @@ export default class Gnode { // the G is silent
      * @param {object | Gnode} options 
      * @returns {Gnode} New this.parent
      */
-    insertAbove = (options) => {
+    insertAboveMe = (options) => {
         const node = options instanceof Gnode ? options 
             : new Gnode(options,this.parent,this);
         if (this.parent) {
@@ -116,9 +142,12 @@ export default class Gnode { // the G is silent
      * @param {object | Gnode} options 
      * @returns {Gnode} New this.children[0]
      */
-    insertBelow = (options) => {
+    insertBelowMe = (options) => {
         const node = options instanceof Gnode ? options
             : new Gnode(options,this,...this.children);
+        for (let child of this.children) {
+            child.parent = node;
+        }
         this.#children = [node];
         return node;
     }
@@ -194,4 +223,27 @@ export default class Gnode { // the G is silent
      * @returns {number} Total number of Gnodes in this branch
      */
     branchLength = () => this.terminal().depth() + 1;
+
+    /**
+     * loggable version of this without circular references
+     * @returns {object}
+     */
+    log = () => {
+        const log = {};
+        const ignoreList = Object.keys(new Gnode());
+        for (const key of Object.keys(this)) {
+            if (!ignoreList.includes(key)) log[key] = this[key];
+        }
+        return log;
+    }
+
+    /**
+     * recursively creates loggable objects from gnode tree
+     * @returns {object} tree of loggable versions of gnode tree
+     */
+    dam = () => {
+        const log = this.log();
+        log.children = this.children.map(child => child.dam());
+        return log;
+    }
 }
