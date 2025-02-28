@@ -102,13 +102,7 @@ class GameEngine extends Flatrix {
      * @returns {Array.<number>} this.state
      */
     setup (value, ...fCoords) {
-        fCoords.forEach(coord => {
-            if (this.state[coord] === value) {
-                this.state[coord] = 0;
-            } else {
-                this.state[coord] = value;
-            }
-        });
+        fCoords.forEach(coord => this.state[coord] = value);
         return this.state;
     }
 
