@@ -1,4 +1,13 @@
-class GobanPlayer {
+import GameEngine from "../stoneWalker/game-engine-class.js";
+import GobanViewer from "./goban-viewer.js";
+
+export default class GobanPlayer {
+    /**
+     * 
+     * @param {GobanViewer} gobanDisplay 
+     * @param {GameEngine} engine 
+     * @param {number} numberPlayers 
+     */
     constructor (gobanDisplay,engine,numberPlayers=2) {
         this.viewer = gobanDisplay;
         this.engine = engine;
@@ -196,5 +205,3 @@ class GobanPlayer {
         this.panel.append(...Object.values(this.tools));
     }
 }
-
-export default GobanPlayer;
