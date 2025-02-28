@@ -50,5 +50,80 @@ describe('Large 1-branch Gnode tree', () => {
         expect(nodes[6].searchBranch('id',3)).toEqual(nodes[3]);
         expect(nodes[6].searchDownBranch('id',2)).toEqual(null);
     });
-
+    it('should handle node insertion', () => {
+        nodes[1].insertBelowMe({id:10});
+        expect(nodes[1].children.length).toEqual(1);
+        expect(nodes[2].parent).toEqual(nodes[1].mainBranch);
+        nodes[1].insertAboveMe({id:11});
+        expect(nodes[1].parent).toEqual(nodes[0].mainBranch);
+        expect(nodes[5].root.dam()).toEqual({
+            "id": 0,
+            "children": [
+                {
+                    "id": 11,
+                    "children": [
+                        {
+                            "id": 1,
+                            "children": [
+                                {
+                                    "id": 10,
+                                    "children": [
+                                        {
+                                            "id": 2,
+                                            "children": [
+                                                {
+                                                    "id": 3,
+                                                    "children": [
+                                                        {
+                                                            "id": 4,
+                                                            "children": [
+                                                                {
+                                                                    "id": 5,
+                                                                    "children": [
+                                                                        {
+                                                                            "id": 6,
+                                                                            "children": [
+                                                                                {
+                                                                                    "id": 7,
+                                                                                    "children": [
+                                                                                        {
+                                                                                            "id": 8,
+                                                                                            "children": [
+                                                                                                {
+                                                                                                    "id": 9,
+                                                                                                    "children": []
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        });
+        expect(() => nodes[7].addChilds(1,2)).toThrow();
+        expect(() => nodes[0].mainBranch = 'errorProne').toThrow();
+    });
+    it('should properly get array of siblings', () => {
+        expect(nodes[1].siblings.length).toEqual(0);
+        nodes[0].addChilds(new Gnode(), new Gnode(), new Gnode());
+        expect(nodes[1].siblings.length).toEqual(3);
+        expect(nodes[0].siblings).toEqual(null);
+        expect(() => nodes[0].siblings.length).toThrow();
+    });
 });
+

@@ -567,5 +567,449 @@ PW[White]PB[Black]
 
     expect(gnodeTree[0].root.id).toEqual(0);
     expect(gnodeTree[0].terminal().id).toEqual(15);
+    expect(gnodeTree[0].dam()).toEqual(gnodeTree[0].root.dam());
+    expect(gnodeTree[0].mainBranch.log()).toEqual(gnodeTree[0].children[0].log());
+    expect(gnodeTree[0].searchDown('id',26).log()).toEqual({
+        id: 26,
+        moveNumber: 6,
+        props: {
+            W: [
+                [3,1],
+            ],
+        },
+    });
+    expect(gnodeTree[0].dam()).toEqual({
+        "id": 0,
+        "props": {
+            "GM": [
+                1
+            ],
+            "FF": [
+                4
+            ],
+            "CA": [
+                "UTF-8"
+            ],
+            "AP": [
+                [
+                    "CGoban"
+                ],
+                [
+                    "3"
+                ]
+            ],
+            "ST": [
+                2
+            ],
+            "RU": [
+                "Japanese"
+            ],
+            "SZ": [
+                [
+                    9
+                ]
+            ],
+            "KM": [
+                0
+            ],
+            "PW": [
+                "White"
+            ],
+            "PB": [
+                "Black"
+            ]
+        },
+        "moveNumber": 0,
+        "children": [
+            {
+                "id": 1,
+                "props": {
+                    "B": [
+                        [
+                            4,
+                            4
+                        ]
+                    ]
+                },
+                "moveNumber": 1,
+                "children": [
+                    {
+                        "id": 2,
+                        "props": {
+                            "W": [
+                                [
+                                    4,
+                                    6
+                                ]
+                            ]
+                        },
+                        "moveNumber": 2,
+                        "children": [
+                            {
+                                "id": 3,
+                                "props": {
+                                    "B": [
+                                        [
+                                            4,
+                                            2
+                                        ]
+                                    ]
+                                },
+                                "moveNumber": 3,
+                                "children": [
+                                    {
+                                        "id": 4,
+                                        "props": {
+                                            "W": [
+                                                [
+                                                    6,
+                                                    5
+                                                ]
+                                            ]
+                                        },
+                                        "moveNumber": 4,
+                                        "children": [
+                                            {
+                                                "id": 5,
+                                                "props": {
+                                                    "B": [
+                                                        [
+                                                            2,
+                                                            5
+                                                        ]
+                                                    ]
+                                                },
+                                                "moveNumber": 5,
+                                                "children": [
+                                                    {
+                                                        "id": 6,
+                                                        "props": {
+                                                            "W": [
+                                                                [
+                                                                    6,
+                                                                    3
+                                                                ]
+                                                            ]
+                                                        },
+                                                        "moveNumber": 6,
+                                                        "children": [
+                                                            {
+                                                                "id": 7,
+                                                                "props": {
+                                                                    "B": [
+                                                                        [
+                                                                            3,
+                                                                            7
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                "moveNumber": 7,
+                                                                "children": [
+                                                                    {
+                                                                        "id": 8,
+                                                                        "props": {
+                                                                            "W": [
+                                                                                [
+                                                                                    6,
+                                                                                    1
+                                                                                ]
+                                                                            ]
+                                                                        },
+                                                                        "moveNumber": 8,
+                                                                        "children": [
+                                                                            {
+                                                                                "id": 9,
+                                                                                "props": {
+                                                                                    "B": [
+                                                                                        [
+                                                                                            5,
+                                                                                            1
+                                                                                        ]
+                                                                                    ]
+                                                                                },
+                                                                                "moveNumber": 9,
+                                                                                "children": [
+                                                                                    {
+                                                                                        "id": 10,
+                                                                                        "props": {
+                                                                                            "W": [
+                                                                                                [
+                                                                                                    4,
+                                                                                                    7
+                                                                                                ]
+                                                                                            ]
+                                                                                        },
+                                                                                        "moveNumber": 10,
+                                                                                        "children": [
+                                                                                            {
+                                                                                                "id": 11,
+                                                                                                "props": {
+                                                                                                    "B": [
+                                                                                                        [
+                                                                                                            4,
+                                                                                                            8
+                                                                                                        ]
+                                                                                                    ]
+                                                                                                },
+                                                                                                "moveNumber": 11,
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "id": 12,
+                                                                                                        "props": {
+                                                                                                            "W": [
+                                                                                                                [
+                                                                                                                    5,
+                                                                                                                    8
+                                                                                                                ]
+                                                                                                            ]
+                                                                                                        },
+                                                                                                        "moveNumber": 12,
+                                                                                                        "children": [
+                                                                                                            {
+                                                                                                                "id": 13,
+                                                                                                                "props": {
+                                                                                                                    "B": [
+                                                                                                                        [
+                                                                                                                            3,
+                                                                                                                            8
+                                                                                                                        ]
+                                                                                                                    ]
+                                                                                                                },
+                                                                                                                "moveNumber": 13,
+                                                                                                                "children": [
+                                                                                                                    {
+                                                                                                                        "id": 14,
+                                                                                                                        "props": {
+                                                                                                                            "W": [
+                                                                                                                                [
+                                                                                                                                    3,
+                                                                                                                                    6
+                                                                                                                                ]
+                                                                                                                            ]
+                                                                                                                        },
+                                                                                                                        "moveNumber": 14,
+                                                                                                                        "children": [
+                                                                                                                            {
+                                                                                                                                "id": 15,
+                                                                                                                                "props": {
+                                                                                                                                    "B": [
+                                                                                                                                        [
+                                                                                                                                            5,
+                                                                                                                                            7
+                                                                                                                                        ]
+                                                                                                                                    ]
+                                                                                                                                },
+                                                                                                                                "moveNumber": 15,
+                                                                                                                                "children": []
+                                                                                                                            }
+                                                                                                                        ]
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
+                                                                                            },
+                                                                                            {
+                                                                                                "id": 16,
+                                                                                                "props": {
+                                                                                                    "B": [
+                                                                                                        [
+                                                                                                            3,
+                                                                                                            6
+                                                                                                        ]
+                                                                                                    ]
+                                                                                                },
+                                                                                                "moveNumber": 11,
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "id": 17,
+                                                                                                        "props": {
+                                                                                                            "W": [
+                                                                                                                [
+                                                                                                                    3,
+                                                                                                                    8
+                                                                                                                ]
+                                                                                                            ]
+                                                                                                        },
+                                                                                                        "moveNumber": 12,
+                                                                                                        "children": [
+                                                                                                            {
+                                                                                                                "id": 18,
+                                                                                                                "props": {
+                                                                                                                    "B": [
+                                                                                                                        [
+                                                                                                                            2,
+                                                                                                                            8
+                                                                                                                        ]
+                                                                                                                    ]
+                                                                                                                },
+                                                                                                                "moveNumber": 13,
+                                                                                                                "children": [
+                                                                                                                    {
+                                                                                                                        "id": 19,
+                                                                                                                        "props": {
+                                                                                                                            "W": [
+                                                                                                                                [
+                                                                                                                                    4,
+                                                                                                                                    8
+                                                                                                                                ]
+                                                                                                                            ]
+                                                                                                                        },
+                                                                                                                        "moveNumber": 14,
+                                                                                                                        "children": [
+                                                                                                                            {
+                                                                                                                                "id": 20,
+                                                                                                                                "props": {
+                                                                                                                                    "B": [
+                                                                                                                                        [
+                                                                                                                                            2,
+                                                                                                                                            7
+                                                                                                                                        ]
+                                                                                                                                    ]
+                                                                                                                                },
+                                                                                                                                "moveNumber": 15,
+                                                                                                                                "children": [
+                                                                                                                                    {
+                                                                                                                                        "id": 21,
+                                                                                                                                        "props": {
+                                                                                                                                            "W": [
+                                                                                                                                                [
+                                                                                                                                                    4,
+                                                                                                                                                    5
+                                                                                                                                                ]
+                                                                                                                                            ]
+                                                                                                                                        },
+                                                                                                                                        "moveNumber": 16,
+                                                                                                                                        "children": []
+                                                                                                                                    }
+                                                                                                                                ]
+                                                                                                                            }
+                                                                                                                        ]
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
+                                                                                            },
+                                                                                            {
+                                                                                                "id": 22,
+                                                                                                "props": {
+                                                                                                    "B": [
+                                                                                                        [
+                                                                                                            6,
+                                                                                                            2
+                                                                                                        ]
+                                                                                                    ]
+                                                                                                },
+                                                                                                "moveNumber": 11,
+                                                                                                "children": [
+                                                                                                    {
+                                                                                                        "id": 23,
+                                                                                                        "props": {
+                                                                                                            "W": [
+                                                                                                                [
+                                                                                                                    7,
+                                                                                                                    2
+                                                                                                                ]
+                                                                                                            ]
+                                                                                                        },
+                                                                                                        "moveNumber": 12,
+                                                                                                        "children": []
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "id": 24,
+                                        "props": {
+                                            "W": [
+                                                [
+                                                    4,
+                                                    1
+                                                ]
+                                            ]
+                                        },
+                                        "moveNumber": 4,
+                                        "children": [
+                                            {
+                                                "id": 25,
+                                                "props": {
+                                                    "B": [
+                                                        [
+                                                            5,
+                                                            1
+                                                        ]
+                                                    ]
+                                                },
+                                                "moveNumber": 5,
+                                                "children": [
+                                                    {
+                                                        "id": 26,
+                                                        "props": {
+                                                            "W": [
+                                                                [
+                                                                    3,
+                                                                    1
+                                                                ]
+                                                            ]
+                                                        },
+                                                        "moveNumber": 6,
+                                                        "children": [
+                                                            {
+                                                                "id": 27,
+                                                                "props": {
+                                                                    "B": [
+                                                                        [
+                                                                            5,
+                                                                            3
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                "moveNumber": 7,
+                                                                "children": [
+                                                                    {
+                                                                        "id": 28,
+                                                                        "props": {
+                                                                            "W": [
+                                                                                [
+                                                                                    2,
+                                                                                    3
+                                                                                ]
+                                                                            ]
+                                                                        },
+                                                                        "moveNumber": 8,
+                                                                        "children": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    });
   });
 });
