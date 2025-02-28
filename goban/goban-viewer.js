@@ -1,6 +1,6 @@
 import { starPoints, coords, COLORS } from "./gobanUtils.js";
 
-class GobanViewer {
+export default class GobanViewer {
     #state;
     #annotationState;
     #width;
@@ -377,5 +377,3 @@ class GobanViewer {
 
     }
 }
-
-export default GobanViewer;
