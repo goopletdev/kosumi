@@ -122,35 +122,30 @@ class GameEngine extends Flatrix {
             this.state[c] = value;
         });
 
-        // track captures by color
-        const captures = [,];
+        // track removed stones
+        const captures = new Set();
 
         // check for opponent captures
         fCoords.forEach(move => {
             this.neighbors(move).forEach(n => {
                 const color = this.state[n];
                 if (!color || color === value || this.liberties(n).size) return;
-                if (!captures[color]) captures[color] = new Set();
-                else if (captures[color].has(n)) return;
-                
-                this.chain(n).forEach(link => captures[color].add(link));
+                else if (captures.has(n)) return;
+                this.chain(n).forEach(link => captures.add(link));
             });
         });
 
         // remove captures from board
-        captures.forEach(color => {
-            if (color) color.forEach(stone => this.state[stone] = 0);
-        });
+        captures.forEach(stone => this.state[stone] = 0);
 
         // check for self-captured stones
         fCoords.forEach(stone => {
             if (this.liberties(stone).size) return;
-            if (!captures[value]) captures[value] = new Set();
-            this.chain(stone).forEach(link => captures[value].add(link));
+            this.chain(stone).forEach(link => captures.add(link));
         });
 
         // remove self-captures from board
-        captures[value]?.forEach(stone => this.state[stone] = 0);
+        captures.forEach(stone => this.state[stone] = 0);
 
         return captures;
     }

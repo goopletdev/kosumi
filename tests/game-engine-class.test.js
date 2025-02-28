@@ -67,7 +67,7 @@ describe('Goban methods on 5x5', () => {
     });
 
     it('should allow non-capturing moves to behave like setup moves', () => {
-        expect(board.move(1,0,6)).toEqual([,]);
+        expect([...board.move(1,0,6)]).toEqual([]);
         expect(board.arr).toEqual([
             1,0,1,1,0,
             0,1,1,2,2,
@@ -78,7 +78,7 @@ describe('Goban methods on 5x5', () => {
     });
 
     it('should allow suicide moves', () => {
-        expect(board.move(2,1).map(x => [...x])).toEqual([,,[1]]);
+        expect([...board.move(2,1)]).toEqual([1]);
         expect(board.arr).toEqual([
             1,0,1,1,0,
             0,1,1,2,2,
@@ -89,7 +89,7 @@ describe('Goban methods on 5x5', () => {
     });
 
     it('should handle captures correctly', () => {
-        expect(board.move(2,1,5).map(x=>[...x])).toEqual([,[0]]);
+        expect([...board.move(2,1,5)]).toEqual([0]);
         expect(board.arr).toEqual([
             0,2,1,1,0,
             2,1,1,2,2,
@@ -97,7 +97,7 @@ describe('Goban methods on 5x5', () => {
             0,0,0,0,0,
             0,0,0,0,1,
         ]);
-        expect(board.move(2,11,17,4).map(a => [...a].sort((a,b) => a-b))).toEqual([,[2,3,6,7,12]]);
+        expect([...board.move(2,11,17,4)].sort((a,b) => a - b)).toEqual([2,3,6,7,12]);
         expect(board.arr).toEqual([
             0,2,0,0,2,
             2,0,0,2,2,
@@ -105,7 +105,7 @@ describe('Goban methods on 5x5', () => {
             0,0,2,0,0,
             0,0,0,0,1,
         ]);
-        expect(board.move(1,0,2,6).map(a=>[...a])).toEqual([,,[1]]);
+        expect([...board.move(1,0,2,6)]).toEqual([1]);
     });
 
     it('should throw if attempt to place stone on occupied intersection', () => {
